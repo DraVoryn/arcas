@@ -10,59 +10,61 @@ Arcas es una aplicacion de finanzas personales desarrollada con Flutter. Permite
 - **Lenguaje**: Dart 3.x
 - **State Management**: Riverpod (v2.4.0 + annotation/generator)
 - **Base de Datos**: Drift (SQLite) con `path_provider`
-- **Patron de Arquitectura**: Clean Architecture (Core, Domain, Database, UI)
+- **Patron de Arquitectura**: Clean Architecture (Core, Database, Providers, UI)
 
 ## Estructura del Proyecto
 ```
 lib/
-├── core/               # Tema, Router, Configuraciones globales
+├── main.dart
+├── core/
 │   ├── router/app_router.dart
 │   └── theme/app_theme.dart
-├── database/           # Capa de datos (Drift/SQLite)
+├── database/
 │   ├── app_database.dart
-│   ├── app_database.g.dart
-│   └── daos/           # TransactionDAO, CategoryDAO, ReportUsageDAO
-├── domain/             # Logica de negocio y servicios
-│   ├── freemium_service.dart
-│   └── purchase_service.dart
-├── models/             # Modelos de datos (Freezed)
-│   └── premium_plan.dart + .g.dart + .freezed.dart
-├── network/            # Clientes de API (Freemium)
-│   └── freemium_api_client.dart
-├── providers/          # Riverpod providers
-│   └── freemium_provider.dart
-├── ui/
-│   ├── screens/        # HomeScreen, TransactionsScreen, ReportesScreen, SettingsScreen
-│   └── widgets/        # UpgradePrompt, PremiumBadge, ReportLimitIndicator, etc.
-├── l10n/               # Localizacion (i18n) - ES + EN
-└── main.dart           # Punto de entrada
+│   └── app_database.g.dart
+├── providers/
+│   └── theme_provider.dart
+├── ui/screens/
+│   ├── home_screen.dart
+│   ├── transactions_screen.dart
+│   ├── reportes_screen.dart
+│   └── settings_screen.dart
+└── l10n/
+    ├── app_localizations.dart
+    ├── app_localizations_en.dart
+    └── app_localizations_es.dart
 ```
 
 ## Caracteristicas Implementadas
 
 ### Completado
-1. **Gestion de Finanzas**: Transacciones y categorias (CRUD completo)
-2. **Reportes Premium**: UI completa + PurchaseService
-3. **Premium/Freemium**: Sistema de compras in-app (In-App Purchase)
-4. **Localizacion**: Spanish (ES) + English (EN), 30+ strings
-5. **Navegacion**: GoRouter configurado
-6. **UI Base**: Theme, launcher icons, splash screen
-7. **Dark Mode**: Toggle en Settings screen con persistencia
-8. **Testing**: 28 tests unitarios pasando
-9. **CI/CD**: GitHub Actions (pub get, build_runner, analyze, test)
-10. **Conventional Commits**: Configurado
+1. **Dark Mode**: Toggle en Settings con persistencia
+2. **Theme Provider**: ThemeNotifier con SharedPreferences
+3. **Navegacion**: GoRouter configurado
+4. **Base de Datos**: Drift con Transactions y Categories
+5. **Localizacion**: Spanish + English
+6. **Material 3**: Light y Dark themes
 
 ### Pendiente
-1. Testing en dispositivo
-2. Release Workflow
-3. Publicacion en stores
+1. Tests unitarios (se perdieron en cleanup de git)
+2. Premium/Freemium features completas
+3. CI/CD workflows
+4. Fix Gradle/Kotlin version warnings
 
 ## Estado de GitHub
 - **Repo**: github.com/DraVoryn/arcas
-- **Ramas**: `main`, `feature/reportes-premium`
+- **Ramas**: main, feature/reportes-premium (sincronizadas)
 - **Contribuidores**: Solo DraVoryn <rafhm22@gmail.com>
-- **Historial**: 1 commit inicial limpio
-- **Ultimo commit**: Dark Mode (2026-03-18)
+- **Historial**: Limpio, 2 commits
 
-## Ultima fecha de actualizacion del contexto
+## Build Status
+- flutter analyze: No issues
+- Debug APK: 150MB
+- Warnings: Gradle 8.5.0, Kotlin 2.0.21 (no criticos)
+
+## Nota Importante
+Durante la limpieza de git history, git filter-repo elimino archivos de lib/ accidentalmente. 
+Se recrearon los archivos esenciales. Tests y workflows de CI/CD se perdieron y deben reconstruirse.
+
+## Ultima actualizacion
 2026-03-18
