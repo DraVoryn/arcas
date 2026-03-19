@@ -221,4 +221,121 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get update => 'Update';
+
+  @override
+  String get upgradeToPremium => 'Upgrade to Premium';
+
+  @override
+  String get unlockPremium => 'Unlock Premium';
+
+  @override
+  String get unlockPremiumFeatures =>
+      'Get unlimited reports and advanced features';
+
+  @override
+  String get subscribeMonthly => 'Subscribe Monthly';
+
+  @override
+  String get subscribeYearly => 'Subscribe Yearly';
+
+  @override
+  String get saveWithYearly => 'Save 40%';
+
+  @override
+  String get restorePurchases => 'Restore Purchases';
+
+  @override
+  String get purchaseFailed => 'Purchase failed. Please try again.';
+
+  @override
+  String get noPurchasesFound => 'No purchases found to restore.';
+
+  @override
+  String get premiumActivated => 'Premium activated!';
+
+  @override
+  String get purchasesRestored => 'Purchases restored!';
+
+  @override
+  String get premiumActive => 'Premium Active';
+
+  @override
+  String get freePlan => 'Free Plan';
+
+  @override
+  String get yourSubscription => 'Your Subscription';
+
+  @override
+  String get started => 'Started';
+
+  @override
+  String get expires => 'Expires';
+
+  @override
+  String get plan => 'Plan';
+
+  @override
+  String get yearly => 'Yearly';
+
+  @override
+  String get upgradePromptDescription =>
+      'Get unlimited reports, export to PDF, and advanced analytics.';
+
+  @override
+  String get viewPlans => 'View Plans';
+
+  @override
+  String get premiumFeatures => 'Premium Features';
+
+  @override
+  String get unlimitedReports => 'Unlimited Reports';
+
+  @override
+  String get exportToPdf => 'Export to PDF';
+
+  @override
+  String get advancedAnalytics => 'Advanced Analytics';
+
+  @override
+  String get prioritySupport => 'Priority Support';
+
+  @override
+  String get earlyAccessFeatures => 'Early Access Features';
+
+  @override
+  String get premiumDescription => 'Unlimited reports and features';
+
+  @override
+  String get reportsThisMonth => 'Reports this month';
+
+  @override
+  String get remaining => 'remaining';
+
+  @override
+  String get premiumFeature => 'Premium Feature';
+
+  @override
+  String get upgradeNow => 'Upgrade Now';
+
+  @override
+  String get upgradeMessage =>
+      'You\'ve reached your free report limit. Upgrade to Premium for unlimited reports and more!';
+
+  @override
+  String get topCategories => 'Top Categories';
+
+  @override
+  String get weeklyReport => 'Weekly Report';
+
+  @override
+  String get customReport => 'Custom Report';
+
+  @override
+  String get never => 'Never';
+
+  @override
+  String get cancelSubscription => 'Cancel Subscription';
+
+  @override
+  String get manageInStore => 'Manage in Store';
 }

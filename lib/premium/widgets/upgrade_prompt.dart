@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:arcas/l10n/app_localizations.dart';
 
 class UpgradePrompt extends StatelessWidget {
   final VoidCallback? onUpgradePressed;
@@ -8,6 +9,8 @@ class UpgradePrompt extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Container(
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.all(20),
@@ -35,14 +38,14 @@ class UpgradePrompt extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            'Premium Feature',
+            l10n.premiumFeature,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.bold,
             ),
           ),
           const SizedBox(height: 8),
           Text(
-            'You\'ve reached your free report limit. Upgrade to Premium for unlimited reports and more!',
+            l10n.upgradeMessage,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodyMedium,
           ),
@@ -50,7 +53,7 @@ class UpgradePrompt extends StatelessWidget {
           FilledButton.icon(
             onPressed: onUpgradePressed ?? () => context.push('/paywall'),
             icon: const Icon(Icons.star),
-            label: const Text('Upgrade Now'),
+            label: Text(l10n.upgradeNow),
           ),
         ],
       ),

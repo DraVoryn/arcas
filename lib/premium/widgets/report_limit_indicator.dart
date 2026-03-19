@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:arcas/l10n/app_localizations.dart';
 import 'package:arcas/providers/premium_provider.dart';
 import 'package:arcas/premium/models/freemium_limits.dart';
 
@@ -8,6 +9,7 @@ class ReportLimitIndicator extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final premiumState = ref.watch(premiumNotifierProvider);
 
     if (premiumState.isPremium) {
@@ -40,12 +42,12 @@ class ReportLimitIndicator extends ConsumerWidget {
               ),
               const SizedBox(width: 8),
               Text(
-                'Reports this month',
+                l10n.reportsThisMonth,
                 style: Theme.of(context).textTheme.titleSmall,
               ),
               const Spacer(),
               Text(
-                '$remaining left',
+                '$remaining ${l10n.remaining}',
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: remaining <= 1

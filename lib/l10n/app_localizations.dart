@@ -523,6 +523,234 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Actualizar'**
   String get update;
+
+  /// No description provided for @upgradeToPremium.
+  ///
+  /// In es, this message translates to:
+  /// **'Mejorar a Premium'**
+  String get upgradeToPremium;
+
+  /// No description provided for @unlockPremium.
+  ///
+  /// In es, this message translates to:
+  /// **'Desbloquear Premium'**
+  String get unlockPremium;
+
+  /// No description provided for @unlockPremiumFeatures.
+  ///
+  /// In es, this message translates to:
+  /// **'Obtén reportes ilimitados y funciones avanzadas'**
+  String get unlockPremiumFeatures;
+
+  /// No description provided for @subscribeMonthly.
+  ///
+  /// In es, this message translates to:
+  /// **'Suscribirse Mensual'**
+  String get subscribeMonthly;
+
+  /// No description provided for @subscribeYearly.
+  ///
+  /// In es, this message translates to:
+  /// **'Suscribirse Anual'**
+  String get subscribeYearly;
+
+  /// No description provided for @saveWithYearly.
+  ///
+  /// In es, this message translates to:
+  /// **'Ahorra 40%'**
+  String get saveWithYearly;
+
+  /// No description provided for @restorePurchases.
+  ///
+  /// In es, this message translates to:
+  /// **'Restaurar Compras'**
+  String get restorePurchases;
+
+  /// No description provided for @purchaseFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'Error en la compra. Intenta de nuevo.'**
+  String get purchaseFailed;
+
+  /// No description provided for @noPurchasesFound.
+  ///
+  /// In es, this message translates to:
+  /// **'No se encontraron compras para restaurar.'**
+  String get noPurchasesFound;
+
+  /// No description provided for @premiumActivated.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Premium activado!'**
+  String get premiumActivated;
+
+  /// No description provided for @purchasesRestored.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Compras restauradas!'**
+  String get purchasesRestored;
+
+  /// No description provided for @premiumActive.
+  ///
+  /// In es, this message translates to:
+  /// **'Premium Activo'**
+  String get premiumActive;
+
+  /// No description provided for @freePlan.
+  ///
+  /// In es, this message translates to:
+  /// **'Plan Gratis'**
+  String get freePlan;
+
+  /// No description provided for @yourSubscription.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu Suscripcion'**
+  String get yourSubscription;
+
+  /// No description provided for @started.
+  ///
+  /// In es, this message translates to:
+  /// **'Inicio'**
+  String get started;
+
+  /// No description provided for @expires.
+  ///
+  /// In es, this message translates to:
+  /// **'Expira'**
+  String get expires;
+
+  /// No description provided for @plan.
+  ///
+  /// In es, this message translates to:
+  /// **'Plan'**
+  String get plan;
+
+  /// No description provided for @yearly.
+  ///
+  /// In es, this message translates to:
+  /// **'Anual'**
+  String get yearly;
+
+  /// No description provided for @upgradePromptDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Obtén reportes ilimitados, exporta a PDF y analisis avanzados.'**
+  String get upgradePromptDescription;
+
+  /// No description provided for @viewPlans.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver Planes'**
+  String get viewPlans;
+
+  /// No description provided for @premiumFeatures.
+  ///
+  /// In es, this message translates to:
+  /// **'Funciones Premium'**
+  String get premiumFeatures;
+
+  /// No description provided for @unlimitedReports.
+  ///
+  /// In es, this message translates to:
+  /// **'Reportes Ilimitados'**
+  String get unlimitedReports;
+
+  /// No description provided for @exportToPdf.
+  ///
+  /// In es, this message translates to:
+  /// **'Exportar a PDF'**
+  String get exportToPdf;
+
+  /// No description provided for @advancedAnalytics.
+  ///
+  /// In es, this message translates to:
+  /// **'Analisis Avanzado'**
+  String get advancedAnalytics;
+
+  /// No description provided for @prioritySupport.
+  ///
+  /// In es, this message translates to:
+  /// **'Soporte Prioritario'**
+  String get prioritySupport;
+
+  /// No description provided for @earlyAccessFeatures.
+  ///
+  /// In es, this message translates to:
+  /// **'Funciones Anticipadas'**
+  String get earlyAccessFeatures;
+
+  /// No description provided for @premiumDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Reportes y funciones ilimitadas'**
+  String get premiumDescription;
+
+  /// No description provided for @reportsThisMonth.
+  ///
+  /// In es, this message translates to:
+  /// **'Reportes este mes'**
+  String get reportsThisMonth;
+
+  /// No description provided for @remaining.
+  ///
+  /// In es, this message translates to:
+  /// **'restantes'**
+  String get remaining;
+
+  /// No description provided for @premiumFeature.
+  ///
+  /// In es, this message translates to:
+  /// **'Funcion Premium'**
+  String get premiumFeature;
+
+  /// No description provided for @upgradeNow.
+  ///
+  /// In es, this message translates to:
+  /// **'Mejorar Ahora'**
+  String get upgradeNow;
+
+  /// No description provided for @upgradeMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Has alcanzado el limite de reportes gratis. ¡Mejora a Premium para reportes ilimitados y mas!'**
+  String get upgradeMessage;
+
+  /// No description provided for @topCategories.
+  ///
+  /// In es, this message translates to:
+  /// **'Top Categorias'**
+  String get topCategories;
+
+  /// No description provided for @weeklyReport.
+  ///
+  /// In es, this message translates to:
+  /// **'Reporte Semanal'**
+  String get weeklyReport;
+
+  /// No description provided for @customReport.
+  ///
+  /// In es, this message translates to:
+  /// **'Reporte Personalizado'**
+  String get customReport;
+
+  /// No description provided for @never.
+  ///
+  /// In es, this message translates to:
+  /// **'Nunca'**
+  String get never;
+
+  /// No description provided for @cancelSubscription.
+  ///
+  /// In es, this message translates to:
+  /// **'Cancelar Suscripcion'**
+  String get cancelSubscription;
+
+  /// No description provided for @manageInStore.
+  ///
+  /// In es, this message translates to:
+  /// **'Gestionar en Tienda'**
+  String get manageInStore;
 }
 
 class _AppLocalizationsDelegate

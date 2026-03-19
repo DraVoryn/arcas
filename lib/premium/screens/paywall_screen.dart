@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:arcas/l10n/app_localizations.dart';
 import 'package:arcas/premium/models/premium_plan.dart';
 import 'package:arcas/providers/premium_provider.dart';
 
@@ -17,9 +18,11 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Upgrade to Premium'),
+        title: Text(l10n.upgradeToPremium),
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () => context.pop(),
@@ -30,9 +33,9 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _buildHeader(context),
+            _buildHeader(context, l10n),
             const SizedBox(height: 24),
-            ...PremiumPlan.defaultPlans.map((plan) => _buildPlanCard(context, plan)),
+            ...PremiumPlan.defaultPlans.map((plan) => _buildPlanCard(context, plan, l10n)),
             if (_error != null) ...[
               const SizedBox(height: 16),
               Text(
@@ -46,7 +49,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
             const SizedBox(height: 16),
             OutlinedButton(
               onPressed: _isLoading ? null : _restorePurchases,
-              child: const Text('Restore Purchases'),
+              child: Text(l10n.restorePurchases),
             ),
           ],
         ),
@@ -54,7 +57,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
+  Widget _buildHeader(BuildContext context, AppLocalizations l10n) {
     return Column(
       children: [
         Icon(
@@ -64,14 +67,14 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
         ),
         const SizedBox(height: 16),
         Text(
-          'Unlock Premium',
+          l10n.unlockPremium,
           style: Theme.of(context).textTheme.headlineMedium?.copyWith(
             fontWeight: FontWeight.bold,
           ),
         ),
         const SizedBox(height: 8),
         Text(
-          'Get unlimited reports and advanced features',
+          l10n.unlockPremiumFeatures,
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.bodyLarge,
         ),
@@ -79,7 +82,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
     );
   }
 
-  Widget _buildPlanCard(BuildContext context, PremiumPlan plan) {
+  Widget _buildPlanCard(BuildContext context, PremiumPlan plan, AppLocalizations l10n) {
     final isMonthly = plan.billingPeriod == 'month';
     
     return Card(
@@ -106,7 +109,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
-                      'Save 40%',
+                      l10n.saveWithYearly,
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.onPrimaryContainer,
                         fontWeight: FontWeight.bold,
@@ -161,7 +164,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                       width: 20,
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
-                  : Text(isMonthly ? 'Subscribe Monthly' : 'Subscribe Yearly'),
+                  : Text(isMonthly ? l10n.subscribeMonthly : l10n.subscribeYearly),
             ),
           ],
         ),
@@ -170,6 +173,8 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
   }
 
   Future<void> _purchasePlan(PremiumPlan plan) async {
+    final l10n = AppLocalizations.of(context)!;
+    
     setState(() {
       _isLoading = true;
       _error = null;
@@ -180,12 +185,12 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
       
       if (success && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Premium activated!')),
+          SnackBar(content: Text(l10n.premiumActivated)),
         );
         context.pop();
       } else if (mounted) {
         setState(() {
-          _error = 'Purchase failed. Please try again.';
+          _error = l10n.purchaseFailed;
         });
       }
     } catch (e) {
@@ -204,6 +209,8 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
   }
 
   Future<void> _restorePurchases() async {
+    final l10n = AppLocalizations.of(context)!;
+    
     setState(() {
       _isLoading = true;
       _error = null;
@@ -214,12 +221,12 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
       
       if (success && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Purchases restored!')),
+          SnackBar(content: Text(l10n.purchasesRestored)),
         );
         context.pop();
       } else if (mounted) {
         setState(() {
-          _error = 'No purchases found to restore.';
+          _error = l10n.noPurchasesFound;
         });
       }
     } catch (e) {

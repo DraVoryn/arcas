@@ -220,4 +220,121 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get update => 'Actualizar';
+
+  @override
+  String get upgradeToPremium => 'Mejorar a Premium';
+
+  @override
+  String get unlockPremium => 'Desbloquear Premium';
+
+  @override
+  String get unlockPremiumFeatures =>
+      'Obtén reportes ilimitados y funciones avanzadas';
+
+  @override
+  String get subscribeMonthly => 'Suscribirse Mensual';
+
+  @override
+  String get subscribeYearly => 'Suscribirse Anual';
+
+  @override
+  String get saveWithYearly => 'Ahorra 40%';
+
+  @override
+  String get restorePurchases => 'Restaurar Compras';
+
+  @override
+  String get purchaseFailed => 'Error en la compra. Intenta de nuevo.';
+
+  @override
+  String get noPurchasesFound => 'No se encontraron compras para restaurar.';
+
+  @override
+  String get premiumActivated => '¡Premium activado!';
+
+  @override
+  String get purchasesRestored => '¡Compras restauradas!';
+
+  @override
+  String get premiumActive => 'Premium Activo';
+
+  @override
+  String get freePlan => 'Plan Gratis';
+
+  @override
+  String get yourSubscription => 'Tu Suscripcion';
+
+  @override
+  String get started => 'Inicio';
+
+  @override
+  String get expires => 'Expira';
+
+  @override
+  String get plan => 'Plan';
+
+  @override
+  String get yearly => 'Anual';
+
+  @override
+  String get upgradePromptDescription =>
+      'Obtén reportes ilimitados, exporta a PDF y analisis avanzados.';
+
+  @override
+  String get viewPlans => 'Ver Planes';
+
+  @override
+  String get premiumFeatures => 'Funciones Premium';
+
+  @override
+  String get unlimitedReports => 'Reportes Ilimitados';
+
+  @override
+  String get exportToPdf => 'Exportar a PDF';
+
+  @override
+  String get advancedAnalytics => 'Analisis Avanzado';
+
+  @override
+  String get prioritySupport => 'Soporte Prioritario';
+
+  @override
+  String get earlyAccessFeatures => 'Funciones Anticipadas';
+
+  @override
+  String get premiumDescription => 'Reportes y funciones ilimitadas';
+
+  @override
+  String get reportsThisMonth => 'Reportes este mes';
+
+  @override
+  String get remaining => 'restantes';
+
+  @override
+  String get premiumFeature => 'Funcion Premium';
+
+  @override
+  String get upgradeNow => 'Mejorar Ahora';
+
+  @override
+  String get upgradeMessage =>
+      'Has alcanzado el limite de reportes gratis. ¡Mejora a Premium para reportes ilimitados y mas!';
+
+  @override
+  String get topCategories => 'Top Categorias';
+
+  @override
+  String get weeklyReport => 'Reporte Semanal';
+
+  @override
+  String get customReport => 'Reporte Personalizado';
+
+  @override
+  String get never => 'Nunca';
+
+  @override
+  String get cancelSubscription => 'Cancelar Suscripcion';
+
+  @override
+  String get manageInStore => 'Gestionar en Tienda';
 }

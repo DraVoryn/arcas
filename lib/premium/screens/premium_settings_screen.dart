@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:arcas/l10n/app_localizations.dart';
 import 'package:arcas/providers/premium_provider.dart';
 
 class PremiumSettingsScreen extends ConsumerWidget {
@@ -9,11 +10,12 @@ class PremiumSettingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final premiumState = ref.watch(premiumNotifierProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Premium'),
+        title: Text(l10n.premium),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
@@ -22,20 +24,20 @@ class PremiumSettingsScreen extends ConsumerWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          _buildStatusCard(context, premiumState),
+          _buildStatusCard(context, premiumState, l10n),
           const SizedBox(height: 24),
           if (premiumState.isPremium)
-            _buildSubscriptionDetails(context, premiumState)
+            _buildSubscriptionDetails(context, premiumState, l10n)
           else
-            _buildUpgradePrompt(context),
+            _buildUpgradePrompt(context, l10n),
           const SizedBox(height: 24),
-          _buildFeaturesList(context),
+          _buildFeaturesList(context, l10n),
         ],
       ),
     );
   }
 
-  Widget _buildStatusCard(BuildContext context, PremiumState premiumState) {
+  Widget _buildStatusCard(BuildContext context, PremiumState premiumState, AppLocalizations l10n) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -61,7 +63,7 @@ class PremiumSettingsScreen extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    premiumState.isPremium ? 'Premium Active' : 'Free Plan',
+                    premiumState.isPremium ? l10n.premiumActive : l10n.freePlan,
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -69,8 +71,8 @@ class PremiumSettingsScreen extends ConsumerWidget {
                   const SizedBox(height: 4),
                   Text(
                     premiumState.isPremium
-                        ? 'Unlimited reports and features'
-                        : '${premiumState.reportsGeneratedThisMonth}/3 reports this month',
+                        ? l10n.premiumDescription
+                        : '${premiumState.reportsGeneratedThisMonth}/3 ${l10n.reportsThisMonth}',
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ],
@@ -82,7 +84,7 @@ class PremiumSettingsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildSubscriptionDetails(BuildContext context, PremiumState premiumState) {
+  Widget _buildSubscriptionDetails(BuildContext context, PremiumState premiumState, AppLocalizations l10n) {
     final subscription = premiumState.subscription;
     final dateFormat = DateFormat.yMMMd();
 
@@ -93,7 +95,7 @@ class PremiumSettingsScreen extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Your Subscription',
+              l10n.yourSubscription,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
@@ -102,18 +104,18 @@ class PremiumSettingsScreen extends ConsumerWidget {
             if (subscription != null) ...[
               _buildDetailRow(
                 context,
-                'Plan',
-                subscription.planId == 'monthly' ? 'Monthly' : 'Yearly',
+                l10n.plan,
+                subscription.planId == 'monthly' ? l10n.monthlyReport.split(' ')[0] : l10n.yearly,
               ),
               _buildDetailRow(
                 context,
-                'Started',
+                l10n.started,
                 dateFormat.format(subscription.startDate),
               ),
               if (subscription.expirationDate != null)
                 _buildDetailRow(
                   context,
-                  'Expires',
+                  l10n.expires,
                   dateFormat.format(subscription.expirationDate!),
                 ),
             ],
@@ -144,7 +146,7 @@ class PremiumSettingsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildUpgradePrompt(BuildContext context) {
+  Widget _buildUpgradePrompt(BuildContext context, AppLocalizations l10n) {
     return Card(
       color: Theme.of(context).colorScheme.primaryContainer,
       child: Padding(
@@ -152,20 +154,20 @@ class PremiumSettingsScreen extends ConsumerWidget {
         child: Column(
           children: [
             Text(
-              'Upgrade to Premium',
+              l10n.upgradeToPremium,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
-              'Get unlimited reports, export to PDF, and advanced analytics.',
+            Text(
+              l10n.upgradePromptDescription,
             ),
             const SizedBox(height: 16),
             FilledButton.icon(
               onPressed: () => context.push('/paywall'),
               icon: const Icon(Icons.star),
-              label: const Text('View Plans'),
+              label: Text(l10n.viewPlans),
             ),
           ],
         ),
@@ -173,13 +175,13 @@ class PremiumSettingsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildFeaturesList(BuildContext context) {
+  Widget _buildFeaturesList(BuildContext context, AppLocalizations l10n) {
     final features = [
-      ('Icons.receipt_long', 'Unlimited Reports'),
-      ('Icons.picture_as_pdf', 'Export to PDF'),
-      ('Icons.analytics', 'Advanced Analytics'),
-      ('Icons.support_agent', 'Priority Support'),
-      ('Icons.new_releases', 'Early Access Features'),
+      (Icons.receipt_long, l10n.unlimitedReports),
+      (Icons.picture_as_pdf, l10n.exportToPdf),
+      (Icons.analytics, l10n.advancedAnalytics),
+      (Icons.support_agent, l10n.prioritySupport),
+      (Icons.new_releases, l10n.earlyAccessFeatures),
     ];
 
     return Card(
@@ -189,7 +191,7 @@ class PremiumSettingsScreen extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Premium Features',
+              l10n.premiumFeatures,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
@@ -200,7 +202,7 @@ class PremiumSettingsScreen extends ConsumerWidget {
               child: Row(
                 children: [
                   Icon(
-                    _getIconFromString(feature.$1),
+                    feature.$1,
                     color: Theme.of(context).colorScheme.primary,
                   ),
                   const SizedBox(width: 12),
@@ -212,22 +214,5 @@ class PremiumSettingsScreen extends ConsumerWidget {
         ),
       ),
     );
-  }
-
-  IconData _getIconFromString(String iconName) {
-    switch (iconName) {
-      case 'Icons.receipt_long':
-        return Icons.receipt_long;
-      case 'Icons.picture_as_pdf':
-        return Icons.picture_as_pdf;
-      case 'Icons.analytics':
-        return Icons.analytics;
-      case 'Icons.support_agent':
-        return Icons.support_agent;
-      case 'Icons.new_releases':
-        return Icons.new_releases;
-      default:
-        return Icons.star;
-    }
   }
 }

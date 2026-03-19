@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:arcas/l10n/app_localizations.dart';
 import 'package:arcas/premium/models/report.dart';
 import 'package:arcas/premium/models/category_breakdown.dart';
 
@@ -15,6 +16,7 @@ class ReportCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final currencyFormat = NumberFormat.currency(symbol: '\$');
     final dateFormat = DateFormat.yMMMd();
 
@@ -32,7 +34,7 @@ class ReportCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    _getReportTypeLabel(report.type),
+                    _getReportTypeLabel(report.type, l10n),
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -49,19 +51,19 @@ class ReportCard extends StatelessWidget {
                 children: [
                   _buildSummaryItem(
                     context,
-                    'Income',
+                    l10n.income,
                     currencyFormat.format(report.totalIncome),
                     Colors.green,
                   ),
                   _buildSummaryItem(
                     context,
-                    'Expense',
+                    l10n.expense,
                     currencyFormat.format(report.totalExpense),
                     Colors.red,
                   ),
                   _buildSummaryItem(
                     context,
-                    'Balance',
+                    l10n.balance,
                     currencyFormat.format(report.balance),
                     report.balance >= 0 ? Colors.green : Colors.red,
                   ),
@@ -72,7 +74,7 @@ class ReportCard extends StatelessWidget {
                 const Divider(),
                 const SizedBox(height: 8),
                 Text(
-                  'Top Categories',
+                  l10n.topCategories,
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
                 const SizedBox(height: 8),
@@ -87,14 +89,14 @@ class ReportCard extends StatelessWidget {
     );
   }
 
-  String _getReportTypeLabel(ReportType type) {
+  String _getReportTypeLabel(ReportType type, AppLocalizations l10n) {
     switch (type) {
       case ReportType.weekly:
-        return 'Weekly Report';
+        return l10n.weeklyReport;
       case ReportType.monthly:
-        return 'Monthly Report';
+        return l10n.monthlyReport;
       case ReportType.custom:
-        return 'Custom Report';
+        return l10n.customReport;
     }
   }
 
