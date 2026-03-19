@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
+import 'package:arcas/core/utils/date_formatter.dart';
 import 'package:arcas/providers/premium_provider.dart';
 import 'package:arcas/premium/models/report.dart';
 import 'package:arcas/premium/widgets/report_limit_indicator.dart';
@@ -178,7 +178,7 @@ class _ReportesScreenState extends ConsumerState<ReportesScreen> {
     DateTime date,
     ValueChanged<DateTime> onSelect,
   ) {
-    final dateFormat = DateFormat.yMMMd();
+    final dateFormat = (DateTime d) => DateFormatter.formatDate(d, context);
     return InkWell(
       onTap: () async {
         final picked = await showDatePicker(
@@ -197,7 +197,7 @@ class _ReportesScreenState extends ConsumerState<ReportesScreen> {
           border: const OutlineInputBorder(),
           suffixIcon: const Icon(Icons.calendar_today),
         ),
-        child: Text(dateFormat.format(date)),
+        child: Text(dateFormat(date)),
       ),
     );
   }

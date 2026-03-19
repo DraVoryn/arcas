@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:arcas/providers/home_provider.dart';
 import 'package:arcas/l10n/app_localizations.dart';
-import 'package:intl/intl.dart';
+import 'package:arcas/providers/home_provider.dart';
+import 'package:arcas/core/utils/date_formatter.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -128,7 +128,7 @@ class _MonthlyStats extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final statsAsync = ref.watch(monthlyStatsProvider);
     final now = DateTime.now();
-    final monthName = DateFormat.MMMM().format(now);
+    final monthName = DateFormatter.formatMonthYear(now, context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -338,7 +338,7 @@ class _RecentTransactionsList extends ConsumerWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
                 subtitle: Text(
-                  DateFormat.yMMMd().format(tx.date),
+                  DateFormatter.formatDate(tx.date, context),
                   style: TextStyle(
                     color: Colors.grey[600],
                     fontSize: 12,

@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:arcas/l10n/app_localizations.dart';
 import 'package:arcas/premium/models/report.dart';
 import 'package:arcas/premium/models/category_breakdown.dart';
+import 'package:arcas/core/utils/date_formatter.dart';
 
 class ReportCard extends StatelessWidget {
   final Report report;
@@ -18,7 +19,6 @@ class ReportCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final currencyFormat = NumberFormat.currency(symbol: '\$');
-    final dateFormat = DateFormat.yMMMd();
 
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -40,7 +40,7 @@ class ReportCard extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    dateFormat.format(report.generatedAt ?? DateTime.now()),
+                    DateFormatter.formatDate(report.generatedAt ?? DateTime.now(), context),
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ],

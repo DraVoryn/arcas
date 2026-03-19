@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:arcas/l10n/app_localizations.dart';
 import 'package:arcas/providers/premium_provider.dart';
+import 'package:arcas/core/utils/date_formatter.dart';
 
 class PremiumSettingsScreen extends ConsumerWidget {
   const PremiumSettingsScreen({super.key});
@@ -86,7 +86,7 @@ class PremiumSettingsScreen extends ConsumerWidget {
 
   Widget _buildSubscriptionDetails(BuildContext context, PremiumState premiumState, AppLocalizations l10n) {
     final subscription = premiumState.subscription;
-    final dateFormat = DateFormat.yMMMd();
+    final dateFormat = (DateTime d) => DateFormatter.formatDate(d, context);
 
     return Card(
       child: Padding(
@@ -110,13 +110,13 @@ class PremiumSettingsScreen extends ConsumerWidget {
               _buildDetailRow(
                 context,
                 l10n.started,
-                dateFormat.format(subscription.startDate),
+                dateFormat(subscription.startDate),
               ),
               if (subscription.expirationDate != null)
                 _buildDetailRow(
                   context,
                   l10n.expires,
-                  dateFormat.format(subscription.expirationDate!),
+                  dateFormat(subscription.expirationDate!),
                 ),
             ],
           ],
