@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:arcas/providers/theme_provider.dart';
 import 'package:arcas/providers/locale_provider.dart';
 
@@ -62,6 +63,29 @@ class SettingsScreen extends ConsumerWidget {
             title: const Text('Idioma'),
             subtitle: Text(_getLocaleName(currentLocale)),
             onTap: () => _showLanguageSelector(context, ref, currentLocale),
+          ),
+
+          const Divider(),
+
+          // Premium Section
+          _buildSectionHeader('Premium'),
+          ListTile(
+            leading: Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: const Color(0xFFFFD700).withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Icon(
+                Icons.star,
+                color: Color(0xFFFFD700),
+              ),
+            ),
+            title: const Text('Premium'),
+            subtitle: const Text('Manage subscription'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push('/premium-settings'),
           ),
 
           const Divider(),

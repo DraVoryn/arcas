@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:drift/drift.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:arcas/database/app_database.dart';
@@ -11,6 +12,9 @@ class PurchaseService {
   static const String _productMonthly = 'premium_monthly';
   static const String _productYearly = 'premium_yearly';
 
+  StreamSubscription<List<PurchaseDetails>>? _purchaseSubscription;
+  Completer<bool>? _purchaseCompleter;
+
   PurchaseService(this._db, {InAppPurchase? inAppPurchase})
       : _inAppPurchase = inAppPurchase ?? InAppPurchase.instance;
 
@@ -18,6 +22,59 @@ class PurchaseService {
     final isAvailable = await _inAppPurchase.isAvailable();
     if (!isAvailable) {
       return;
+    }
+
+    _purchaseSubscription = _inAppPurchase.purchaseStream.listen(
+      _handlePurchaseUpdate,
+      onError: _handlePurchaseError,
+    );
+  }
+
+  void dispose() {
+    _purchaseSubscription?.cancel();
+    _purchaseSubscription = null;
+  }
+
+  void _handlePurchaseUpdate(List<PurchaseDetails> purchaseDetailsList) {
+    for (final details in purchaseDetailsList) {
+      switch (details.status) {
+        case PurchaseStatus.purchased:
+          _handlePurchased(details);
+          break;
+        case PurchaseStatus.restored:
+          _handleRestored(details);
+          break;
+        case PurchaseStatus.error:
+          _handleError(details);
+          break;
+        case PurchaseStatus.pending:
+        case PurchaseStatus.canceled:
+          break;
+      }
+    }
+  }
+
+  void _handlePurchased(PurchaseDetails details) {
+    if (_purchaseCompleter != null && !_purchaseCompleter!.isCompleted) {
+      _purchaseCompleter!.complete(true);
+    }
+  }
+
+  void _handleRestored(PurchaseDetails details) {
+    if (_purchaseCompleter != null && !_purchaseCompleter!.isCompleted) {
+      _purchaseCompleter!.complete(true);
+    }
+  }
+
+  void _handleError(PurchaseDetails details) {
+    if (_purchaseCompleter != null && !_purchaseCompleter!.isCompleted) {
+      _purchaseCompleter!.complete(false);
+    }
+  }
+
+  void _handlePurchaseError(Object error) {
+    if (_purchaseCompleter != null && !_purchaseCompleter!.isCompleted) {
+      _purchaseCompleter!.complete(false);
     }
   }
 
@@ -36,34 +93,66 @@ class PurchaseService {
     }
   }
 
+  String _getProductId(String planId) {
+    return planId == 'monthly' ? _productMonthly : _productYearly;
+  }
+
+  PremiumPlan? _getPlanFromProductId(String productId) {
+    if (productId == _productMonthly) {
+      return PremiumPlan.defaultPlans.firstWhere(
+        (p) => p.id == 'monthly',
+        orElse: () => PremiumPlan.defaultPlans.first,
+      );
+    } else if (productId == _productYearly) {
+      return PremiumPlan.defaultPlans.firstWhere(
+        (p) => p.id == 'yearly',
+        orElse: () => PremiumPlan.defaultPlans.last,
+      );
+    }
+    return null;
+  }
+
   Future<bool> purchasePlan(PremiumPlan plan) async {
     final isAvailable = await _inAppPurchase.isAvailable();
     if (!isAvailable) {
       return false;
     }
 
-    final productId = plan.id == 'monthly' ? _productMonthly : _productYearly;
+    final productId = _getProductId(plan.id);
     final products = await getAvailableProducts();
     
-    final product = products.firstWhere(
-      (p) => p.id == productId,
-      orElse: () => throw Exception('Product not found'),
-    );
-
-    final purchaseParam = PurchaseParam(productDetails: product);
-    
-    try {
-      final success = await _inAppPurchase.buyNonConsumable(purchaseParam: purchaseParam);
-      if (success) {
-        await _saveSubscription(plan);
-      }
-      return success;
-    } catch (e) {
+    if (products.isEmpty) {
       return false;
     }
+
+    final product = products.firstWhere(
+      (p) => p.id == productId,
+      orElse: () => throw Exception('Product not found: $productId'),
+    );
+
+    _purchaseCompleter = Completer<bool>();
+    final purchaseParam = PurchaseParam(productDetails: product);
+
+    await _inAppPurchase.buyNonConsumable(purchaseParam: purchaseParam);
+
+    final result = await _purchaseCompleter!.future.timeout(
+      const Duration(minutes: 5),
+      onTimeout: () => false,
+    );
+
+    _purchaseCompleter = null;
+
+    if (result) {
+      await _saveSubscriptionFromPurchase(productId);
+    }
+
+    return result;
   }
 
-  Future<void> _saveSubscription(PremiumPlan plan) async {
+  Future<void> _saveSubscriptionFromPurchase(String productId) async {
+    final plan = _getPlanFromProductId(productId);
+    if (plan == null) return;
+
     final now = DateTime.now();
     DateTime? expiration;
     
@@ -84,8 +173,29 @@ class PurchaseService {
   }
 
   Future<bool> restorePurchases() async {
-    // TODO: Implement restore logic with platform-specific verification
-    return false;
+    final isAvailable = await _inAppPurchase.isAvailable();
+    if (!isAvailable) {
+      return false;
+    }
+
+    _purchaseCompleter = Completer<bool>();
+    
+    try {
+      await _inAppPurchase.restorePurchases(
+        applicationUserName: null,
+      );
+      
+      final result = await _purchaseCompleter!.future.timeout(
+        const Duration(minutes: 5),
+        onTimeout: () => false,
+      );
+
+      _purchaseCompleter = null;
+      return result;
+    } catch (e) {
+      _purchaseCompleter = null;
+      return false;
+    }
   }
 
   Future<model.Subscription?> getCurrentSubscription() async {
