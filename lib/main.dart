@@ -6,7 +6,7 @@ import 'package:arcas/core/theme/app_theme.dart';
 import 'package:arcas/core/router/app_router.dart';
 import 'package:arcas/providers/theme_provider.dart';
 import 'package:arcas/providers/locale_provider.dart';
-import 'package:arcas/providers/premium_provider.dart';
+import 'package:arcas/providers/database_provider.dart';
 import 'package:arcas/l10n/app_localizations.dart';
 import 'package:arcas/database/app_database.dart';
 

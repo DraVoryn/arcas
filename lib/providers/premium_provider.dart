@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:arcas/database/app_database.dart';
 import 'package:arcas/premium/models/premium_plan.dart';
 import 'package:arcas/premium/models/subscription.dart' as model;
 import 'package:arcas/premium/models/report.dart' as model;
@@ -7,10 +6,7 @@ import 'package:arcas/premium/models/freemium_limits.dart';
 import 'package:arcas/premium/services/freemium_service.dart';
 import 'package:arcas/premium/services/report_service.dart';
 import 'package:arcas/premium/services/purchase_service.dart';
-
-final databaseProvider = Provider<AppDatabase>((ref) {
-  throw UnimplementedError('Database not initialized');
-});
+import 'package:arcas/providers/database_provider.dart';
 
 final freemiumServiceProvider = Provider<FreemiumService>((ref) {
   final db = ref.watch(databaseProvider);
