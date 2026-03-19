@@ -1,13 +1,12 @@
-# TEMPLATE: Release Workflow
-# This workflow is NOT active. Uncomment 'on' section to enable.
-# Current status: Waiting for secrets configuration (see .github/docs/DEPLOY.md)
+# Release Workflow for Arcas
+# Triggers on git tags like v1.0.0
 
 name: Release
 
-# on:
-#   push:
-#     tags:
-#       - 'v*'
+on:
+  push:
+    tags:
+      - 'v*'
 
 jobs:
   release-android:
@@ -27,17 +26,13 @@ jobs:
       - name: Decode keystore
         run: |
           echo "${{ secrets.ANDROID_SIGNING_KEYSTORE }}" | base64 --decode > android/app/arcas-release.jks
-        env:
-          ANDROID_SIGNING_KEYSTORE: ${{ secrets.ANDROID_SIGNING_KEYSTORE }}
           
       - name: Create key.properties
         run: |
-          cat > android/key.properties << EOF
-          storePassword=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}
-          keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}
-          storeFile=./arcas-release.jks
-          EOF
+          echo "storePassword=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" >> android/key.properties
+          echo "keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}" >> android/key.properties
+          echo "keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}" >> android/key.properties
+          echo "storeFile=./arcas-release.jks" >> android/key.properties
           
       - run: flutter pub get
       
@@ -49,62 +44,3 @@ jobs:
         with:
           name: aab-release
           path: build/app/outputs/bundle/release/app-release.aab
-
-  release-ios:
-    runs-on: macos-latest
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          
-      - uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.41.4'
-          channel: 'stable'
-          
-      - name: Decode certificate
-        run: |
-          echo "${{ secrets.IOS_CERTIFICATE }}" | base64 --decode > ios_distribution.p12
-          
-      - name: Decode provisioning profile
-        run: |
-          echo "${{ secrets.IOS_PROVISIONING_PROFILE }}" | base64 --decode > Runner.mobileprovision
-          
-      - name: Import certificate
-        run: |
-          keychain initialize
-          keychain add-certificates --certificate ios_distribution.p12 --certificate-password ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
-          keychain set-keychain-settings --lut 72000
-          keychain unlock --password ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
-          
-      - name: Setup provisioning profile
-        run: |
-          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          cp Runner.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
-          
-      - run: flutter pub get
-      
-      - name: Build iOS
-        run: flutter build ios --release --no-codesign
-        
-      - name: Upload IPA
-        uses: actions/upload-artifact@v4
-        with:
-          name: ios-release
-          path: build/ios/iphoneos/Runner.app
-
-  notify:
-    needs: [release-android, release-ios]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Create Release Summary
-        run: |
-          echo "## Release ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Artifacts ready for upload to stores." >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Artifacts" >> $GITHUB_STEP_SUMMARY
-          echo "- Android AAB: `release-android/outputs/aab-release/app-release.aab`" >> $GITHUB_STEP_SUMMARY
-          echo "- iOS IPA: `release-ios/outputs/ios-release/Runner.app`" >> $GITHUB_STEP_SUMMARY
