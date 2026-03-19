@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleDisplayName</key>
+	<string>Arcas</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>arcas</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(FLUTTER_BUILD_NAME)</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
+	<key>UIMainStoryboardFile</key>
+	<string>Main</string>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Arcas usa Face ID para proteger tus datos financieros</string>
+</dict>
+</plist>
+/agents        
+Switch agent
+/compact       
+Compact session
+/connect       
+Connect provider
+/copy          
+Copy session transcript
+/editor        
+Open editor
+/exit          
+Exit the app
+/export        
+Export session transcript
+/fork          
+Fork from message
+/help          
+Help
+/init          
+create/update AGENTS.md
+/mcps          
+Toggle MCPs
+/models        
+Switch model
+/new           
+New session
+/rename        
+Rename session
+/review        
+review changes [commit|branch|pr], defaults to uncommitted
+/sdd-apply     
+Implement SDD tasks — writes code following specs and design
+/sdd-archive   
+Archive a completed SDD change — syncs specs and closes the cycle
+/sdd-continue  
+Continue the next SDD phase in the dependency chain
+/sdd-explore   
+Explore and investigate an idea or feature — reads codebase and compares approaches
+/sdd-ff        
+Fast-forward all SDD planning phases — proposal through tasks
+/sdd-init      
+Initialize SDD context — detects project stack and bootstraps persistence backend
+/sdd-new       
+Start a new SDD change — runs exploration then creates a proposal
+/sdd-verify    
+Validate implementation matches specs, design, and tasks
+/sessions      
+Switch session
+/share         
+Share session
+/skills        
+Skills
+/status        
+View status
+/themes        
+Switch theme
+/thinking      
+Hide thinking
+/timeline      
+Jump to message
+/timestamps    
+Show timestamps
+/undo          
+Undo previous message
+Sdd-Orchestrator 

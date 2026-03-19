@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:arcas/database/app_database.dart';
+import 'package:arcas/ui/dialogs/add_transaction_dialog.dart';
 
 final databaseProvider = Provider<AppDatabase>((ref) {
   return AppDatabase();
@@ -57,11 +58,10 @@ class TransactionsScreen extends ConsumerWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Add transaction')),
-          );
+          AddTransactionDialog.show(context);
         },
-        child: const Icon(Icons.add),
+        backgroundColor: const Color(0xFF2A9D8F),
+        child: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }
