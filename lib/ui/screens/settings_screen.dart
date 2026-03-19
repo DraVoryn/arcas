@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:arcas/providers/theme_provider.dart';
 import 'package:arcas/providers/locale_provider.dart';
+import 'package:arcas/providers/auth_provider.dart';
 import 'package:arcas/l10n/app_localizations.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -129,6 +130,59 @@ class SettingsScreen extends ConsumerWidget {
                 ),
               );
             },
+          ),
+
+          const Divider(),
+
+          // Security Section
+          _buildSectionHeader(l10n.security),
+          ListTile(
+            leading: Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: const Color(0xFFEF4444).withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Icon(
+                Icons.logout,
+                color: Color(0xFFEF4444),
+              ),
+            ),
+            title: Text(l10n.logout),
+            subtitle: Text(l10n.logoutDescription),
+            onTap: () => _showLogoutConfirmation(context, ref),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showLogoutConfirmation(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+    
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.logout),
+        content: Text(l10n.logoutConfirmation),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(l10n.cancel),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              await ref.read(authNotifierProvider.notifier).resetApp();
+              if (context.mounted) {
+                context.go('/onboarding');
+              }
+            },
+            style: TextButton.styleFrom(
+              foregroundColor: const Color(0xFFEF4444),
+            ),
+            child: Text(l10n.logout),
           ),
         ],
       ),

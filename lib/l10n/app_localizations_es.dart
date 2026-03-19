@@ -454,4 +454,17 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get biometricEnableError =>
       'No se pudo activar. Podes intentar mas tarde.';
+
+  @override
+  String get security => 'Seguridad';
+
+  @override
+  String get logout => 'Cerrar sesion';
+
+  @override
+  String get logoutDescription => 'Reinicia la app y borra el PIN';
+
+  @override
+  String get logoutConfirmation =>
+      'Esto reiniciara la app y borrara tu PIN. Necesitaras configurarlo de nuevo.';
 }

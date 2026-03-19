@@ -159,5 +159,9 @@
   "biometricEasier": "Easier",
   "biometricEasierDesc": "No passwords to remember",
   "skipForNow": "Skip for now",
-  "biometricEnableError": "Could not enable. You can try again later."
+  "biometricEnableError": "Could not enable. You can try again later.",
+  "security": "Security",
+  "logout": "Log out",
+  "logoutDescription": "Resets the app and deletes your PIN",
+  "logoutConfirmation": "This will reset the app and delete your PIN. You'll need to set it up again."
 }

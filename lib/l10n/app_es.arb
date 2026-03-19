@@ -159,5 +159,9 @@
   "biometricEasier": "Mas facil",
   "biometricEasierDesc": "Sin recordar contrasenas",
   "skipForNow": "Omitir por ahora",
-  "biometricEnableError": "No se pudo activar. Podes intentar mas tarde."
+  "biometricEnableError": "No se pudo activar. Podes intentar mas tarde.",
+  "security": "Seguridad",
+  "logout": "Cerrar sesion",
+  "logoutDescription": "Reinicia la app y borra el PIN",
+  "logoutConfirmation": "Esto reiniciara la app y borrara tu PIN. Necesitaras configurarlo de nuevo."
 }

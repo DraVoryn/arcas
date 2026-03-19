@@ -967,6 +967,30 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'No se pudo activar. Podes intentar mas tarde.'**
   String get biometricEnableError;
+
+  /// No description provided for @security.
+  ///
+  /// In es, this message translates to:
+  /// **'Seguridad'**
+  String get security;
+
+  /// No description provided for @logout.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrar sesion'**
+  String get logout;
+
+  /// No description provided for @logoutDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Reinicia la app y borra el PIN'**
+  String get logoutDescription;
+
+  /// No description provided for @logoutConfirmation.
+  ///
+  /// In es, this message translates to:
+  /// **'Esto reiniciara la app y borrara tu PIN. Necesitaras configurarlo de nuevo.'**
+  String get logoutConfirmation;
 }
 
 class _AppLocalizationsDelegate
