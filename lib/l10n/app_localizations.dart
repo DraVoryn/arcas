@@ -308,23 +308,59 @@ abstract class AppLocalizations {
   /// **'Fecha de Fin'**
   String get endDate;
 
+  /// No description provided for @appearance.
+  ///
+  /// In es, this message translates to:
+  /// **'Apariencia'**
+  String get appearance;
+
+  /// No description provided for @manageSubscription.
+  ///
+  /// In es, this message translates to:
+  /// **'Gestionar suscripcion'**
+  String get manageSubscription;
+
+  /// No description provided for @aboutArcas.
+  ///
+  /// In es, this message translates to:
+  /// **'Acerca de Arcas'**
+  String get aboutArcas;
+
+  /// No description provided for @selectLanguage.
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccionar idioma'**
+  String get selectLanguage;
+
+  /// No description provided for @system.
+  ///
+  /// In es, this message translates to:
+  /// **'Sistema'**
+  String get system;
+
+  /// No description provided for @useDeviceSettings.
+  ///
+  /// In es, this message translates to:
+  /// **'Usar configuracion del dispositivo'**
+  String get useDeviceSettings;
+
   /// No description provided for @totalBalance.
   ///
   /// In es, this message translates to:
   /// **'Balance Total'**
   String get totalBalance;
 
-  /// No description provided for @expenses.
-  ///
-  /// In es, this message translates to:
-  /// **'Gastos'**
-  String get expenses;
-
   /// No description provided for @recentTransactions.
   ///
   /// In es, this message translates to:
   /// **'Transacciones Recientes'**
   String get recentTransactions;
+
+  /// No description provided for @expenses.
+  ///
+  /// In es, this message translates to:
+  /// **'Gastos'**
+  String get expenses;
 
   /// No description provided for @deleteTransactionConfirmTitle.
   ///
@@ -335,13 +371,13 @@ abstract class AppLocalizations {
   /// No description provided for @deleteTransactionConfirmMessage.
   ///
   /// In es, this message translates to:
-  /// **'¿Estás seguro de que quieres eliminar'**
+  /// **'Estas seguro de eliminar'**
   String get deleteTransactionConfirmMessage;
 
   /// No description provided for @transactionDeleted.
   ///
   /// In es, this message translates to:
-  /// **'transaccion eliminada'**
+  /// **'eliminado'**
   String get transactionDeleted;
 
   /// No description provided for @reportType.
@@ -389,7 +425,7 @@ abstract class AppLocalizations {
   /// No description provided for @noReportsYet.
   ///
   /// In es, this message translates to:
-  /// **'Sin reportes generados'**
+  /// **'Sin reportes aun'**
   String get noReportsYet;
 
   /// No description provided for @errorLoadingReport.
@@ -401,44 +437,8 @@ abstract class AppLocalizations {
   /// No description provided for @reportGeneratedSuccess.
   ///
   /// In es, this message translates to:
-  /// **'¡Reporte generado exitosamente!'**
+  /// **'Reporte generado exitosamente'**
   String get reportGeneratedSuccess;
-
-  /// No description provided for @appearance.
-  ///
-  /// In es, this message translates to:
-  /// **'Apariencia'**
-  String get appearance;
-
-  /// No description provided for @manageSubscription.
-  ///
-  /// In es, this message translates to:
-  /// **'Gestionar suscripcion'**
-  String get manageSubscription;
-
-  /// No description provided for @aboutArcas.
-  ///
-  /// In es, this message translates to:
-  /// **'Acerca de Arcas'**
-  String get aboutArcas;
-
-  /// No description provided for @selectLanguage.
-  ///
-  /// In es, this message translates to:
-  /// **'Seleccionar Idioma'**
-  String get selectLanguage;
-
-  /// No description provided for @system.
-  ///
-  /// In es, this message translates to:
-  /// **'Sistema'**
-  String get system;
-
-  /// No description provided for @useDeviceSettings.
-  ///
-  /// In es, this message translates to:
-  /// **'Usar configuracion del dispositivo'**
-  String get useDeviceSettings;
 
   /// No description provided for @errorLoadingTransactions.
   ///

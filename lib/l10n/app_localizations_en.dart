@@ -114,13 +114,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String get endDate => 'End Date';
 
   @override
+  String get appearance => 'Appearance';
+
+  @override
+  String get manageSubscription => 'Manage subscription';
+
+  @override
+  String get aboutArcas => 'About Arcas';
+
+  @override
+  String get selectLanguage => 'Select language';
+
+  @override
+  String get system => 'System';
+
+  @override
+  String get useDeviceSettings => 'Use device settings';
+
+  @override
   String get totalBalance => 'Total Balance';
 
   @override
-  String get expenses => 'Expenses';
+  String get recentTransactions => 'Recent Transactions';
 
   @override
-  String get recentTransactions => 'Recent Transactions';
+  String get expenses => 'Expenses';
 
   @override
   String get deleteTransactionConfirmTitle => 'Delete Transaction';
@@ -129,7 +147,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deleteTransactionConfirmMessage => 'Are you sure you want to delete';
 
   @override
-  String get transactionDeleted => 'transaction deleted';
+  String get transactionDeleted => 'deleted';
 
   @override
   String get reportType => 'Report Type';
@@ -153,31 +171,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get latestReport => 'Latest Report';
 
   @override
-  String get noReportsYet => 'No reports generated yet';
+  String get noReportsYet => 'No reports yet';
 
   @override
   String get errorLoadingReport => 'Error loading report';
 
   @override
-  String get reportGeneratedSuccess => 'Report generated successfully!';
-
-  @override
-  String get appearance => 'Appearance';
-
-  @override
-  String get manageSubscription => 'Manage subscription';
-
-  @override
-  String get aboutArcas => 'About Arcas';
-
-  @override
-  String get selectLanguage => 'Select Language';
-
-  @override
-  String get system => 'System';
-
-  @override
-  String get useDeviceSettings => 'Use device settings';
+  String get reportGeneratedSuccess => 'Report generated successfully';
 
   @override
   String get errorLoadingTransactions => 'Error loading transactions';
