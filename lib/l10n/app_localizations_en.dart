@@ -112,4 +112,73 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get endDate => 'End Date';
+
+  @override
+  String get totalBalance => 'Total Balance';
+
+  @override
+  String get expenses => 'Expenses';
+
+  @override
+  String get recentTransactions => 'Recent Transactions';
+
+  @override
+  String get deleteTransactionConfirmTitle => 'Delete Transaction';
+
+  @override
+  String get deleteTransactionConfirmMessage => 'Are you sure you want to delete';
+
+  @override
+  String get transactionDeleted => 'transaction deleted';
+
+  @override
+  String get reportType => 'Report Type';
+
+  @override
+  String get weekly => 'Weekly';
+
+  @override
+  String get custom => 'Custom';
+
+  @override
+  String get from => 'From';
+
+  @override
+  String get to => 'To';
+
+  @override
+  String get generating => 'Generating...';
+
+  @override
+  String get latestReport => 'Latest Report';
+
+  @override
+  String get noReportsYet => 'No reports generated yet';
+
+  @override
+  String get errorLoadingReport => 'Error loading report';
+
+  @override
+  String get reportGeneratedSuccess => 'Report generated successfully!';
+
+  @override
+  String get appearance => 'Appearance';
+
+  @override
+  String get manageSubscription => 'Manage subscription';
+
+  @override
+  String get aboutArcas => 'About Arcas';
+
+  @override
+  String get selectLanguage => 'Select Language';
+
+  @override
+  String get system => 'System';
+
+  @override
+  String get useDeviceSettings => 'Use device settings';
+
+  @override
+  String get errorLoadingTransactions => 'Error loading transactions';
 }

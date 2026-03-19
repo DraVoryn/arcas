@@ -3,23 +3,25 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:arcas/providers/theme_provider.dart';
 import 'package:arcas/providers/locale_provider.dart';
+import 'package:arcas/l10n/app_localizations.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final themeMode = ref.watch(themeNotifierProvider);
     final currentLocale = ref.watch(currentLocaleProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Settings'),
+        title: Text(l10n.settings),
       ),
       body: ListView(
         children: [
           // Appearance Section
-          _buildSectionHeader('Apariencia'),
+          _buildSectionHeader(l10n.appearance),
           ListTile(
             leading: Container(
               width: 40,
@@ -33,7 +35,7 @@ class SettingsScreen extends ConsumerWidget {
                 color: Color(0xFF2A9D8F),
               ),
             ),
-            title: const Text('Modo Oscuro'),
+            title: Text(l10n.darkMode),
             trailing: Switch(
               value: themeMode == AppThemeMode.dark,
               activeThumbColor: const Color(0xFF2A9D8F),
@@ -46,7 +48,7 @@ class SettingsScreen extends ConsumerWidget {
           const Divider(),
 
           // Language Section
-          _buildSectionHeader('Idioma'),
+          _buildSectionHeader(l10n.language),
           ListTile(
             leading: Container(
               width: 40,
@@ -60,7 +62,7 @@ class SettingsScreen extends ConsumerWidget {
                 color: Color(0xFF007AFF),
               ),
             ),
-            title: const Text('Idioma'),
+            title: Text(l10n.language),
             subtitle: Text(_getLocaleName(currentLocale)),
             onTap: () => _showLanguageSelector(context, ref, currentLocale),
           ),
@@ -68,7 +70,7 @@ class SettingsScreen extends ConsumerWidget {
           const Divider(),
 
           // Premium Section
-          _buildSectionHeader('Premium'),
+          _buildSectionHeader(l10n.premium),
           ListTile(
             leading: Container(
               width: 40,
@@ -82,8 +84,8 @@ class SettingsScreen extends ConsumerWidget {
                 color: Color(0xFFFFD700),
               ),
             ),
-            title: const Text('Premium'),
-            subtitle: const Text('Manage subscription'),
+            title: Text(l10n.premium),
+            subtitle: Text(l10n.manageSubscription),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => context.push('/premium-settings'),
           ),
@@ -91,7 +93,7 @@ class SettingsScreen extends ConsumerWidget {
           const Divider(),
 
           // About Section
-          _buildSectionHeader('Acerca de'),
+          _buildSectionHeader(l10n.about),
           ListTile(
             leading: Container(
               width: 40,
@@ -105,13 +107,13 @@ class SettingsScreen extends ConsumerWidget {
                 color: Color(0xFF6B7280),
               ),
             ),
-            title: const Text('Acerca de Arcas'),
+            title: Text(l10n.aboutArcas),
             onTap: () {
               showAboutDialog(
                 context: context,
                 applicationName: 'Arcas',
                 applicationVersion: '1.0.0',
-                applicationLegalese: 'Tu app de finanzas personales',
+                applicationLegalese: l10n.appTitle,
                 applicationIcon: Container(
                   width: 64,
                   height: 64,
@@ -162,6 +164,8 @@ class SettingsScreen extends ConsumerWidget {
 
   void _showLanguageSelector(
       BuildContext context, WidgetRef ref, Locale? currentLocale) {
+    final l10n = AppLocalizations.of(context)!;
+    
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -175,11 +179,11 @@ class SettingsScreen extends ConsumerWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Padding(
-                  padding: EdgeInsets.all(16),
+                Padding(
+                  padding: const EdgeInsets.all(16),
                   child: Text(
-                    'Seleccionar Idioma',
-                    style: TextStyle(
+                    l10n.selectLanguage,
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
@@ -192,8 +196,8 @@ class SettingsScreen extends ConsumerWidget {
                   context: context,
                   ref: ref,
                   locale: null,
-                  title: 'Sistema',
-                  subtitle: 'Usar configuración del dispositivo',
+                  title: l10n.system,
+                  subtitle: l10n.useDeviceSettings,
                   icon: Icons.settings_suggest,
                   isSelected: currentLocale == null,
                 ),
@@ -204,7 +208,7 @@ class SettingsScreen extends ConsumerWidget {
                   ref: ref,
                   locale: const Locale('es'),
                   title: 'Español',
-                  subtitle: 'Idioma de la app',
+                  subtitle: l10n.language,
                   icon: Icons.translate,
                   isSelected:
                       currentLocale?.languageCode == 'es',
@@ -216,7 +220,7 @@ class SettingsScreen extends ConsumerWidget {
                   ref: ref,
                   locale: const Locale('en'),
                   title: 'English',
-                  subtitle: 'App language',
+                  subtitle: l10n.language,
                   icon: Icons.translate,
                   isSelected:
                       currentLocale?.languageCode == 'en',

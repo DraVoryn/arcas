@@ -307,6 +307,144 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Fecha de Fin'**
   String get endDate;
+
+  /// No description provided for @totalBalance.
+  ///
+  /// In es, this message translates to:
+  /// **'Balance Total'**
+  String get totalBalance;
+
+  /// No description provided for @expenses.
+  ///
+  /// In es, this message translates to:
+  /// **'Gastos'**
+  String get expenses;
+
+  /// No description provided for @recentTransactions.
+  ///
+  /// In es, this message translates to:
+  /// **'Transacciones Recientes'**
+  String get recentTransactions;
+
+  /// No description provided for @deleteTransactionConfirmTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar Transaccion'**
+  String get deleteTransactionConfirmTitle;
+
+  /// No description provided for @deleteTransactionConfirmMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Estás seguro de que quieres eliminar'**
+  String get deleteTransactionConfirmMessage;
+
+  /// No description provided for @transactionDeleted.
+  ///
+  /// In es, this message translates to:
+  /// **'transaccion eliminada'**
+  String get transactionDeleted;
+
+  /// No description provided for @reportType.
+  ///
+  /// In es, this message translates to:
+  /// **'Tipo de Reporte'**
+  String get reportType;
+
+  /// No description provided for @weekly.
+  ///
+  /// In es, this message translates to:
+  /// **'Semanal'**
+  String get weekly;
+
+  /// No description provided for @custom.
+  ///
+  /// In es, this message translates to:
+  /// **'Personalizado'**
+  String get custom;
+
+  /// No description provided for @from.
+  ///
+  /// In es, this message translates to:
+  /// **'Desde'**
+  String get from;
+
+  /// No description provided for @to.
+  ///
+  /// In es, this message translates to:
+  /// **'Hasta'**
+  String get to;
+
+  /// No description provided for @generating.
+  ///
+  /// In es, this message translates to:
+  /// **'Generando...'**
+  String get generating;
+
+  /// No description provided for @latestReport.
+  ///
+  /// In es, this message translates to:
+  /// **'Ultimo Reporte'**
+  String get latestReport;
+
+  /// No description provided for @noReportsYet.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin reportes generados'**
+  String get noReportsYet;
+
+  /// No description provided for @errorLoadingReport.
+  ///
+  /// In es, this message translates to:
+  /// **'Error al cargar reporte'**
+  String get errorLoadingReport;
+
+  /// No description provided for @reportGeneratedSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Reporte generado exitosamente!'**
+  String get reportGeneratedSuccess;
+
+  /// No description provided for @appearance.
+  ///
+  /// In es, this message translates to:
+  /// **'Apariencia'**
+  String get appearance;
+
+  /// No description provided for @manageSubscription.
+  ///
+  /// In es, this message translates to:
+  /// **'Gestionar suscripcion'**
+  String get manageSubscription;
+
+  /// No description provided for @aboutArcas.
+  ///
+  /// In es, this message translates to:
+  /// **'Acerca de Arcas'**
+  String get aboutArcas;
+
+  /// No description provided for @selectLanguage.
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccionar Idioma'**
+  String get selectLanguage;
+
+  /// No description provided for @system.
+  ///
+  /// In es, this message translates to:
+  /// **'Sistema'**
+  String get system;
+
+  /// No description provided for @useDeviceSettings.
+  ///
+  /// In es, this message translates to:
+  /// **'Usar configuracion del dispositivo'**
+  String get useDeviceSettings;
+
+  /// No description provided for @errorLoadingTransactions.
+  ///
+  /// In es, this message translates to:
+  /// **'Error al cargar transacciones'**
+  String get errorLoadingTransactions;
 }
 
 class _AppLocalizationsDelegate

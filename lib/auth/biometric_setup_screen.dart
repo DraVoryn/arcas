@@ -121,6 +121,9 @@ class _BiometricSetupScreenState extends ConsumerState<BiometricSetupScreen>
 
   @override
   Widget build(BuildContext context) {
+    final biometricsAsync = ref.watch(availableBiometricsProvider);
+    final biometricTypes = biometricsAsync.valueOrNull ?? [];
+
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
       body: SafeArea(
@@ -143,13 +146,13 @@ class _BiometricSetupScreenState extends ConsumerState<BiometricSetupScreen>
                   width: 140,
                   height: 140,
                   decoration: BoxDecoration(
-                    color: _getBiometricColor([]).withValues(alpha: 0.1),
+                    color: _getBiometricColor(biometricTypes).withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(70),
                   ),
                   child: Icon(
-                    _getBiometricIcon([]),
+                    _getBiometricIcon(biometricTypes),
                     size: 72,
-                    color: _getBiometricColor([]),
+                    color: _getBiometricColor(biometricTypes),
                   ),
                 ),
               ),
@@ -157,7 +160,7 @@ class _BiometricSetupScreenState extends ConsumerState<BiometricSetupScreen>
 
               // Título
               Text(
-                'Activá ${_getBiometricName([])}',
+                'Activá ${_getBiometricName(biometricTypes)}',
                 style: const TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
@@ -168,7 +171,7 @@ class _BiometricSetupScreenState extends ConsumerState<BiometricSetupScreen>
 
               // Subtítulo
               Text(
-                'Desbloqueá Arcas con solo\ntu ${_getBiometricName([]).toLowerCase()}',
+                'Desbloqueá Arcas con solo\ntu ${_getBiometricName(biometricTypes).toLowerCase()}',
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 16,
@@ -237,7 +240,7 @@ class _BiometricSetupScreenState extends ConsumerState<BiometricSetupScreen>
                 child: ElevatedButton(
                   onPressed: _isLoading ? null : _enableBiometric,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: _getBiometricColor([]),
+                    backgroundColor: _getBiometricColor(biometricTypes),
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
@@ -256,10 +259,10 @@ class _BiometricSetupScreenState extends ConsumerState<BiometricSetupScreen>
                       : Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(_getBiometricIcon([]), size: 24),
+                            Icon(_getBiometricIcon(biometricTypes), size: 24),
                             const SizedBox(width: 12),
                             Text(
-                              'Activar ${_getBiometricName([])}',
+                              'Activar ${_getBiometricName(biometricTypes)}',
                               style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w600,

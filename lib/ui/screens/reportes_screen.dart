@@ -8,6 +8,7 @@ import 'package:arcas/premium/widgets/report_limit_indicator.dart';
 import 'package:arcas/premium/widgets/upgrade_prompt.dart';
 import 'package:arcas/premium/widgets/report_card.dart';
 import 'package:arcas/premium/widgets/premium_badge.dart';
+import 'package:arcas/l10n/app_localizations.dart';
 
 class ReportesScreen extends ConsumerStatefulWidget {
   const ReportesScreen({super.key});
@@ -23,13 +24,14 @@ class _ReportesScreenState extends ConsumerState<ReportesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final premiumState = ref.watch(premiumNotifierProvider);
     final reportState = ref.watch(reportGenerationProvider);
     final latestReportAsync = ref.watch(latestReportProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Reports'),
+        title: Text(l10n.reports),
         actions: [
           const Padding(
             padding: EdgeInsets.only(right: 8),
@@ -69,6 +71,8 @@ class _ReportesScreenState extends ConsumerState<ReportesScreen> {
 
   Widget _buildGenerateReportSection(
       BuildContext context, ReportGenerationState reportState) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -76,33 +80,33 @@ class _ReportesScreenState extends ConsumerState<ReportesScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Generate Report',
+              l10n.generateReport,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 16),
             Text(
-              'Report Type',
+              l10n.reportType,
               style: Theme.of(context).textTheme.titleSmall,
             ),
             const SizedBox(height: 8),
             SegmentedButton<ReportType>(
-              segments: const [
+              segments: [
                 ButtonSegment(
                   value: ReportType.weekly,
-                  label: Text('Weekly'),
-                  icon: Icon(Icons.view_week),
+                  label: Text(l10n.weekly),
+                  icon: const Icon(Icons.view_week),
                 ),
                 ButtonSegment(
                   value: ReportType.monthly,
-                  label: Text('Monthly'),
-                  icon: Icon(Icons.calendar_month),
+                  label: Text(l10n.monthlyReport),
+                  icon: const Icon(Icons.calendar_month),
                 ),
                 ButtonSegment(
                   value: ReportType.custom,
-                  label: Text('Custom'),
-                  icon: Icon(Icons.date_range),
+                  label: Text(l10n.custom),
+                  icon: const Icon(Icons.date_range),
                 ),
               ],
               selected: {_selectedType ?? ReportType.weekly},
@@ -119,7 +123,7 @@ class _ReportesScreenState extends ConsumerState<ReportesScreen> {
                 Expanded(
                   child: _buildDateField(
                     context,
-                    'From',
+                    l10n.from,
                     _startDate,
                     (date) => setState(() => _startDate = date),
                   ),
@@ -128,7 +132,7 @@ class _ReportesScreenState extends ConsumerState<ReportesScreen> {
                 Expanded(
                   child: _buildDateField(
                     context,
-                    'To',
+                    l10n.to,
                     _endDate,
                     (date) => setState(() => _endDate = date),
                   ),
@@ -150,7 +154,7 @@ class _ReportesScreenState extends ConsumerState<ReportesScreen> {
                       )
                     : const Icon(Icons.bar_chart),
                 label: Text(
-                    reportState.isGenerating ? 'Generating...' : 'Generate Report'),
+                    reportState.isGenerating ? l10n.generating : l10n.generateReport),
               ),
             ),
             if (reportState.error != null) ...[
@@ -202,11 +206,13 @@ class _ReportesScreenState extends ConsumerState<ReportesScreen> {
     BuildContext context,
     AsyncValue<Report?> latestReportAsync,
   ) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Latest Report',
+          l10n.latestReport,
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.bold,
           ),
@@ -228,7 +234,7 @@ class _ReportesScreenState extends ConsumerState<ReportesScreen> {
                         ),
                         const SizedBox(height: 16),
                         Text(
-                          'No reports generated yet',
+                          l10n.noReportsYet,
                           style: Theme.of(context).textTheme.bodyLarge,
                         ),
                       ],
@@ -243,7 +249,7 @@ class _ReportesScreenState extends ConsumerState<ReportesScreen> {
           error: (error, stack) => Card(
             child: Padding(
               padding: const EdgeInsets.all(16),
-              child: Text('Error loading report: $error'),
+              child: Text('${l10n.errorLoadingReport}: $error'),
             ),
           ),
         ),
@@ -268,6 +274,7 @@ class _ReportesScreenState extends ConsumerState<ReportesScreen> {
   }
 
   Future<void> _generateReport(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
     final type = _selectedType ?? ReportType.weekly;
     final report = await ref.read(reportGenerationProvider.notifier).generateReport(
       type: type,
@@ -277,7 +284,7 @@ class _ReportesScreenState extends ConsumerState<ReportesScreen> {
 
     if (report != null && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Report generated successfully!')),
+        SnackBar(content: Text(l10n.reportGeneratedSuccess)),
       );
       ref.invalidate(latestReportProvider);
     }

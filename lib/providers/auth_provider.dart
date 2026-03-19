@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:arcas/auth/auth_service.dart';
 import 'package:arcas/providers/theme_provider.dart'
     show sharedPreferencesProvider;
@@ -113,6 +114,12 @@ final authNotifierProvider =
 final isAuthenticatedProvider = Provider<bool>((ref) {
   final authState = ref.watch(authNotifierProvider);
   return authState.valueOrNull?.status == AuthStatus.unlocked;
+});
+
+/// Provider para obtener los tipos de biometric disponibles.
+final availableBiometricsProvider = FutureProvider<List<BiometricType>>((ref) async {
+  final authService = ref.watch(authServiceProvider);
+  return await authService.getAvailableBiometrics();
 });
 
 // ==========================================================================

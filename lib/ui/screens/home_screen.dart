@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:arcas/providers/home_provider.dart';
+import 'package:arcas/l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -8,9 +9,11 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Arcas'),
+        title: Text(l10n.appTitle),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -54,6 +57,7 @@ class HomeScreen extends ConsumerWidget {
 class _BalanceCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final balanceAsync = ref.watch(totalBalanceProvider);
     
     return Container(
@@ -80,9 +84,9 @@ class _BalanceCard extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Total Balance',
-            style: TextStyle(
+          Text(
+            l10n.totalBalance,
+            style: const TextStyle(
               color: Colors.white70,
               fontSize: 14,
             ),
@@ -121,6 +125,7 @@ class _BalanceCard extends ConsumerWidget {
 class _MonthlyStats extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final statsAsync = ref.watch(monthlyStatsProvider);
     final now = DateTime.now();
     final monthName = DateFormat.MMMM().format(now);
@@ -139,7 +144,7 @@ class _MonthlyStats extends ConsumerWidget {
           children: [
             Expanded(
               child: _StatCard(
-                title: 'Income',
+                title: l10n.income,
                 icon: Icons.arrow_downward,
                 color: Colors.green,
                 valueAsync: statsAsync.whenData((s) => s.income),
@@ -148,7 +153,7 @@ class _MonthlyStats extends ConsumerWidget {
             const SizedBox(width: 12),
             Expanded(
               child: _StatCard(
-                title: 'Expenses',
+                title: l10n.expenses,
                 icon: Icons.arrow_upward,
                 color: Colors.red,
                 valueAsync: statsAsync.whenData((s) => s.expense),
@@ -243,11 +248,13 @@ class _StatCard extends StatelessWidget {
 class _RecentTransactionsHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          'Recent Transactions',
+          l10n.recentTransactions,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
@@ -260,6 +267,7 @@ class _RecentTransactionsHeader extends StatelessWidget {
 class _RecentTransactionsList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final transactionsAsync = ref.watch(recentTransactionsProvider);
 
     return transactionsAsync.when(
@@ -281,7 +289,7 @@ class _RecentTransactionsList extends ConsumerWidget {
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  'No transactions yet',
+                  l10n.noTransactions,
                   style: TextStyle(
                     color: Colors.grey[600],
                     fontSize: 16,

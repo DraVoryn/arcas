@@ -86,6 +86,15 @@ class AppDatabase extends _$AppDatabase {
   Future<int> deleteCategory(int id) =>
       (delete(categories)..where((t) => t.id.equals(id))).go();
 
+  Future<void> updateCategory(Category category) {
+    return (update(categories)..where((t) => t.id.equals(category.id)))
+        .write(CategoriesCompanion(
+          name: Value(category.name),
+          icon: Value(category.icon),
+          color: Value(category.color),
+        ));
+  }
+
   Future<List<Transaction>> getTransactionsByDateRange(DateTime start, DateTime end) {
     return (select(transactions)
           ..where((t) => t.date.isBetweenValues(start, end)))

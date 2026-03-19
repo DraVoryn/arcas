@@ -112,4 +112,73 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get endDate => 'Fecha de Fin';
+
+  @override
+  String get totalBalance => 'Balance Total';
+
+  @override
+  String get expenses => 'Gastos';
+
+  @override
+  String get recentTransactions => 'Transacciones Recientes';
+
+  @override
+  String get deleteTransactionConfirmTitle => 'Eliminar Transaccion';
+
+  @override
+  String get deleteTransactionConfirmMessage => '¿Estás seguro de que quieres eliminar';
+
+  @override
+  String get transactionDeleted => 'transaccion eliminada';
+
+  @override
+  String get reportType => 'Tipo de Reporte';
+
+  @override
+  String get weekly => 'Semanal';
+
+  @override
+  String get custom => 'Personalizado';
+
+  @override
+  String get from => 'Desde';
+
+  @override
+  String get to => 'Hasta';
+
+  @override
+  String get generating => 'Generando...';
+
+  @override
+  String get latestReport => 'Ultimo Reporte';
+
+  @override
+  String get noReportsYet => 'Sin reportes generados';
+
+  @override
+  String get errorLoadingReport => 'Error al cargar reporte';
+
+  @override
+  String get reportGeneratedSuccess => '¡Reporte generado exitosamente!';
+
+  @override
+  String get appearance => 'Apariencia';
+
+  @override
+  String get manageSubscription => 'Gestionar suscripcion';
+
+  @override
+  String get aboutArcas => 'Acerca de Arcas';
+
+  @override
+  String get selectLanguage => 'Seleccionar Idioma';
+
+  @override
+  String get system => 'Sistema';
+
+  @override
+  String get useDeviceSettings => 'Usar configuracion del dispositivo';
+
+  @override
+  String get errorLoadingTransactions => 'Error al cargar transacciones';
 }

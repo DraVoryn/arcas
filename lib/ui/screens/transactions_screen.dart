@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:arcas/database/app_database.dart';
 import 'package:arcas/ui/dialogs/add_transaction_dialog.dart';
 import 'package:arcas/providers/database_provider.dart';
+import 'package:arcas/l10n/app_localizations.dart';
 
 final transactionsStreamProvider = StreamProvider<List<Transaction>>((ref) {
   final db = ref.watch(databaseProvider);
@@ -14,17 +15,18 @@ class TransactionsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final transactionsAsync = ref.watch(transactionsStreamProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Transactions'),
+        title: Text(l10n.transactions),
       ),
       body: transactionsAsync.when(
         data: (transactions) {
           if (transactions.isEmpty) {
-            return const Center(
-              child: Text('No transactions yet'),
+            return Center(
+              child: Text(l10n.noTransactions),
             );
           }
           final sortedTransactions = [...transactions]
@@ -40,19 +42,19 @@ class TransactionsScreen extends ConsumerWidget {
                   return await showDialog<bool>(
                     context: context,
                     builder: (context) => AlertDialog(
-                      title: const Text('Delete Transaction'),
-                      content: Text('Are you sure you want to delete "${tx.description}"?'),
+                      title: Text(l10n.deleteTransactionConfirmTitle),
+                      content: Text('${l10n.deleteTransactionConfirmMessage} "${tx.description}"?'),
                       actions: [
                         TextButton(
                           onPressed: () => Navigator.pop(context, false),
-                          child: const Text('Cancel'),
+                          child: Text(l10n.cancel),
                         ),
                         TextButton(
                           onPressed: () => Navigator.pop(context, true),
                           style: TextButton.styleFrom(
                             foregroundColor: Colors.red,
                           ),
-                          child: const Text('Delete'),
+                          child: Text(l10n.delete),
                         ),
                       ],
                     ),
@@ -62,7 +64,7 @@ class TransactionsScreen extends ConsumerWidget {
                   ref.read(databaseProvider).deleteTransaction(tx.id);
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('${tx.description} deleted'),
+                      content: Text('${tx.description} ${l10n.transactionDeleted}'),
                       backgroundColor: const Color(0xFF2A9D8F),
                     ),
                   );
@@ -101,7 +103,7 @@ class TransactionsScreen extends ConsumerWidget {
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stack) => Center(child: Text('Error: $error')),
+        error: (error, stack) => Center(child: Text(l10n.errorLoadingTransactions)),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
