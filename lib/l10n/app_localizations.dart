@@ -751,6 +751,222 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Gestionar en Tienda'**
   String get manageInStore;
+
+  /// No description provided for @appLocked.
+  ///
+  /// In es, this message translates to:
+  /// **'Arcas esta bloqueado'**
+  String get appLocked;
+
+  /// No description provided for @enterPinToContinue.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresa tu PIN para continuar'**
+  String get enterPinToContinue;
+
+  /// No description provided for @attemptsRemaining.
+  ///
+  /// In es, this message translates to:
+  /// **'Intentos restantes: {count}'**
+  String attemptsRemaining(int count);
+
+  /// No description provided for @forgotPin.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Olvidaste tu PIN?'**
+  String get forgotPin;
+
+  /// No description provided for @tooManyAttempts.
+  ///
+  /// In es, this message translates to:
+  /// **'Demasiados intentos. Usa \'Olvidaste mi PIN\' para reiniciar.'**
+  String get tooManyAttempts;
+
+  /// No description provided for @fingerprint.
+  ///
+  /// In es, this message translates to:
+  /// **'Huella digital'**
+  String get fingerprint;
+
+  /// No description provided for @faceId.
+  ///
+  /// In es, this message translates to:
+  /// **'Face ID'**
+  String get faceId;
+
+  /// No description provided for @usePin.
+  ///
+  /// In es, this message translates to:
+  /// **'Usar PIN'**
+  String get usePin;
+
+  /// No description provided for @skip.
+  ///
+  /// In es, this message translates to:
+  /// **'Saltar'**
+  String get skip;
+
+  /// No description provided for @next.
+  ///
+  /// In es, this message translates to:
+  /// **'Siguiente'**
+  String get next;
+
+  /// No description provided for @getStarted.
+  ///
+  /// In es, this message translates to:
+  /// **'Comenzar'**
+  String get getStarted;
+
+  /// No description provided for @onboardingTitle1.
+  ///
+  /// In es, this message translates to:
+  /// **'Control total,\nsin complicaciones'**
+  String get onboardingTitle1;
+
+  /// No description provided for @onboardingDesc1.
+  ///
+  /// In es, this message translates to:
+  /// **'Registra tus ingresos y gastos de forma simple.\nTu informacion, solo en tu telefono.'**
+  String get onboardingDesc1;
+
+  /// No description provided for @onboardingTitle2.
+  ///
+  /// In es, this message translates to:
+  /// **'Privacidad\na tu manera'**
+  String get onboardingTitle2;
+
+  /// No description provided for @onboardingDesc2.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin cloud, sin terceros, sin sorpresas.\nTus datos viajan solo entre vos y tu dispositivo.'**
+  String get onboardingDesc2;
+
+  /// No description provided for @createPin.
+  ///
+  /// In es, this message translates to:
+  /// **'Crea tu PIN'**
+  String get createPin;
+
+  /// No description provided for @confirmPin.
+  ///
+  /// In es, this message translates to:
+  /// **'Confirma tu PIN'**
+  String get confirmPin;
+
+  /// No description provided for @enterFourDigitPin.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresa un PIN de 4-6 digitos'**
+  String get enterFourDigitPin;
+
+  /// No description provided for @confirmYourPin.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresa el mismo PIN nuevamente'**
+  String get confirmYourPin;
+
+  /// No description provided for @pinProtectionHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Este codigo protegera tus datos'**
+  String get pinProtectionHint;
+
+  /// No description provided for @pinsDoNotMatch.
+  ///
+  /// In es, this message translates to:
+  /// **'Los PINs no coinciden. Intenta de nuevo.'**
+  String get pinsDoNotMatch;
+
+  /// No description provided for @pinTooWeak.
+  ///
+  /// In es, this message translates to:
+  /// **'PIN muy debil'**
+  String get pinTooWeak;
+
+  /// No description provided for @pinWeakAdvice.
+  ///
+  /// In es, this message translates to:
+  /// **'Evita usar fechas o numeros consecutivos'**
+  String get pinWeakAdvice;
+
+  /// No description provided for @enableBiometric.
+  ///
+  /// In es, this message translates to:
+  /// **'Activar biometria'**
+  String get enableBiometric;
+
+  /// No description provided for @useBiometricToUnlock.
+  ///
+  /// In es, this message translates to:
+  /// **'Desbloquea Arcas con solo\ntu {biometricType}'**
+  String useBiometricToUnlock(String biometricType);
+
+  /// No description provided for @enable.
+  ///
+  /// In es, this message translates to:
+  /// **'Activar'**
+  String get enable;
+
+  /// No description provided for @forgotPinResetWarning.
+  ///
+  /// In es, this message translates to:
+  /// **'Si reinicias la app, vas a perder el PIN y toda la configuracion. Vas a tener que configurar todo de nuevo.'**
+  String get forgotPinResetWarning;
+
+  /// No description provided for @resetApp.
+  ///
+  /// In es, this message translates to:
+  /// **'Reiniciar app'**
+  String get resetApp;
+
+  /// No description provided for @biometricFaster.
+  ///
+  /// In es, this message translates to:
+  /// **'Mas rapido'**
+  String get biometricFaster;
+
+  /// No description provided for @biometricFasterDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'Accede al instante'**
+  String get biometricFasterDesc;
+
+  /// No description provided for @biometricSafer.
+  ///
+  /// In es, this message translates to:
+  /// **'Mas seguro'**
+  String get biometricSafer;
+
+  /// No description provided for @biometricSaferDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'Datos unicos de tu dispositivo'**
+  String get biometricSaferDesc;
+
+  /// No description provided for @biometricEasier.
+  ///
+  /// In es, this message translates to:
+  /// **'Mas facil'**
+  String get biometricEasier;
+
+  /// No description provided for @biometricEasierDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin recordar contrasenas'**
+  String get biometricEasierDesc;
+
+  /// No description provided for @skipForNow.
+  ///
+  /// In es, this message translates to:
+  /// **'Omitir por ahora'**
+  String get skipForNow;
+
+  /// No description provided for @biometricEnableError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo activar. Podes intentar mas tarde.'**
+  String get biometricEnableError;
 }
 
 class _AppLocalizationsDelegate

@@ -338,4 +338,121 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get manageInStore => 'Manage in Store';
+
+  @override
+  String get appLocked => 'Arcas is locked';
+
+  @override
+  String get enterPinToContinue => 'Enter your PIN to continue';
+
+  @override
+  String attemptsRemaining(int count) {
+    return 'Attempts remaining: $count';
+  }
+
+  @override
+  String get forgotPin => 'Forgot your PIN?';
+
+  @override
+  String get tooManyAttempts =>
+      'Too many attempts. Use \'Forgot PIN\' to reset.';
+
+  @override
+  String get fingerprint => 'Fingerprint';
+
+  @override
+  String get faceId => 'Face ID';
+
+  @override
+  String get usePin => 'Use PIN';
+
+  @override
+  String get skip => 'Skip';
+
+  @override
+  String get next => 'Next';
+
+  @override
+  String get getStarted => 'Get Started';
+
+  @override
+  String get onboardingTitle1 => 'Full control,\nno complications';
+
+  @override
+  String get onboardingDesc1 =>
+      'Record your income and expenses easily.\nYour info, only on your phone.';
+
+  @override
+  String get onboardingTitle2 => 'Privacy\non your terms';
+
+  @override
+  String get onboardingDesc2 =>
+      'No cloud, no third parties, no surprises.\nYour data travels only between you and your device.';
+
+  @override
+  String get createPin => 'Create your PIN';
+
+  @override
+  String get confirmPin => 'Confirm your PIN';
+
+  @override
+  String get enterFourDigitPin => 'Enter a 4-6 digit PIN';
+
+  @override
+  String get confirmYourPin => 'Enter the same PIN again';
+
+  @override
+  String get pinProtectionHint => 'This code will protect your data';
+
+  @override
+  String get pinsDoNotMatch => 'PINs don\'t match. Try again.';
+
+  @override
+  String get pinTooWeak => 'PIN too weak';
+
+  @override
+  String get pinWeakAdvice => 'Avoid using dates or consecutive numbers';
+
+  @override
+  String get enableBiometric => 'Enable biometrics';
+
+  @override
+  String useBiometricToUnlock(String biometricType) {
+    return 'Unlock Arcas with just\nyour $biometricType';
+  }
+
+  @override
+  String get enable => 'Enable';
+
+  @override
+  String get forgotPinResetWarning =>
+      'If you reset the app, you\'ll lose the PIN and all configuration. You\'ll have to set everything up again.';
+
+  @override
+  String get resetApp => 'Reset app';
+
+  @override
+  String get biometricFaster => 'Faster';
+
+  @override
+  String get biometricFasterDesc => 'Access instantly';
+
+  @override
+  String get biometricSafer => 'Safer';
+
+  @override
+  String get biometricSaferDesc => 'Unique data from your device';
+
+  @override
+  String get biometricEasier => 'Easier';
+
+  @override
+  String get biometricEasierDesc => 'No passwords to remember';
+
+  @override
+  String get skipForNow => 'Skip for now';
+
+  @override
+  String get biometricEnableError =>
+      'Could not enable. You can try again later.';
 }

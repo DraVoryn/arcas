@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:arcas/providers/auth_provider.dart';
+import 'package:arcas/l10n/app_localizations.dart';
 
 /// Pantalla para configurar biometrics (Face ID / Touch ID).
 ///
@@ -54,6 +55,7 @@ class _BiometricSetupScreenState extends ConsumerState<BiometricSetupScreen>
   // ==========================================================================
 
   Future<void> _enableBiometric() async {
+    final l10n = AppLocalizations.of(context)!;
     setState(() {
       _isLoading = true;
       _hasError = false;
@@ -71,7 +73,7 @@ class _BiometricSetupScreenState extends ConsumerState<BiometricSetupScreen>
       setState(() {
         _isLoading = false;
         _hasError = true;
-        _errorMessage = 'No se pudo activar. Podés intentar más tarde.';
+        _errorMessage = l10n.biometricEnableError;
       });
     }
   }
@@ -121,6 +123,7 @@ class _BiometricSetupScreenState extends ConsumerState<BiometricSetupScreen>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final biometricsAsync = ref.watch(availableBiometricsProvider);
     final biometricTypes = biometricsAsync.valueOrNull ?? [];
 
@@ -160,7 +163,7 @@ class _BiometricSetupScreenState extends ConsumerState<BiometricSetupScreen>
 
               // Título
               Text(
-                'Activá ${_getBiometricName(biometricTypes)}',
+                l10n.enableBiometric,
                 style: const TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
@@ -171,7 +174,7 @@ class _BiometricSetupScreenState extends ConsumerState<BiometricSetupScreen>
 
               // Subtítulo
               Text(
-                'Desbloqueá Arcas con solo\ntu ${_getBiometricName(biometricTypes).toLowerCase()}',
+                l10n.useBiometricToUnlock(_getBiometricName(biometricTypes).toLowerCase()),
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 16,
@@ -184,20 +187,20 @@ class _BiometricSetupScreenState extends ConsumerState<BiometricSetupScreen>
               // Beneficios
               _buildBenefit(
                 Icons.timer_outlined,
-                'Más rápido',
-                'Accedé al instante',
+                l10n.biometricFaster,
+                l10n.biometricFasterDesc,
               ),
               const SizedBox(height: 12),
               _buildBenefit(
                 Icons.security_outlined,
-                'Más seguro',
-                'Datos únicos de tu dispositivo',
+                l10n.biometricSafer,
+                l10n.biometricSaferDesc,
               ),
               const SizedBox(height: 12),
               _buildBenefit(
                 Icons.touch_app_outlined,
-                'Más fácil',
-                'Sin recordar contraseñas',
+                l10n.biometricEasier,
+                l10n.biometricEasierDesc,
               ),
 
               const Spacer(flex: 2),
@@ -262,7 +265,7 @@ class _BiometricSetupScreenState extends ConsumerState<BiometricSetupScreen>
                             Icon(_getBiometricIcon(biometricTypes), size: 24),
                             const SizedBox(width: 12),
                             Text(
-                              'Activar ${_getBiometricName(biometricTypes)}',
+                              l10n.enable,
                               style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w600,
@@ -277,9 +280,9 @@ class _BiometricSetupScreenState extends ConsumerState<BiometricSetupScreen>
               // Skip
               TextButton(
                 onPressed: _skip,
-                child: const Text(
-                  'Omitir por ahora',
-                  style: TextStyle(
+                child: Text(
+                  l10n.skipForNow,
+                  style: const TextStyle(
                     color: Color(0xFF6B7280),
                     fontSize: 16,
                   ),

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:arcas/providers/auth_provider.dart';
 import 'package:arcas/auth/widgets/pin_numpad.dart';
+import 'package:arcas/l10n/app_localizations.dart';
 
 /// Pantalla de bloqueo.
 ///
@@ -134,18 +135,16 @@ class _LockScreenState extends ConsumerState<LockScreen>
   }
 
   void _showResetDialog() {
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('¿Olvidaste tu PIN?'),
-        content: const Text(
-          'Si reiniciás la app, vas a perder el PIN y toda la '
-          'configuración. Vas a tener que configurar todo de nuevo.',
-        ),
+        title: Text(l10n.forgotPin),
+        content: Text(l10n.forgotPinResetWarning),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancelar'),
+            child: Text(l10n.cancel),
           ),
           TextButton(
             onPressed: () async {
@@ -158,7 +157,7 @@ class _LockScreenState extends ConsumerState<LockScreen>
             style: TextButton.styleFrom(
               foregroundColor: const Color(0xFFE63946),
             ),
-            child: const Text('Reiniciar app'),
+            child: Text(l10n.resetApp),
           ),
         ],
       ),
@@ -171,6 +170,7 @@ class _LockScreenState extends ConsumerState<LockScreen>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     // Usar .valueOrNull para obtener el estado desde AsyncNotifier
     final authState = ref.watch(authNotifierProvider).valueOrNull;
 
@@ -203,9 +203,9 @@ class _LockScreenState extends ConsumerState<LockScreen>
             const SizedBox(height: 24),
 
             // Título
-            const Text(
-              'Arcas está bloqueado',
-              style: TextStyle(
+            Text(
+              l10n.appLocked,
+              style: const TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
                 color: Color(0xFF111827),
@@ -214,9 +214,9 @@ class _LockScreenState extends ConsumerState<LockScreen>
             const SizedBox(height: 8),
 
             // Subtítulo
-            const Text(
-              'Ingresá tu PIN para continuar',
-              style: TextStyle(
+            Text(
+              l10n.enterPinToContinue,
+              style: const TextStyle(
                 fontSize: 16,
                 color: Color(0xFF6B7280),
               ),
@@ -277,7 +277,7 @@ class _LockScreenState extends ConsumerState<LockScreen>
               Padding(
                 padding: const EdgeInsets.only(top: 8),
                 child: Text(
-                  'Intentos restantes: ${5 - failedAttempts}',
+                  l10n.attemptsRemaining(5 - failedAttempts),
                   style: TextStyle(
                     fontSize: 14,
                     color: failedAttempts >= 3
@@ -308,7 +308,7 @@ class _LockScreenState extends ConsumerState<LockScreen>
                 child: OutlinedButton.icon(
                   onPressed: _tryBiometric,
                   icon: const Icon(Icons.fingerprint_rounded, size: 24),
-                  label: const Text('Usar Face ID / Huella'),
+                  label: Text(l10n.fingerprint),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: const Color(0xFF5856D6),
                     side: const BorderSide(color: Color(0xFF5856D6)),
@@ -329,9 +329,9 @@ class _LockScreenState extends ConsumerState<LockScreen>
                 padding: const EdgeInsets.only(bottom: 24),
                 child: TextButton(
                   onPressed: _showResetDialog,
-                  child: const Text(
-                    '¿Olvidaste tu PIN?',
-                    style: TextStyle(
+                  child: Text(
+                    l10n.forgotPin,
+                    style: const TextStyle(
                       color: Color(0xFFE63946),
                       fontSize: 14,
                     ),
@@ -343,9 +343,9 @@ class _LockScreenState extends ConsumerState<LockScreen>
                 padding: const EdgeInsets.only(bottom: 24),
                 child: TextButton(
                   onPressed: _showResetDialog,
-                  child: const Text(
-                    '¿Olvidaste tu PIN?',
-                    style: TextStyle(
+                  child: Text(
+                    l10n.forgotPin,
+                    style: const TextStyle(
                       color: Color(0xFF6B7280),
                       fontSize: 14,
                     ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:arcas/providers/auth_provider.dart';
+import 'package:arcas/l10n/app_localizations.dart';
 
 /// Pantalla de onboarding para nuevos usuarios.
 ///
@@ -83,6 +84,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -106,7 +108,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   child: TextButton(
                     onPressed: _completeOnboarding,
                     child: Text(
-                      'Saltar',
+                      l10n.skip,
                       style: TextStyle(
                         color: Colors.white.withValues(alpha: 0.7),
                         fontSize: 16,
@@ -160,8 +162,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     ),
                     child: Text(
                       _currentPage == _slides.length - 1
-                          ? 'Comenzar'
-                          : 'Siguiente',
+                          ? l10n.getStarted
+                          : l10n.next,
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,

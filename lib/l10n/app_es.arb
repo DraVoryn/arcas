@@ -108,5 +108,56 @@
   "customReport": "Reporte Personalizado",
   "never": "Nunca",
   "cancelSubscription": "Cancelar Suscripcion",
-  "manageInStore": "Gestionar en Tienda"
+  "manageInStore": "Gestionar en Tienda",
+  "appLocked": "Arcas esta bloqueado",
+  "enterPinToContinue": "Ingresa tu PIN para continuar",
+  "attemptsRemaining": "Intentos restantes: {count}",
+  "@attemptsRemaining": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "forgotPin": "¿Olvidaste tu PIN?",
+  "tooManyAttempts": "Demasiados intentos. Usa 'Olvidaste mi PIN' para reiniciar.",
+  "fingerprint": "Huella digital",
+  "faceId": "Face ID",
+  "usePin": "Usar PIN",
+  "skip": "Saltar",
+  "next": "Siguiente",
+  "getStarted": "Comenzar",
+  "onboardingTitle1": "Control total,\nsin complicaciones",
+  "onboardingDesc1": "Registra tus ingresos y gastos de forma simple.\nTu informacion, solo en tu telefono.",
+  "onboardingTitle2": "Privacidad\na tu manera",
+  "onboardingDesc2": "Sin cloud, sin terceros, sin sorpresas.\nTus datos viajan solo entre vos y tu dispositivo.",
+  "createPin": "Crea tu PIN",
+  "confirmPin": "Confirma tu PIN",
+  "enterFourDigitPin": "Ingresa un PIN de 4-6 digitos",
+  "confirmYourPin": "Ingresa el mismo PIN nuevamente",
+  "pinProtectionHint": "Este codigo protegera tus datos",
+  "pinsDoNotMatch": "Los PINs no coinciden. Intenta de nuevo.",
+  "pinTooWeak": "PIN muy debil",
+  "pinWeakAdvice": "Evita usar fechas o numeros consecutivos",
+  "enableBiometric": "Activar biometria",
+  "useBiometricToUnlock": "Desbloquea Arcas con solo\ntu {biometricType}",
+  "@useBiometricToUnlock": {
+    "placeholders": {
+      "biometricType": {
+        "type": "String"
+      }
+    }
+  },
+  "enable": "Activar",
+  "forgotPinResetWarning": "Si reinicias la app, vas a perder el PIN y toda la configuracion. Vas a tener que configurar todo de nuevo.",
+  "resetApp": "Reiniciar app",
+  "cancel": "Cancelar",
+  "biometricFaster": "Mas rapido",
+  "biometricFasterDesc": "Accede al instante",
+  "biometricSafer": "Mas seguro",
+  "biometricSaferDesc": "Datos unicos de tu dispositivo",
+  "biometricEasier": "Mas facil",
+  "biometricEasierDesc": "Sin recordar contrasenas",
+  "skipForNow": "Omitir por ahora",
+  "biometricEnableError": "No se pudo activar. Podes intentar mas tarde."
 }

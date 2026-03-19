@@ -108,5 +108,56 @@
   "customReport": "Custom Report",
   "never": "Never",
   "cancelSubscription": "Cancel Subscription",
-  "manageInStore": "Manage in Store"
+  "manageInStore": "Manage in Store",
+  "appLocked": "Arcas is locked",
+  "enterPinToContinue": "Enter your PIN to continue",
+  "attemptsRemaining": "Attempts remaining: {count}",
+  "@attemptsRemaining": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "forgotPin": "Forgot your PIN?",
+  "tooManyAttempts": "Too many attempts. Use 'Forgot PIN' to reset.",
+  "fingerprint": "Fingerprint",
+  "faceId": "Face ID",
+  "usePin": "Use PIN",
+  "skip": "Skip",
+  "next": "Next",
+  "getStarted": "Get Started",
+  "onboardingTitle1": "Full control,\nno complications",
+  "onboardingDesc1": "Record your income and expenses easily.\nYour info, only on your phone.",
+  "onboardingTitle2": "Privacy\non your terms",
+  "onboardingDesc2": "No cloud, no third parties, no surprises.\nYour data travels only between you and your device.",
+  "createPin": "Create your PIN",
+  "confirmPin": "Confirm your PIN",
+  "enterFourDigitPin": "Enter a 4-6 digit PIN",
+  "confirmYourPin": "Enter the same PIN again",
+  "pinProtectionHint": "This code will protect your data",
+  "pinsDoNotMatch": "PINs don't match. Try again.",
+  "pinTooWeak": "PIN too weak",
+  "pinWeakAdvice": "Avoid using dates or consecutive numbers",
+  "enableBiometric": "Enable biometrics",
+  "useBiometricToUnlock": "Unlock Arcas with just\nyour {biometricType}",
+  "@useBiometricToUnlock": {
+    "placeholders": {
+      "biometricType": {
+        "type": "String"
+      }
+    }
+  },
+  "enable": "Enable",
+  "forgotPinResetWarning": "If you reset the app, you'll lose the PIN and all configuration. You'll have to set everything up again.",
+  "resetApp": "Reset app",
+  "cancel": "Cancel",
+  "biometricFaster": "Faster",
+  "biometricFasterDesc": "Access instantly",
+  "biometricSafer": "Safer",
+  "biometricSaferDesc": "Unique data from your device",
+  "biometricEasier": "Easier",
+  "biometricEasierDesc": "No passwords to remember",
+  "skipForNow": "Skip for now",
+  "biometricEnableError": "Could not enable. You can try again later."
 }

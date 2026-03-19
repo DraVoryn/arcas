@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:arcas/providers/auth_provider.dart';
 import 'package:arcas/auth/widgets/pin_numpad.dart';
+import 'package:arcas/l10n/app_localizations.dart';
 
 /// Pantalla para crear el PIN de seguridad.
 ///
@@ -99,6 +100,7 @@ class _PinSetupScreenState extends ConsumerState<PinSetupScreen> {
   }
 
   Future<void> _trySubmitPin() async {
+    final l10n = AppLocalizations.of(context)!;
     if (_pin.length < _minPinLength) return;
 
     if (!_isConfirming) {
@@ -112,7 +114,7 @@ class _PinSetupScreenState extends ConsumerState<PinSetupScreen> {
       if (_pin != _confirmPin) {
         setState(() {
           _confirmPin = '';
-          _errorMessage = 'Los PINs no coinciden. Intenta de nuevo.';
+          _errorMessage = l10n.pinsDoNotMatch;
         });
         return;
       }
@@ -143,6 +145,7 @@ class _PinSetupScreenState extends ConsumerState<PinSetupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final currentPin = _isConfirming ? _confirmPin : _pin;
 
     return Scaffold(
@@ -194,7 +197,7 @@ class _PinSetupScreenState extends ConsumerState<PinSetupScreen> {
 
             // Título
             Text(
-              _isConfirming ? 'Confirmá tu PIN' : 'Creá tu PIN',
+              _isConfirming ? l10n.confirmPin : l10n.createPin,
               style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -206,8 +209,8 @@ class _PinSetupScreenState extends ConsumerState<PinSetupScreen> {
             // Subtítulo
             Text(
               _isConfirming
-                  ? 'Ingresá el mismo PIN nuevamente'
-                  : 'Este código protegerá tus datos',
+                  ? l10n.confirmYourPin
+                  : l10n.pinProtectionHint,
               style: const TextStyle(
                 fontSize: 16,
                 color: Color(0xFF6B7280),

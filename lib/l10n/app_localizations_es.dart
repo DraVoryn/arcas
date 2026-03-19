@@ -337,4 +337,121 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get manageInStore => 'Gestionar en Tienda';
+
+  @override
+  String get appLocked => 'Arcas esta bloqueado';
+
+  @override
+  String get enterPinToContinue => 'Ingresa tu PIN para continuar';
+
+  @override
+  String attemptsRemaining(int count) {
+    return 'Intentos restantes: $count';
+  }
+
+  @override
+  String get forgotPin => '¿Olvidaste tu PIN?';
+
+  @override
+  String get tooManyAttempts =>
+      'Demasiados intentos. Usa \'Olvidaste mi PIN\' para reiniciar.';
+
+  @override
+  String get fingerprint => 'Huella digital';
+
+  @override
+  String get faceId => 'Face ID';
+
+  @override
+  String get usePin => 'Usar PIN';
+
+  @override
+  String get skip => 'Saltar';
+
+  @override
+  String get next => 'Siguiente';
+
+  @override
+  String get getStarted => 'Comenzar';
+
+  @override
+  String get onboardingTitle1 => 'Control total,\nsin complicaciones';
+
+  @override
+  String get onboardingDesc1 =>
+      'Registra tus ingresos y gastos de forma simple.\nTu informacion, solo en tu telefono.';
+
+  @override
+  String get onboardingTitle2 => 'Privacidad\na tu manera';
+
+  @override
+  String get onboardingDesc2 =>
+      'Sin cloud, sin terceros, sin sorpresas.\nTus datos viajan solo entre vos y tu dispositivo.';
+
+  @override
+  String get createPin => 'Crea tu PIN';
+
+  @override
+  String get confirmPin => 'Confirma tu PIN';
+
+  @override
+  String get enterFourDigitPin => 'Ingresa un PIN de 4-6 digitos';
+
+  @override
+  String get confirmYourPin => 'Ingresa el mismo PIN nuevamente';
+
+  @override
+  String get pinProtectionHint => 'Este codigo protegera tus datos';
+
+  @override
+  String get pinsDoNotMatch => 'Los PINs no coinciden. Intenta de nuevo.';
+
+  @override
+  String get pinTooWeak => 'PIN muy debil';
+
+  @override
+  String get pinWeakAdvice => 'Evita usar fechas o numeros consecutivos';
+
+  @override
+  String get enableBiometric => 'Activar biometria';
+
+  @override
+  String useBiometricToUnlock(String biometricType) {
+    return 'Desbloquea Arcas con solo\ntu $biometricType';
+  }
+
+  @override
+  String get enable => 'Activar';
+
+  @override
+  String get forgotPinResetWarning =>
+      'Si reinicias la app, vas a perder el PIN y toda la configuracion. Vas a tener que configurar todo de nuevo.';
+
+  @override
+  String get resetApp => 'Reiniciar app';
+
+  @override
+  String get biometricFaster => 'Mas rapido';
+
+  @override
+  String get biometricFasterDesc => 'Accede al instante';
+
+  @override
+  String get biometricSafer => 'Mas seguro';
+
+  @override
+  String get biometricSaferDesc => 'Datos unicos de tu dispositivo';
+
+  @override
+  String get biometricEasier => 'Mas facil';
+
+  @override
+  String get biometricEasierDesc => 'Sin recordar contrasenas';
+
+  @override
+  String get skipForNow => 'Omitir por ahora';
+
+  @override
+  String get biometricEnableError =>
+      'No se pudo activar. Podes intentar mas tarde.';
 }
