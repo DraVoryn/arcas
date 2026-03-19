@@ -46,6 +46,10 @@ app.*.map.json
 android/.gradle/
 android/build/
 
+# Keystore files (NEVER commit these)
+/android/app/*.jks
+/android/app/*.keystore
+
 # iOS build
 ios/Pods/
 ios/.symlinks/
