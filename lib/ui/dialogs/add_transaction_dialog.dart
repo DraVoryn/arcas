@@ -3,27 +3,21 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:drift/drift.dart' hide Column;
 import 'package:arcas/database/app_database.dart';
-import 'package:arcas/ui/screens/transactions_screen.dart';
+import 'package:arcas/providers/database_provider.dart';
 
-/// Diálogo modal para agregar una nueva transacción.
-///
-/// Diseño:
-/// - Modal centrado en pantalla
-/// - Campos: Descripción, Monto, Tipo (Income/Expense), Fecha
-/// - Validación en tiempo real
-/// - Feedback visual con colores según tipo
 class AddTransactionDialog extends ConsumerStatefulWidget {
-  const AddTransactionDialog({super.key});
+  final Transaction? transaction;
+  
+  const AddTransactionDialog({super.key, this.transaction});
 
   @override
   ConsumerState<AddTransactionDialog> createState() =>
       _AddTransactionDialogState();
 
-  /// Muestra el diálogo centrado en la pantalla.
-  static Future<void> show(BuildContext context) {
+  static Future<void> show(BuildContext context, {Transaction? transaction}) {
     return showDialog(
       context: context,
-      builder: (context) => const AddTransactionDialog(),
+      builder: (context) => AddTransactionDialog(transaction: transaction),
     );
   }
 }
@@ -36,6 +30,19 @@ class _AddTransactionDialogState extends ConsumerState<AddTransactionDialog> {
   DateTime _selectedDate = DateTime.now();
   String _selectedType = 'expense';
   bool _isLoading = false;
+  
+  bool get _isEditMode => widget.transaction != null;
+
+  @override
+  void initState() {
+    super.initState();
+    if (_isEditMode) {
+      _descriptionController.text = widget.transaction!.description;
+      _amountController.text = widget.transaction!.amount.toString();
+      _selectedDate = widget.transaction!.date;
+      _selectedType = widget.transaction!.type;
+    }
+  }
 
   @override
   void dispose() {
@@ -74,19 +81,30 @@ class _AddTransactionDialogState extends ConsumerState<AddTransactionDialog> {
     try {
       final db = ref.read(databaseProvider);
 
-      await db.insertTransaction(
-        TransactionsCompanion(
-          description: Value(_descriptionController.text.trim()),
-          amount: Value(double.parse(_amountController.text)),
-          date: Value(_selectedDate),
-          type: Value(_selectedType),
-          createdAt: Value(DateTime.now()),
-        ),
-      );
+      if (_isEditMode) {
+        await db.updateTransaction(
+          widget.transaction!.copyWith(
+            description: _descriptionController.text.trim(),
+            amount: double.parse(_amountController.text),
+            date: _selectedDate,
+            type: _selectedType,
+          ),
+        );
+      } else {
+        await db.insertTransaction(
+          TransactionsCompanion(
+            description: Value(_descriptionController.text.trim()),
+            amount: Value(double.parse(_amountController.text)),
+            date: Value(_selectedDate),
+            type: Value(_selectedType),
+            createdAt: Value(DateTime.now()),
+          ),
+        );
+      }
 
       if (mounted) {
         Navigator.of(context).pop();
-        _showSuccessSnackBar();
+        _showSuccessSnackBar(isEdit: _isEditMode);
       }
     } catch (e) {
       if (mounted) {
@@ -104,18 +122,21 @@ class _AddTransactionDialogState extends ConsumerState<AddTransactionDialog> {
     }
   }
 
-  void _showSuccessSnackBar() {
+  void _showSuccessSnackBar({bool isEdit = false}) {
+    String message;
+    if (isEdit) {
+      message = _selectedType == 'income' ? 'Ingreso actualizado' : 'Gasto actualizado';
+    } else {
+      message = _selectedType == 'income' ? 'Ingreso agregado' : 'Gasto agregado';
+    }
+    
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
           children: [
             const Icon(Icons.check_circle, color: Colors.white),
             const SizedBox(width: 12),
-            Text(
-              _selectedType == 'income'
-                  ? 'Ingreso agregado'
-                  : 'Gasto agregado',
-            ),
+            Text(message),
           ],
         ),
         backgroundColor: const Color(0xFF2A9D8F),
@@ -165,7 +186,9 @@ class _AddTransactionDialogState extends ConsumerState<AddTransactionDialog> {
                     ),
                     const SizedBox(width: 16),
                     Text(
-                      isExpense ? 'Nuevo Gasto' : 'Nuevo Ingreso',
+                      _isEditMode 
+                          ? 'Editar ${isExpense ? "Gasto" : "Ingreso"}'
+                          : (isExpense ? 'Nuevo Gasto' : 'Nuevo Ingreso'),
                       style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -348,7 +371,7 @@ class _AddTransactionDialogState extends ConsumerState<AddTransactionDialog> {
                                   color: Colors.white,
                                 ),
                               )
-                            : const Text('Guardar'),
+                            : Text(_isEditMode ? 'Actualizar' : 'Guardar'),
                       ),
                     ),
                   ],
