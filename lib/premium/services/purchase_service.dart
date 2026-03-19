@@ -5,6 +5,35 @@ import 'package:arcas/database/app_database.dart';
 import 'package:arcas/premium/models/premium_plan.dart';
 import 'package:arcas/premium/models/subscription.dart' as model;
 
+enum PurchaseErrorType {
+  storeUnavailable,
+  networkError,
+  userCancelled,
+  productNotFound,
+  unknown,
+}
+
+class PurchaseResult {
+  final bool success;
+  final PurchaseErrorType? error;
+  final String? errorMessage;
+
+  const PurchaseResult._({
+    required this.success,
+    this.error,
+    this.errorMessage,
+  });
+
+  factory PurchaseResult.success() => const PurchaseResult._(success: true);
+
+  factory PurchaseResult.error(PurchaseErrorType error, [String? message]) =>
+      PurchaseResult._(
+        success: false,
+        error: error,
+        errorMessage: message,
+      );
+}
+
 class PurchaseService {
   final AppDatabase _db;
   final InAppPurchase _inAppPurchase;
@@ -112,41 +141,65 @@ class PurchaseService {
     return null;
   }
 
-  Future<bool> purchasePlan(PremiumPlan plan) async {
-    final isAvailable = await _inAppPurchase.isAvailable();
-    if (!isAvailable) {
-      return false;
+  Future<PurchaseResult> purchasePlan(PremiumPlan plan) async {
+    try {
+      final isAvailable = await _inAppPurchase.isAvailable();
+      if (!isAvailable) {
+        return PurchaseResult.error(
+          PurchaseErrorType.storeUnavailable,
+          'Store is not available on this device',
+        );
+      }
+
+      final productId = _getProductId(plan.id);
+      final products = await getAvailableProducts();
+
+      if (products.isEmpty) {
+        return PurchaseResult.error(
+          PurchaseErrorType.productNotFound,
+          'Product not found: $productId',
+        );
+      }
+
+      final product = products.firstWhere(
+        (p) => p.id == productId,
+        orElse: () => throw Exception('Product not found: $productId'),
+      );
+
+      _purchaseCompleter = Completer<bool>();
+      final purchaseParam = PurchaseParam(productDetails: product);
+
+      await _inAppPurchase.buyNonConsumable(purchaseParam: purchaseParam);
+
+      final result = await _purchaseCompleter!.future.timeout(
+        const Duration(minutes: 5),
+        onTimeout: () => false,
+      );
+
+      _purchaseCompleter = null;
+
+      if (result) {
+        await _saveSubscriptionFromPurchase(productId);
+        return PurchaseResult.success();
+      }
+
+      return PurchaseResult.error(PurchaseErrorType.unknown);
+    } catch (e) {
+      final message = e.toString().toLowerCase();
+      if (message.contains('network') || message.contains('connection')) {
+        return PurchaseResult.error(
+          PurchaseErrorType.networkError,
+          'Network error occurred',
+        );
+      }
+      if (message.contains('cancel')) {
+        return PurchaseResult.error(
+          PurchaseErrorType.userCancelled,
+          'Purchase was cancelled',
+        );
+      }
+      return PurchaseResult.error(PurchaseErrorType.unknown, e.toString());
     }
-
-    final productId = _getProductId(plan.id);
-    final products = await getAvailableProducts();
-    
-    if (products.isEmpty) {
-      return false;
-    }
-
-    final product = products.firstWhere(
-      (p) => p.id == productId,
-      orElse: () => throw Exception('Product not found: $productId'),
-    );
-
-    _purchaseCompleter = Completer<bool>();
-    final purchaseParam = PurchaseParam(productDetails: product);
-
-    await _inAppPurchase.buyNonConsumable(purchaseParam: purchaseParam);
-
-    final result = await _purchaseCompleter!.future.timeout(
-      const Duration(minutes: 5),
-      onTimeout: () => false,
-    );
-
-    _purchaseCompleter = null;
-
-    if (result) {
-      await _saveSubscriptionFromPurchase(productId);
-    }
-
-    return result;
   }
 
   Future<void> _saveSubscriptionFromPurchase(String productId) async {

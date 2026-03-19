@@ -12,19 +12,44 @@ import 'package:arcas/database/app_database.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final prefs = await SharedPreferences.getInstance();
-  final database = AppDatabase();
 
-  runApp(
-    ProviderScope(
-      overrides: [
-        sharedPreferencesProvider.overrideWithValue(prefs),
-        localeSharedPreferencesProvider.overrideWithValue(prefs),
-        databaseProvider.overrideWithValue(database),
-      ],
-      child: const ArcasApp(),
-    ),
-  );
+  try {
+    final prefs = await SharedPreferences.getInstance();
+    final database = AppDatabase();
+
+    runApp(
+      ProviderScope(
+        overrides: [
+          sharedPreferencesProvider.overrideWithValue(prefs),
+          localeSharedPreferencesProvider.overrideWithValue(prefs),
+          databaseProvider.overrideWithValue(database),
+        ],
+        child: const ArcasApp(),
+      ),
+    );
+  } catch (e) {
+    runApp(MaterialApp(
+      home: Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.error_outline, size: 64, color: Colors.red),
+              const SizedBox(height: 16),
+              const Text('Error initializing app'),
+              const SizedBox(height: 8),
+              Text(e.toString()),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: main,
+                child: const Text('Retry'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ));
+  }
 }
 
 class ArcasApp extends ConsumerWidget {

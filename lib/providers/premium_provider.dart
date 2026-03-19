@@ -108,16 +108,19 @@ class PremiumNotifier extends StateNotifier<PremiumState> {
     await _loadState();
   }
 
-  Future<bool> purchasePlan(PremiumPlan plan) async {
+  Future<PurchaseResult> purchasePlan(PremiumPlan plan) async {
     try {
-      final success = await _purchaseService.purchasePlan(plan);
-      if (success) {
+      final result = await _purchaseService.purchasePlan(plan);
+      if (result.success) {
         await _loadState();
       }
-      return success;
+      if (result.error != null && result.errorMessage != null) {
+        state = state.copyWith(error: result.errorMessage);
+      }
+      return result;
     } catch (e) {
       state = state.copyWith(error: e.toString());
-      return false;
+      return PurchaseResult.error(PurchaseErrorType.unknown, e.toString());
     }
   }
 

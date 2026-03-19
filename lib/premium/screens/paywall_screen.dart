@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:arcas/l10n/app_localizations.dart';
 import 'package:arcas/premium/models/premium_plan.dart';
+import 'package:arcas/premium/services/purchase_service.dart';
 import 'package:arcas/providers/premium_provider.dart';
 
 class PaywallScreen extends ConsumerStatefulWidget {
@@ -174,23 +175,23 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
 
   Future<void> _purchasePlan(PremiumPlan plan) async {
     final l10n = AppLocalizations.of(context)!;
-    
+
     setState(() {
       _isLoading = true;
       _error = null;
     });
 
     try {
-      final success = await ref.read(premiumNotifierProvider.notifier).purchasePlan(plan);
-      
-      if (success && mounted) {
+      final result = await ref.read(premiumNotifierProvider.notifier).purchasePlan(plan);
+
+      if (result.success && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(l10n.premiumActivated)),
         );
         context.pop();
       } else if (mounted) {
         setState(() {
-          _error = l10n.purchaseFailed;
+          _error = _getErrorMessage(result.error, l10n);
         });
       }
     } catch (e) {
@@ -205,6 +206,22 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
           _isLoading = false;
         });
       }
+    }
+  }
+
+  String _getErrorMessage(PurchaseErrorType? error, AppLocalizations l10n) {
+    switch (error) {
+      case PurchaseErrorType.storeUnavailable:
+        return 'Store not available on this device';
+      case PurchaseErrorType.networkError:
+        return 'Network error. Please check your connection';
+      case PurchaseErrorType.userCancelled:
+        return 'Purchase was cancelled';
+      case PurchaseErrorType.productNotFound:
+        return 'Product not found';
+      case PurchaseErrorType.unknown:
+      case null:
+        return l10n.purchaseFailed;
     }
   }
 
