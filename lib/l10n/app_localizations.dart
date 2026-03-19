@@ -445,6 +445,84 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Error al cargar transacciones'**
   String get errorLoadingTransactions;
+
+  /// No description provided for @newIncome.
+  ///
+  /// In es, this message translates to:
+  /// **'Nuevo Ingreso'**
+  String get newIncome;
+
+  /// No description provided for @newExpense.
+  ///
+  /// In es, this message translates to:
+  /// **'Nuevo Gasto'**
+  String get newExpense;
+
+  /// No description provided for @editIncome.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar Ingreso'**
+  String get editIncome;
+
+  /// No description provided for @editExpense.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar Gasto'**
+  String get editExpense;
+
+  /// No description provided for @incomeUpdated.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingreso actualizado'**
+  String get incomeUpdated;
+
+  /// No description provided for @expenseUpdated.
+  ///
+  /// In es, this message translates to:
+  /// **'Gasto actualizado'**
+  String get expenseUpdated;
+
+  /// No description provided for @incomeAdded.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingreso agregado'**
+  String get incomeAdded;
+
+  /// No description provided for @expenseAdded.
+  ///
+  /// In es, this message translates to:
+  /// **'Gasto agregado'**
+  String get expenseAdded;
+
+  /// No description provided for @enterDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingrese una descripcion'**
+  String get enterDescription;
+
+  /// No description provided for @enterAmount.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingrese un monto'**
+  String get enterAmount;
+
+  /// No description provided for @invalidAmount.
+  ///
+  /// In es, this message translates to:
+  /// **'Monto invalido'**
+  String get invalidAmount;
+
+  /// No description provided for @max255Chars.
+  ///
+  /// In es, this message translates to:
+  /// **'Maximo 255 caracteres'**
+  String get max255Chars;
+
+  /// No description provided for @update.
+  ///
+  /// In es, this message translates to:
+  /// **'Actualizar'**
+  String get update;
 }
 
 class _AppLocalizationsDelegate

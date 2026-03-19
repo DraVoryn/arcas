@@ -144,7 +144,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deleteTransactionConfirmTitle => 'Delete Transaction';
 
   @override
-  String get deleteTransactionConfirmMessage => 'Are you sure you want to delete';
+  String get deleteTransactionConfirmMessage =>
+      'Are you sure you want to delete';
 
   @override
   String get transactionDeleted => 'deleted';
@@ -181,4 +182,43 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorLoadingTransactions => 'Error loading transactions';
+
+  @override
+  String get newIncome => 'New Income';
+
+  @override
+  String get newExpense => 'New Expense';
+
+  @override
+  String get editIncome => 'Edit Income';
+
+  @override
+  String get editExpense => 'Edit Expense';
+
+  @override
+  String get incomeUpdated => 'Income updated';
+
+  @override
+  String get expenseUpdated => 'Expense updated';
+
+  @override
+  String get incomeAdded => 'Income added';
+
+  @override
+  String get expenseAdded => 'Expense added';
+
+  @override
+  String get enterDescription => 'Enter a description';
+
+  @override
+  String get enterAmount => 'Enter an amount';
+
+  @override
+  String get invalidAmount => 'Invalid amount';
+
+  @override
+  String get max255Chars => 'Maximum 255 characters';
+
+  @override
+  String get update => 'Update';
 }

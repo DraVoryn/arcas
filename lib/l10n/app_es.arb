@@ -57,5 +57,18 @@
   "noReportsYet": "Sin reportes aun",
   "errorLoadingReport": "Error al cargar reporte",
   "reportGeneratedSuccess": "Reporte generado exitosamente",
-  "errorLoadingTransactions": "Error al cargar transacciones"
+  "errorLoadingTransactions": "Error al cargar transacciones",
+  "newIncome": "Nuevo Ingreso",
+  "newExpense": "Nuevo Gasto",
+  "editIncome": "Editar Ingreso",
+  "editExpense": "Editar Gasto",
+  "incomeUpdated": "Ingreso actualizado",
+  "expenseUpdated": "Gasto actualizado",
+  "incomeAdded": "Ingreso agregado",
+  "expenseAdded": "Gasto agregado",
+  "enterDescription": "Ingrese una descripcion",
+  "enterAmount": "Ingrese un monto",
+  "invalidAmount": "Monto invalido",
+  "max255Chars": "Maximo 255 caracteres",
+  "update": "Actualizar"
 }

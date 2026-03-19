@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:drift/drift.dart' hide Column;
 import 'package:arcas/database/app_database.dart';
 import 'package:arcas/providers/database_provider.dart';
+import 'package:arcas/l10n/app_localizations.dart';
 
 class AddTransactionDialog extends ConsumerStatefulWidget {
   final Transaction? transaction;
@@ -103,8 +104,9 @@ class _AddTransactionDialogState extends ConsumerState<AddTransactionDialog> {
       }
 
       if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
         Navigator.of(context).pop();
-        _showSuccessSnackBar(isEdit: _isEditMode);
+        _showSuccessSnackBar(l10n: l10n, isEdit: _isEditMode);
       }
     } catch (e) {
       if (mounted) {
@@ -122,12 +124,12 @@ class _AddTransactionDialogState extends ConsumerState<AddTransactionDialog> {
     }
   }
 
-  void _showSuccessSnackBar({bool isEdit = false}) {
+  void _showSuccessSnackBar({required AppLocalizations l10n, bool isEdit = false}) {
     String message;
     if (isEdit) {
-      message = _selectedType == 'income' ? 'Ingreso actualizado' : 'Gasto actualizado';
+      message = _selectedType == 'income' ? l10n.incomeUpdated : l10n.expenseUpdated;
     } else {
-      message = _selectedType == 'income' ? 'Ingreso agregado' : 'Gasto agregado';
+      message = _selectedType == 'income' ? l10n.incomeAdded : l10n.expenseAdded;
     }
     
     ScaffoldMessenger.of(context).showSnackBar(
@@ -149,6 +151,7 @@ class _AddTransactionDialogState extends ConsumerState<AddTransactionDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final isExpense = _selectedType == 'expense';
     final accentColor = isExpense
         ? const Color(0xFFE63946)
@@ -187,8 +190,8 @@ class _AddTransactionDialogState extends ConsumerState<AddTransactionDialog> {
                     const SizedBox(width: 16),
                     Text(
                       _isEditMode 
-                          ? 'Editar ${isExpense ? "Gasto" : "Ingreso"}'
-                          : (isExpense ? 'Nuevo Gasto' : 'Nuevo Ingreso'),
+                          ? (isExpense ? l10n.editExpense : l10n.editIncome)
+                          : (isExpense ? l10n.newExpense : l10n.newIncome),
                       style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -219,7 +222,7 @@ class _AddTransactionDialogState extends ConsumerState<AddTransactionDialog> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Text(
-                              'Gasto',
+                              l10n.expense,
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: _selectedType == 'expense'
@@ -244,7 +247,7 @@ class _AddTransactionDialogState extends ConsumerState<AddTransactionDialog> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Text(
-                              'Ingreso',
+                              l10n.income,
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: _selectedType == 'income'
@@ -265,7 +268,7 @@ class _AddTransactionDialogState extends ConsumerState<AddTransactionDialog> {
                 TextFormField(
                   controller: _descriptionController,
                   decoration: InputDecoration(
-                    labelText: 'Descripción',
+                    labelText: l10n.description,
                     hintText: 'Ej: Almuerzo, Sueldo...',
                     prefixIcon: const Icon(Icons.description_outlined),
                     border: OutlineInputBorder(
@@ -275,10 +278,10 @@ class _AddTransactionDialogState extends ConsumerState<AddTransactionDialog> {
                   textCapitalization: TextCapitalization.sentences,
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
-                      return 'Ingresá una descripción';
+                      return l10n.enterDescription;
                     }
                     if (value.length > 255) {
-                      return 'Máximo 255 caracteres';
+                      return l10n.max255Chars;
                     }
                     return null;
                   },
@@ -289,7 +292,7 @@ class _AddTransactionDialogState extends ConsumerState<AddTransactionDialog> {
                 TextFormField(
                   controller: _amountController,
                   decoration: InputDecoration(
-                    labelText: 'Monto',
+                    labelText: l10n.amount,
                     hintText: '0.00',
                     prefixIcon: const Icon(Icons.attach_money),
                     border: OutlineInputBorder(
@@ -304,11 +307,11 @@ class _AddTransactionDialogState extends ConsumerState<AddTransactionDialog> {
                   ],
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Ingresá un monto';
+                      return l10n.enterAmount;
                     }
                     final amount = double.tryParse(value);
                     if (amount == null || amount <= 0) {
-                      return 'Monto inválido';
+                      return l10n.invalidAmount;
                     }
                     return null;
                   },
@@ -347,7 +350,7 @@ class _AddTransactionDialogState extends ConsumerState<AddTransactionDialog> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        child: const Text('Cancelar'),
+                        child: Text(l10n.cancel),
                       ),
                     ),
                     const SizedBox(width: 16),
@@ -371,7 +374,7 @@ class _AddTransactionDialogState extends ConsumerState<AddTransactionDialog> {
                                   color: Colors.white,
                                 ),
                               )
-                            : Text(_isEditMode ? 'Actualizar' : 'Guardar'),
+                            : Text(_isEditMode ? l10n.update : l10n.save),
                       ),
                     ),
                   ],

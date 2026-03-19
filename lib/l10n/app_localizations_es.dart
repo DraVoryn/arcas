@@ -181,4 +181,43 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get errorLoadingTransactions => 'Error al cargar transacciones';
+
+  @override
+  String get newIncome => 'Nuevo Ingreso';
+
+  @override
+  String get newExpense => 'Nuevo Gasto';
+
+  @override
+  String get editIncome => 'Editar Ingreso';
+
+  @override
+  String get editExpense => 'Editar Gasto';
+
+  @override
+  String get incomeUpdated => 'Ingreso actualizado';
+
+  @override
+  String get expenseUpdated => 'Gasto actualizado';
+
+  @override
+  String get incomeAdded => 'Ingreso agregado';
+
+  @override
+  String get expenseAdded => 'Gasto agregado';
+
+  @override
+  String get enterDescription => 'Ingrese una descripcion';
+
+  @override
+  String get enterAmount => 'Ingrese un monto';
+
+  @override
+  String get invalidAmount => 'Monto invalido';
+
+  @override
+  String get max255Chars => 'Maximo 255 caracteres';
+
+  @override
+  String get update => 'Actualizar';
 }

@@ -57,5 +57,18 @@
   "noReportsYet": "No reports yet",
   "errorLoadingReport": "Error loading report",
   "reportGeneratedSuccess": "Report generated successfully",
-  "errorLoadingTransactions": "Error loading transactions"
+  "errorLoadingTransactions": "Error loading transactions",
+  "newIncome": "New Income",
+  "newExpense": "New Expense",
+  "editIncome": "Edit Income",
+  "editExpense": "Edit Expense",
+  "incomeUpdated": "Income updated",
+  "expenseUpdated": "Expense updated",
+  "incomeAdded": "Income added",
+  "expenseAdded": "Expense added",
+  "enterDescription": "Enter a description",
+  "enterAmount": "Enter an amount",
+  "invalidAmount": "Invalid amount",
+  "max255Chars": "Maximum 255 characters",
+  "update": "Update"
 }

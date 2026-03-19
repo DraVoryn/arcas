@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:math';
+import 'dart:typed_data';
 import 'package:crypto/crypto.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:local_auth/local_auth.dart';
@@ -274,32 +276,14 @@ class AuthService {
   // MÉTODOS PRIVADOS
   // ==========================================================================
 
-  /// Genera bytes random criptográficamente seguros.
-  ///
-  /// ¿Por qué no usar math.Random?
-  /// math.Random es un PRNG (Pseudo Random Number Generator).
-  /// Es predecible si conocés el seed.
-  /// Los bytes de seguridad necesitan CSPRNG (Cryptographically Secure PRNG).
-  ///
-  /// En Dart/Flutter:
-  /// - `dart:math.Random.secure()` es CSPRNG ✓
+  /// Genera bytes random criptográficamente seguros usando Random.secure().
   List<int> _generateSecureRandomBytes(int length) {
-    final random = List<int>.generate(
-      length,
-      (_) => DateTime.now().microsecondsSinceEpoch % 256,
-    );
-    // Mezclamos con timestamp para más entropía en ambiente móvil
-    // Donde DateTime.now().microsecondsSinceEpoch tiene patrones
-    return _scrambleWithTime(random);
-  }
-
-  List<int> _scrambleWithTime(List<int> bytes) {
-    var seed = DateTime.now().microsecondsSinceEpoch;
-    for (var i = 0; i < bytes.length; i++) {
-      seed = (seed * 1103515245 + 12345) & 0x7fffffff;
-      bytes[i] = (bytes[i] ^ (seed & 0xff)) & 0xff;
+    final random = Random.secure();
+    final bytes = Uint8List(length);
+    for (var i = 0; i < length; i++) {
+      bytes[i] = random.nextInt(256);
     }
-    return bytes;
+    return bytes.toList();
   }
 
   /// Comparación en tiempo constante para prevenir timing attacks.
