@@ -20,6 +20,8 @@ import 'package:arcas/premium/screens/premium_settings_screen.dart';
 // ==========================================================================
 
 /// Rutas que NO requieren autenticación.
+/// Si el usuario está unlocked y navega a estas rutas, se permite (no redirect a home).
+/// Excluimos /paywall y /premium-settings porque son accesibles desde Settings.
 const _publicRoutes = [
   '/onboarding',
   '/pin-setup',
@@ -27,6 +29,14 @@ const _publicRoutes = [
   '/lock',
   '/paywall',
   '/premium-settings',
+];
+
+/// Rutas que son públicas pero DEBEN redirigir a home si ya estás logueado.
+/// Ejemplo: no tiene sentido ir a /login si ya estás logueado.
+const _authRoutesThatRedirectToHome = [
+  '/onboarding',
+  '/pin-setup',
+  '/biometric-setup',
 ];
 
 // ==========================================================================
@@ -65,15 +75,19 @@ GoRouter createRouter(WidgetRef ref) {
       final targetRoute = state.uri.path;
 
       // =====================================================================
-      // REGLA 1: Rutas públicas → siempre permitir
+      // REGLA 1: Rutas de auth (onboarding, pin-setup, etc) → redirigir a home si ya estás unlocked
       // =====================================================================
-      if (_publicRoutes.contains(targetRoute)) {
-        // Si YA está unlocked y quiere ir a una ruta pública,
-        // lo redirigimos a home
+      if (_authRoutesThatRedirectToHome.contains(targetRoute)) {
         if (authState.status == AuthStatus.unlocked) {
           return '/home';
         }
-        // Si está configurando algo, permitir
+        return null;
+      }
+
+      // =====================================================================
+      // REGLA 2: Otras rutas públicas (paywall, premium-settings) → permitir siempre
+      // =====================================================================
+      if (_publicRoutes.contains(targetRoute)) {
         return null;
       }
 
