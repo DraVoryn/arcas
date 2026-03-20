@@ -284,4 +284,3 @@ flutter build appbundle --release
 
 ---
 
-**Nota**: Esta app está diseñada para uso personal. Los datos financieros nunca salen del dispositivo. El modelo freemium es sostenible para un desarrollador solitario.
