@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:arcas/auth/biometric_position.dart';
 
 /// Widget de teclado numérico custom para ingreso de PIN.
 ///
@@ -21,12 +22,20 @@ class PinNumpad extends StatelessWidget {
   /// Número de dígitos esperado del PIN.
   final int pinLength;
 
+  /// Posición del sensor biométrico para determinar si se muestra el botón.
+  final BiometricPosition? biometricPosition;
+
+  /// Callback cuando se presiona el botón biométrico (solo para posición screen).
+  final VoidCallback? onBiometricPressed;
+
   const PinNumpad({
     super.key,
     required this.onNumberPressed,
     required this.onDeletePressed,
     this.onComplete,
     this.pinLength = 6,
+    this.biometricPosition,
+    this.onBiometricPressed,
   });
 
   @override
@@ -68,11 +77,31 @@ class PinNumpad extends StatelessWidget {
   }
 
   Widget _buildBottomRow() {
+    final showBiometricButton = biometricPosition == BiometricPosition.screen;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        // Placeholder para mantener alineación
-        const SizedBox(width: 72, height: 72),
+        // Biometric button (solo si el sensor está en pantalla)
+        if (showBiometricButton)
+          GestureDetector(
+            onTap: onBiometricPressed,
+            child: Container(
+              width: 72,
+              height: 72,
+              decoration: BoxDecoration(
+                color: const Color(0xFF5856D6).withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(36),
+              ),
+              child: const Icon(
+                Icons.fingerprint_rounded,
+                size: 32,
+                color: Color(0xFF5856D6),
+              ),
+            ),
+          )
+        else
+          const SizedBox(width: 72, height: 72),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: _NumpadButton(
