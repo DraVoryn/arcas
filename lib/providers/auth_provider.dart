@@ -162,6 +162,8 @@ class AuthNotifier extends AsyncNotifier<AuthState> {
   Future<AuthState> _initialize() async {
     // Si no hay authService o prefs todavía, retornar estado inicial
     if (_authService == null || _prefs == null) {
+      // ignore: avoid_print
+      print('[AuthNotifier] _initialize() -> NULL service or prefs, returning initial');
       return AuthState.initial();
     }
 
@@ -195,6 +197,9 @@ class AuthNotifier extends AsyncNotifier<AuthState> {
         newStatus = AuthStatus.locked;
       }
     }
+
+    // ignore: avoid_print
+    print('[AuthNotifier] _initialize() -> status=$newStatus, onboarding=$onboardingCompleted, isPinSetup=$isPinSetup');
 
     return AuthState(
       status: newStatus,
@@ -353,7 +358,10 @@ class AuthNotifier extends AsyncNotifier<AuthState> {
     return success;
   }
 
-  /// Bloquea la app manualmente (llamado desde app lifecycle).
+  /// Bloquea la app (logout simple — datos se mantienen).
+  ///
+  /// Este es el comportamiento correcto de "Cerrar sesión".
+  /// El usuario queda en la pantalla de lock, con su PIN y datos intactos.
   void lock() {
     final currentState = state.value;
     if (currentState != null && currentState.status == AuthStatus.unlocked) {
@@ -362,23 +370,30 @@ class AuthNotifier extends AsyncNotifier<AuthState> {
   }
 
   // ==========================================================================
-  // RESET (Olvidaste PIN)
+  // DELETE ACCOUNT (reset completo — cuidado!)
   // ==========================================================================
 
-  /// Resetea la app completamente.
-  Future<void> resetApp() async {
-    final currentState = state.value;
-    if (currentState == null || !currentState.canReset) return;
-
-    // Limpiar secure storage
+  /// Resetea la app completamente (borra PIN, datos, TODO).
+  ///
+  /// Solo para "Olvidé mi PIN" (5 intentos fallidos) o "Borrar cuenta".
+  /// NO para logout normal.
+  Future<void> deleteAccount() async {
+    // Limpiar secure storage (PIN + biometrics + position)
     await _authService!.clearPin();
 
     // Resetear onboarding
     await _prefs!.setBool(_onboardingCompletedKey, false);
 
     // Volver al inicio
+    final currentState = state.value;
     state = AsyncValue.data(AuthState.initial().copyWith(
-      biometricAvailable: currentState.biometricAvailable,
+      biometricAvailable: currentState?.biometricAvailable ?? false,
     ));
+  }
+
+  /// Alias de deleteAccount para compatibilidad hacia atrás con "Olvidaste PIN"
+  /// (que requería 5 intentos fallidos). Ahora borramos cuenta directamente.
+  Future<void> resetApp() async {
+    await deleteAccount();
   }
 }
