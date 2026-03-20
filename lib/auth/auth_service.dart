@@ -72,11 +72,9 @@ class AuthService {
     return AuthService._(
       secureStorage: const FlutterSecureStorage(
         aOptions: AndroidOptions(
-          // IMPORTANT: encryptedSharedPreferences requiere Android Keystore
-          // que necesita device encryption activo (patron/PIN/huella del telefono).
-          // Si no esta configurado, SharedPreferences falla silenciosamente.
-          // Para este dispositivo (Moto G54 5G), lo desactivamos.
-          encryptedSharedPreferences: false,
+          // Nota: encryptedSharedPreferences fue deprecated en v10.
+          // flutter_secure_storage ahora usa custom ciphers automáticamente.
+          // Los datos existentes se migran transparently en el primer acceso.
         ),
         iOptions: IOSOptions(
           accessibility: KeychainAccessibility.first_unlock_this_device,
