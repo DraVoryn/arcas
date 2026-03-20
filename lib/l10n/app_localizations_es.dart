@@ -250,6 +250,19 @@ class AppLocalizationsEs extends AppLocalizations {
   String get noPurchasesFound => 'No se encontraron compras para restaurar.';
 
   @override
+  String get purchaseErrorStoreUnavailable =>
+      'Tienda no disponible en este dispositivo';
+
+  @override
+  String get purchaseErrorNetwork => 'Error de red. Verifica tu conexion.';
+
+  @override
+  String get purchaseErrorCancelled => 'Compra cancelada';
+
+  @override
+  String get purchaseErrorNotFound => 'Producto no encontrado';
+
+  @override
   String get premiumActivated => '¡Premium activado!';
 
   @override
@@ -453,7 +466,23 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get biometricEnableError =>
-      'No se pudo activar. Podes intentar mas tarde.';
+      'No se pudo activar. Verifica la configuracion del telefono.';
+
+  @override
+  String get biometricErrorNotAvailable =>
+      'Biometria no disponible en este dispositivo.';
+
+  @override
+  String get biometricErrorNotEnrolled =>
+      'No hay huella registrada. Agregala en Configuracion del telefono.';
+
+  @override
+  String get biometricErrorLockedOut =>
+      'Demasiados intentos. Esperá 30 segundos e intentá de nuevo.';
+
+  @override
+  String get biometricErrorPermanentlyLockedOut =>
+      'Biometria bloqueada. Reinicia el telefono o usa el PIN.';
 
   @override
   String get security => 'Seguridad';
@@ -462,9 +491,59 @@ class AppLocalizationsEs extends AppLocalizations {
   String get logout => 'Cerrar sesion';
 
   @override
-  String get logoutDescription => 'Reinicia la app y borra el PIN';
+  String get logoutDescription => 'Bloquea la app. Tus datos se mantienen.';
 
   @override
   String get logoutConfirmation =>
-      'Esto reiniciara la app y borrara tu PIN. Necesitaras configurarlo de nuevo.';
+      'Vas a tener que desbloquear la app con tu PIN o huella. Todos tus datos y configuracion se mantienen.';
+
+  @override
+  String get deleteAccount => 'Borrar cuenta';
+
+  @override
+  String get deleteAccountDescription =>
+      'Elimina el PIN y todos los datos. No se puede deshacer.';
+
+  @override
+  String get deleteAccountConfirmation =>
+      'ADVERTENCIA: Esto va a BORRAR TODO: tu PIN, tus transacciones, categorias y toda la informacion de la app. No hay forma de recuperarlo. Pensa bien antes de continuar.';
+
+  @override
+  String get currency => 'Moneda';
+
+  @override
+  String get selectCurrency => 'Seleccionar moneda';
+
+  @override
+  String get onboardingSlide1Title => 'Control total,\nsin complicaciones';
+
+  @override
+  String get onboardingSlide1Subtitle =>
+      'Registra tus ingresos y gastos de forma simple y segura.';
+
+  @override
+  String get onboardingSlide2Title => 'Tus datos,\nsolo tuyos';
+
+  @override
+  String get onboardingSlide2Subtitle =>
+      'Todo queda en tu dispositivo. Solo vos decis quien accede.';
+
+  @override
+  String get onboardingSlide3Title => 'Listo para\ntomar control?';
+
+  @override
+  String get onboardingSlide3Subtitle =>
+      'Configura tu PIN y protege tus datos financieros.';
+
+  @override
+  String get biometricSensorPosition => 'Donde esta el sensor?';
+
+  @override
+  String get biometricPositionScreen => 'Pantalla';
+
+  @override
+  String get biometricPositionRear => 'Atras';
+
+  @override
+  String get biometricPositionSide => 'Lateral';
 }

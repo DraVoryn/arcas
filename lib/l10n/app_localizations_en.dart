@@ -251,6 +251,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noPurchasesFound => 'No purchases found to restore.';
 
   @override
+  String get purchaseErrorStoreUnavailable =>
+      'Store not available on this device';
+
+  @override
+  String get purchaseErrorNetwork => 'Network error. Check your connection.';
+
+  @override
+  String get purchaseErrorCancelled => 'Purchase was cancelled';
+
+  @override
+  String get purchaseErrorNotFound => 'Product not found';
+
+  @override
   String get premiumActivated => 'Premium activated!';
 
   @override
@@ -454,7 +467,23 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get biometricEnableError =>
-      'Could not enable. You can try again later.';
+      'Could not enable. Check your phone settings.';
+
+  @override
+  String get biometricErrorNotAvailable =>
+      'Biometrics not available on this device.';
+
+  @override
+  String get biometricErrorNotEnrolled =>
+      'No fingerprint enrolled. Add it in phone Settings.';
+
+  @override
+  String get biometricErrorLockedOut =>
+      'Too many attempts. Wait 30 seconds and try again.';
+
+  @override
+  String get biometricErrorPermanentlyLockedOut =>
+      'Biometrics locked. Restart your phone or use your PIN.';
 
   @override
   String get security => 'Security';
@@ -463,9 +492,59 @@ class AppLocalizationsEn extends AppLocalizations {
   String get logout => 'Log out';
 
   @override
-  String get logoutDescription => 'Resets the app and deletes your PIN';
+  String get logoutDescription => 'Locks the app. Your data is kept.';
 
   @override
   String get logoutConfirmation =>
-      'This will reset the app and delete your PIN. You\'ll need to set it up again.';
+      'You\'ll need to unlock the app with your PIN or fingerprint. All your data and settings are kept.';
+
+  @override
+  String get deleteAccount => 'Delete account';
+
+  @override
+  String get deleteAccountDescription =>
+      'Deletes your PIN and all data. Cannot be undone.';
+
+  @override
+  String get deleteAccountConfirmation =>
+      'WARNING: This will DELETE EVERYTHING: your PIN, transactions, categories, and all app data. There is no way to recover it. Think carefully before continuing.';
+
+  @override
+  String get currency => 'Currency';
+
+  @override
+  String get selectCurrency => 'Select currency';
+
+  @override
+  String get onboardingSlide1Title => 'Full control,\nwithout complications';
+
+  @override
+  String get onboardingSlide1Subtitle =>
+      'Record your income and expenses in a simple and secure way.';
+
+  @override
+  String get onboardingSlide2Title => 'Your data,\nyours alone';
+
+  @override
+  String get onboardingSlide2Subtitle =>
+      'Everything stays on your device. Only you decide who accesses it.';
+
+  @override
+  String get onboardingSlide3Title => 'Ready to\ntake control?';
+
+  @override
+  String get onboardingSlide3Subtitle =>
+      'Set up your PIN and secure your financial data.';
+
+  @override
+  String get biometricSensorPosition => 'Where is the sensor?';
+
+  @override
+  String get biometricPositionScreen => 'Screen';
+
+  @override
+  String get biometricPositionRear => 'Rear';
+
+  @override
+  String get biometricPositionSide => 'Side';
 }
