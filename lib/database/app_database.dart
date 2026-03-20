@@ -39,7 +39,12 @@ class ReportUsage extends Table {
   IntColumn get month => integer()();
   IntColumn get year => integer()();
   IntColumn get reportsGenerated => integer().withDefault(const Constant(0))();
+  IntColumn get predictionsGenerated => integer().withDefault(const Constant(0))();
   DateTimeColumn get lastReportDate => dateTime().nullable()();
+  DateTimeColumn get lastPredictionDate => dateTime().nullable()();
+   
+  @override
+  List<Set<Column>> get uniqueKeys => [{month, year}];
 }
 
 class Reports extends Table {
@@ -61,7 +66,28 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(QueryExecutor executor) : super(executor);
 
   @override
-  int get schemaVersion => 2;
+  MigrationStrategy get migration {
+    return MigrationStrategy(
+      onCreate: (Migrator m) async {
+        await m.createAll();
+      },
+      onUpgrade: (Migrator m, int from, int to) async {
+        // Future migrations go here
+        if (from < 3) {
+          // Add predictions tracking columns to ReportUsage table
+          await m.addColumn(reportUsage, reportUsage.predictionsGenerated);
+          await m.addColumn(reportUsage, reportUsage.lastPredictionDate);
+        }
+      },
+      beforeOpen: (details) async {
+        // Enable foreign keys and optimize
+        await customStatement('PRAGMA foreign_keys = ON');
+      },
+    );
+  }
+
+  @override
+  int get schemaVersion => 3;
 
   Future<List<Transaction>> getAllTransactions() => select(transactions).get();
 
@@ -128,8 +154,11 @@ class AppDatabase extends _$AppDatabase {
   }
 
   Future<Report?> getLatestReport() async {
-    return (select(reports)..orderBy([(t) => OrderingTerm.desc(t.generatedAt)]))
-        .getSingleOrNull();
+    // Usar .get() + first para evitar "too many elements" si hay duplicados
+    final results = await (select(reports)
+          ..orderBy([(t) => OrderingTerm.desc(t.generatedAt)]))
+        .get();
+    return results.isEmpty ? null : results.first;
   }
 }
 

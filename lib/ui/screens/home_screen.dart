@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:arcas/l10n/app_localizations.dart';
 import 'package:arcas/providers/home_provider.dart';
+import 'package:arcas/providers/currency_provider.dart';
 import 'package:arcas/core/utils/date_formatter.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -59,6 +60,7 @@ class _BalanceCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final balanceAsync = ref.watch(totalBalanceProvider);
+    final currency = ref.watch(currencyNotifierProvider);
     
     return Container(
       width: double.infinity,
@@ -94,7 +96,7 @@ class _BalanceCard extends ConsumerWidget {
           const SizedBox(height: 8),
           balanceAsync.when(
             data: (balance) => Text(
-              '\$${balance.toStringAsFixed(2)}',
+              formatCurrency(balance, currency),
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 36,
@@ -108,7 +110,7 @@ class _BalanceCard extends ConsumerWidget {
               ),
             ),
             error: (e, _) => Text(
-              '\$0.00',
+              formatCurrency(0, currency),
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 36,
@@ -166,7 +168,7 @@ class _MonthlyStats extends ConsumerWidget {
   }
 }
 
-class _StatCard extends StatelessWidget {
+class _StatCard extends ConsumerWidget {
   final String title;
   final IconData icon;
   final Color color;
@@ -180,7 +182,9 @@ class _StatCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currency = ref.watch(currencyNotifierProvider);
+    
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -213,7 +217,7 @@ class _StatCard extends StatelessWidget {
           const SizedBox(height: 8),
           valueAsync.when(
             data: (value) => Text(
-              '\$${value.toStringAsFixed(2)}',
+              formatCurrency(value, currency),
               style: TextStyle(
                 color: color,
                 fontSize: 18,
@@ -231,7 +235,7 @@ class _StatCard extends StatelessWidget {
               ),
             ),
             error: (_, __) => Text(
-              '\$0.00',
+              formatCurrency(0, currency),
               style: TextStyle(
                 color: color,
                 fontSize: 18,
@@ -269,6 +273,7 @@ class _RecentTransactionsList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final transactionsAsync = ref.watch(recentTransactionsProvider);
+    final currency = ref.watch(currencyNotifierProvider);
 
     return transactionsAsync.when(
       data: (transactions) {
@@ -345,7 +350,7 @@ class _RecentTransactionsList extends ConsumerWidget {
                   ),
                 ),
                 trailing: Text(
-                  '${isIncome ? '+' : '-'}\$${tx.amount.toStringAsFixed(2)}',
+                  '${isIncome ? '+' : '-'}${formatCurrency(tx.amount, currency)}',
                   style: TextStyle(
                     color: isIncome ? Colors.green : Colors.red,
                     fontWeight: FontWeight.bold,

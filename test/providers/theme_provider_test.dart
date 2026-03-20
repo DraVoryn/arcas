@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:arcas/providers/theme_provider.dart';
 
 void main() {
@@ -7,63 +8,130 @@ void main() {
     test('initial state should be system when no stored value', () async {
       SharedPreferences.setMockInitialValues({});
       final prefs = await SharedPreferences.getInstance();
-      final notifier = ThemeNotifier(prefs);
-      expect(notifier.state, AppThemeMode.system);
+      
+      final container = ProviderContainer(
+        overrides: [
+          sharedPreferencesProvider.overrideWithValue(prefs),
+        ],
+      );
+
+      final state = container.read(themeNotifierProvider);
+      expect(state, AppThemeMode.system);
+      
+      container.dispose();
     });
 
     test('initial state should be light when stored as light', () async {
       SharedPreferences.setMockInitialValues({'theme_mode': 'light'});
       final prefs = await SharedPreferences.getInstance();
-      final notifier = ThemeNotifier(prefs);
-      expect(notifier.state, AppThemeMode.light);
+      
+      final container = ProviderContainer(
+        overrides: [
+          sharedPreferencesProvider.overrideWithValue(prefs),
+        ],
+      );
+
+      final state = container.read(themeNotifierProvider);
+      expect(state, AppThemeMode.light);
+      
+      container.dispose();
     });
 
     test('initial state should be dark when stored as dark', () async {
       SharedPreferences.setMockInitialValues({'theme_mode': 'dark'});
       final prefs = await SharedPreferences.getInstance();
-      final notifier = ThemeNotifier(prefs);
-      expect(notifier.state, AppThemeMode.dark);
+      
+      final container = ProviderContainer(
+        overrides: [
+          sharedPreferencesProvider.overrideWithValue(prefs),
+        ],
+      );
+
+      final state = container.read(themeNotifierProvider);
+      expect(state, AppThemeMode.dark);
+      
+      container.dispose();
     });
 
     test('setTheme should change state and persist', () async {
       SharedPreferences.setMockInitialValues({});
       final prefs = await SharedPreferences.getInstance();
-      final notifier = ThemeNotifier(prefs);
+      
+      final container = ProviderContainer(
+        overrides: [
+          sharedPreferencesProvider.overrideWithValue(prefs),
+        ],
+      );
+
+      final notifier = container.read(themeNotifierProvider.notifier);
       
       await notifier.setTheme(AppThemeMode.dark);
       
-      expect(notifier.state, AppThemeMode.dark);
+      final state = container.read(themeNotifierProvider);
+      expect(state, AppThemeMode.dark);
       expect(prefs.getString('theme_mode'), 'dark');
+      
+      container.dispose();
     });
 
     test('toggleTheme should switch from light to dark', () async {
       SharedPreferences.setMockInitialValues({'theme_mode': 'light'});
       final prefs = await SharedPreferences.getInstance();
-      final notifier = ThemeNotifier(prefs);
+      
+      final container = ProviderContainer(
+        overrides: [
+          sharedPreferencesProvider.overrideWithValue(prefs),
+        ],
+      );
+
+      final notifier = container.read(themeNotifierProvider.notifier);
       
       notifier.toggleTheme();
       
-      expect(notifier.state, AppThemeMode.dark);
+      final state = container.read(themeNotifierProvider);
+      expect(state, AppThemeMode.dark);
+      
+      container.dispose();
     });
 
     test('toggleTheme should switch from dark to light', () async {
       SharedPreferences.setMockInitialValues({'theme_mode': 'dark'});
       final prefs = await SharedPreferences.getInstance();
-      final notifier = ThemeNotifier(prefs);
+      
+      final container = ProviderContainer(
+        overrides: [
+          sharedPreferencesProvider.overrideWithValue(prefs),
+        ],
+      );
+
+      final notifier = container.read(themeNotifierProvider.notifier);
       
       notifier.toggleTheme();
       
-      expect(notifier.state, AppThemeMode.light);
+      final state = container.read(themeNotifierProvider);
+      expect(state, AppThemeMode.light);
+      
+      container.dispose();
     });
 
     test('toggleTheme from system should go to light', () async {
       SharedPreferences.setMockInitialValues({'theme_mode': 'system'});
       final prefs = await SharedPreferences.getInstance();
-      final notifier = ThemeNotifier(prefs);
+      
+      final container = ProviderContainer(
+        overrides: [
+          sharedPreferencesProvider.overrideWithValue(prefs),
+        ],
+      );
+
+      final notifier = container.read(themeNotifierProvider.notifier);
       
       notifier.toggleTheme();
       
-      expect(notifier.state, AppThemeMode.light);
+      final state = container.read(themeNotifierProvider);
+      expect(state, AppThemeMode.light);
+      
+      container.dispose();
     });
   });
 

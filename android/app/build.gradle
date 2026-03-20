@@ -42,7 +42,7 @@ android {
 
     defaultConfig {
         applicationId "io.flutter.arcas"
-        minSdkVersion flutter.minSdkVersion
+        minSdkVersion flutter.minSdkVersion  // flutter_secure_storage v10 requiere minSdk 23+
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName

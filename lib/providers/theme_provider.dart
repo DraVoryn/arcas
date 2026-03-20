@@ -3,11 +3,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 enum AppThemeMode { light, dark, system }
 
-class ThemeNotifier extends StateNotifier<AppThemeMode> {
+class ThemeNotifier extends Notifier<AppThemeMode> {
   static const _themeKey = 'theme_mode';
-  final SharedPreferences _prefs;
 
-  ThemeNotifier(this._prefs) : super(_loadTheme(_prefs));
+  @override
+  AppThemeMode build() {
+    final prefs = ref.watch(sharedPreferencesProvider);
+    return _loadTheme(prefs);
+  }
 
   static AppThemeMode _loadTheme(SharedPreferences prefs) {
     final value = prefs.getString(_themeKey);
@@ -23,7 +26,8 @@ class ThemeNotifier extends StateNotifier<AppThemeMode> {
 
   Future<void> setTheme(AppThemeMode mode) async {
     state = mode;
-    await _prefs.setString(_themeKey, mode.name);
+    final prefs = ref.read(sharedPreferencesProvider);
+    await prefs.setString(_themeKey, mode.name);
   }
 
   void toggleTheme() {
@@ -39,7 +43,4 @@ final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
 });
 
 final themeNotifierProvider =
-    StateNotifierProvider<ThemeNotifier, AppThemeMode>((ref) {
-  final prefs = ref.watch(sharedPreferencesProvider);
-  return ThemeNotifier(prefs);
-});
+    NotifierProvider<ThemeNotifier, AppThemeMode>(ThemeNotifier.new);

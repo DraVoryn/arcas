@@ -11,7 +11,7 @@ class PremiumSettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final premiumState = ref.watch(premiumNotifierProvider);
+    final premiumState = ref.watch(premiumNotifierProvider).value ?? const PremiumState();
 
     return Scaffold(
       appBar: AppBar(

@@ -578,6 +578,30 @@ abstract class AppLocalizations {
   /// **'No se encontraron compras para restaurar.'**
   String get noPurchasesFound;
 
+  /// No description provided for @purchaseErrorStoreUnavailable.
+  ///
+  /// In es, this message translates to:
+  /// **'Tienda no disponible en este dispositivo'**
+  String get purchaseErrorStoreUnavailable;
+
+  /// No description provided for @purchaseErrorNetwork.
+  ///
+  /// In es, this message translates to:
+  /// **'Error de red. Verifica tu conexion.'**
+  String get purchaseErrorNetwork;
+
+  /// No description provided for @purchaseErrorCancelled.
+  ///
+  /// In es, this message translates to:
+  /// **'Compra cancelada'**
+  String get purchaseErrorCancelled;
+
+  /// No description provided for @purchaseErrorNotFound.
+  ///
+  /// In es, this message translates to:
+  /// **'Producto no encontrado'**
+  String get purchaseErrorNotFound;
+
   /// No description provided for @premiumActivated.
   ///
   /// In es, this message translates to:
@@ -965,8 +989,32 @@ abstract class AppLocalizations {
   /// No description provided for @biometricEnableError.
   ///
   /// In es, this message translates to:
-  /// **'No se pudo activar. Podes intentar mas tarde.'**
+  /// **'No se pudo activar. Verifica la configuracion del telefono.'**
   String get biometricEnableError;
+
+  /// No description provided for @biometricErrorNotAvailable.
+  ///
+  /// In es, this message translates to:
+  /// **'Biometria no disponible en este dispositivo.'**
+  String get biometricErrorNotAvailable;
+
+  /// No description provided for @biometricErrorNotEnrolled.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay huella registrada. Agregala en Configuracion del telefono.'**
+  String get biometricErrorNotEnrolled;
+
+  /// No description provided for @biometricErrorLockedOut.
+  ///
+  /// In es, this message translates to:
+  /// **'Demasiados intentos. Esperá 30 segundos e intentá de nuevo.'**
+  String get biometricErrorLockedOut;
+
+  /// No description provided for @biometricErrorPermanentlyLockedOut.
+  ///
+  /// In es, this message translates to:
+  /// **'Biometria bloqueada. Reinicia el telefono o usa el PIN.'**
+  String get biometricErrorPermanentlyLockedOut;
 
   /// No description provided for @security.
   ///
@@ -983,14 +1031,104 @@ abstract class AppLocalizations {
   /// No description provided for @logoutDescription.
   ///
   /// In es, this message translates to:
-  /// **'Reinicia la app y borra el PIN'**
+  /// **'Bloquea la app. Tus datos se mantienen.'**
   String get logoutDescription;
 
   /// No description provided for @logoutConfirmation.
   ///
   /// In es, this message translates to:
-  /// **'Esto reiniciara la app y borrara tu PIN. Necesitaras configurarlo de nuevo.'**
+  /// **'Vas a tener que desbloquear la app con tu PIN o huella. Todos tus datos y configuracion se mantienen.'**
   String get logoutConfirmation;
+
+  /// No description provided for @deleteAccount.
+  ///
+  /// In es, this message translates to:
+  /// **'Borrar cuenta'**
+  String get deleteAccount;
+
+  /// No description provided for @deleteAccountDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Elimina el PIN y todos los datos. No se puede deshacer.'**
+  String get deleteAccountDescription;
+
+  /// No description provided for @deleteAccountConfirmation.
+  ///
+  /// In es, this message translates to:
+  /// **'ADVERTENCIA: Esto va a BORRAR TODO: tu PIN, tus transacciones, categorias y toda la informacion de la app. No hay forma de recuperarlo. Pensa bien antes de continuar.'**
+  String get deleteAccountConfirmation;
+
+  /// No description provided for @currency.
+  ///
+  /// In es, this message translates to:
+  /// **'Moneda'**
+  String get currency;
+
+  /// No description provided for @selectCurrency.
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccionar moneda'**
+  String get selectCurrency;
+
+  /// No description provided for @onboardingSlide1Title.
+  ///
+  /// In es, this message translates to:
+  /// **'Control total,\nsin complicaciones'**
+  String get onboardingSlide1Title;
+
+  /// No description provided for @onboardingSlide1Subtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Registra tus ingresos y gastos de forma simple y segura.'**
+  String get onboardingSlide1Subtitle;
+
+  /// No description provided for @onboardingSlide2Title.
+  ///
+  /// In es, this message translates to:
+  /// **'Tus datos,\nsolo tuyos'**
+  String get onboardingSlide2Title;
+
+  /// No description provided for @onboardingSlide2Subtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Todo queda en tu dispositivo. Solo vos decis quien accede.'**
+  String get onboardingSlide2Subtitle;
+
+  /// No description provided for @onboardingSlide3Title.
+  ///
+  /// In es, this message translates to:
+  /// **'Listo para\ntomar control?'**
+  String get onboardingSlide3Title;
+
+  /// No description provided for @onboardingSlide3Subtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Configura tu PIN y protege tus datos financieros.'**
+  String get onboardingSlide3Subtitle;
+
+  /// No description provided for @biometricSensorPosition.
+  ///
+  /// In es, this message translates to:
+  /// **'Donde esta el sensor?'**
+  String get biometricSensorPosition;
+
+  /// No description provided for @biometricPositionScreen.
+  ///
+  /// In es, this message translates to:
+  /// **'Pantalla'**
+  String get biometricPositionScreen;
+
+  /// No description provided for @biometricPositionRear.
+  ///
+  /// In es, this message translates to:
+  /// **'Atras'**
+  String get biometricPositionRear;
+
+  /// No description provided for @biometricPositionSide.
+  ///
+  /// In es, this message translates to:
+  /// **'Lateral'**
+  String get biometricPositionSide;
 }
 
 class _AppLocalizationsDelegate

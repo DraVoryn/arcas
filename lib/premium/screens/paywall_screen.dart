@@ -96,11 +96,33 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  plan.name,
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                Row(
+                  children: [
+                    Text(
+                      plan.name,
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    if (plan.id == 'vip') ...[
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.tertiary,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          'Recomendado',
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onTertiary,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
                 if (!isMonthly)
                   Container(
@@ -212,13 +234,13 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
   String _getErrorMessage(PurchaseErrorType? error, AppLocalizations l10n) {
     switch (error) {
       case PurchaseErrorType.storeUnavailable:
-        return 'Store not available on this device';
+        return l10n.purchaseErrorStoreUnavailable;
       case PurchaseErrorType.networkError:
-        return 'Network error. Please check your connection';
+        return l10n.purchaseErrorNetwork;
       case PurchaseErrorType.userCancelled:
-        return 'Purchase was cancelled';
+        return l10n.purchaseErrorCancelled;
       case PurchaseErrorType.productNotFound:
-        return 'Product not found';
+        return l10n.purchaseErrorNotFound;
       case PurchaseErrorType.unknown:
       case null:
         return l10n.purchaseFailed;

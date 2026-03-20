@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:drift/drift.dart' hide Column;
 import 'package:arcas/database/app_database.dart';
 import 'package:arcas/providers/database_provider.dart';
+import 'package:arcas/providers/currency_provider.dart';
 import 'package:arcas/l10n/app_localizations.dart';
 
 class AddTransactionDialog extends ConsumerStatefulWidget {
@@ -142,9 +143,9 @@ class _AddTransactionDialogState extends ConsumerState<AddTransactionDialog> {
           ],
         ),
         backgroundColor: const Color(0xFF2A9D8F),
-        behavior: SnackBarBehavior.floating,
+        behavior: SnackBarBehavior.fixed,  // Fixed: abajo del todo, no tapa el FAB
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        duration: const Duration(seconds: 2),
+        duration: const Duration(seconds: 1),  // 1 segundo: suficiente, no estorba
       ),
     );
   }
@@ -152,6 +153,7 @@ class _AddTransactionDialogState extends ConsumerState<AddTransactionDialog> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final currency = ref.watch(currencyNotifierProvider);
     final isExpense = _selectedType == 'expense';
     final accentColor = isExpense
         ? const Color(0xFFE63946)
@@ -292,9 +294,10 @@ class _AddTransactionDialogState extends ConsumerState<AddTransactionDialog> {
                 TextFormField(
                   controller: _amountController,
                   decoration: InputDecoration(
-                    labelText: l10n.amount,
+                    labelText: '${l10n.amount} (${currency.code})',
                     hintText: '0.00',
                     prefixIcon: const Icon(Icons.attach_money),
+                    prefixText: '${currency.symbol} ',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),

@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:arcas/providers/auth_provider.dart';
 import 'package:arcas/auth/widgets/pin_numpad.dart';
 import 'package:arcas/l10n/app_localizations.dart';
+import 'package:arcas/auth/biometric_position.dart';
+import 'package:arcas/auth/auth_service.dart';
 
 /// Pantalla de bloqueo.
 ///
@@ -31,6 +33,9 @@ class _LockScreenState extends ConsumerState<LockScreen>
   // Largo máximo del PIN
   static const int _maxPinLength = 6;
 
+  // Posición del sensor biométrico
+  BiometricPosition? _biometricPosition;
+
   late AnimationController _shakeController;
   late Animation<double> _shakeAnimation;
 
@@ -47,10 +52,26 @@ class _LockScreenState extends ConsumerState<LockScreen>
       CurvedAnimation(parent: _shakeController, curve: Curves.elasticIn),
     );
 
-    // Auto-intentar biometric si está habilitado
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _tryBiometric();
+    // Cargar posición del sensor biométrico
+    _loadBiometricPosition();
+
+    // Auto-intentar biometric SOLO SI está habilitado
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final authState = ref.read(authNotifierProvider).value;
+      if (authState?.biometricEnabled == true) {
+        await _tryBiometric();
+      }
     });
+  }
+
+  Future<void> _loadBiometricPosition() async {
+    final authService = ref.read(authServiceProvider);
+    final position = await authService.getBiometricPosition();
+    if (mounted) {
+      setState(() {
+        _biometricPosition = position;
+      });
+    }
   }
 
   @override
@@ -64,7 +85,7 @@ class _LockScreenState extends ConsumerState<LockScreen>
   // ==========================================================================
 
   Future<void> _tryBiometric() async {
-    final authState = ref.read(authNotifierProvider).valueOrNull;
+    final authState = ref.read(authNotifierProvider).value;
     if (authState == null || !authState.biometricEnabled) return;
 
     final success = await ref
@@ -171,11 +192,11 @@ class _LockScreenState extends ConsumerState<LockScreen>
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    // Usar .valueOrNull para obtener el estado desde AsyncNotifier
-    final authState = ref.watch(authNotifierProvider).valueOrNull;
+    // Usar .value para obtener el estado desde AsyncNotifier
+    final authState = ref.watch(authNotifierProvider).value;
 
     // Valores por defecto mientras carga
-    final failedAttempts = authState?.failedAttempts ?? 0;
+    final int failedAttempts = authState?.failedAttempts ?? 0;
     final biometricEnabled = authState?.biometricEnabled ?? false;
     final canReset = authState?.canReset ?? false;
 
@@ -297,6 +318,8 @@ class _LockScreenState extends ConsumerState<LockScreen>
               onNumberPressed: _onNumberPressed,
               onDeletePressed: _onDeletePressed,
               pinLength: _maxPinLength,
+              biometricPosition: _biometricPosition,
+              onBiometricPressed: _tryBiometric,
             ),
 
             const Spacer(flex: 1),

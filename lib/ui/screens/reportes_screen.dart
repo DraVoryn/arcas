@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:arcas/core/utils/date_formatter.dart';
 import 'package:arcas/providers/premium_provider.dart';
 import 'package:arcas/premium/models/report.dart';
@@ -25,7 +24,7 @@ class _ReportesScreenState extends ConsumerState<ReportesScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final premiumState = ref.watch(premiumNotifierProvider);
+    final premiumState = ref.watch(premiumNotifierProvider).value ?? const PremiumState();
     final reportState = ref.watch(reportGenerationProvider);
     final latestReportAsync = ref.watch(latestReportProvider);
 
@@ -36,10 +35,6 @@ class _ReportesScreenState extends ConsumerState<ReportesScreen> {
           const Padding(
             padding: EdgeInsets.only(right: 8),
             child: PremiumBadge(),
-          ),
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () => context.push('/premium-settings'),
           ),
         ],
       ),
@@ -56,7 +51,7 @@ class _ReportesScreenState extends ConsumerState<ReportesScreen> {
                     const ReportLimitIndicator(),
                     const SizedBox(height: 16),
                   ],
-                  if (!premiumState.canGenerateReport()) ...[
+                  if (!premiumState.canGenerateBasicReport()) ...[
                     const UpgradePrompt(),
                   ] else ...[
                     _buildGenerateReportSection(context, reportState),

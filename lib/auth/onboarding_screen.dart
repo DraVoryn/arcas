@@ -22,14 +22,13 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   int _currentPage = 0;
 
   // ==========================================================================
-  // DATA DE LOS SLIDES
+  // DATA DE LOS SLIDES (stateless - sin context)
   // ==========================================================================
 
   final List<_OnboardingSlide> _slides = [
     _OnboardingSlide(
-      title: 'Control total,\nsin complicaciones',
-      subtitle:
-          'Registrá tus ingresos y gastos de forma simple.\nTu información, solo en tu teléfono.',
+      title: 'onboardingSlide1Title',
+      subtitle: 'onboardingSlide1Subtitle',
       icon: Icons.account_balance_wallet_rounded,
       gradientColors: [
         const Color(0xFF0D1B2A),
@@ -37,13 +36,21 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       ],
     ),
     _OnboardingSlide(
-      title: 'Privacidad\na tu manera',
-      subtitle:
-          'Sin cloud, sin terceros, sin sorpresas.\nTus datos viajan solo entre vos y tu dispositivo.',
+      title: 'onboardingSlide2Title',
+      subtitle: 'onboardingSlide2Subtitle',
       icon: Icons.lock_rounded,
       gradientColors: [
         const Color(0xFF1B263B),
         const Color(0xFF2A4365),
+      ],
+    ),
+    _OnboardingSlide(
+      title: 'onboardingSlide3Title',
+      subtitle: 'onboardingSlide3Subtitle',
+      icon: Icons.check_circle_rounded,
+      gradientColors: [
+        const Color(0xFF2A4365),
+        const Color(0xFF1B263B),
       ],
     ),
   ];
@@ -127,7 +134,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     setState(() => _currentPage = index);
                   },
                   itemBuilder: (context, index) {
-                    return _buildSlide(_slides[index]);
+                    return _buildSlide(_slides[index], l10n);
                   },
                 ),
               ),
@@ -179,7 +186,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     );
   }
 
-  Widget _buildSlide(_OnboardingSlide slide) {
+  Widget _buildSlide(_OnboardingSlide slide, AppLocalizations l10n) {
+    // Obtener el texto traducido basado en la key
+    final title = _getLocalizedText(slide.title, l10n);
+    final subtitle = _getLocalizedText(slide.subtitle, l10n);
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 32),
       child: Column(
@@ -203,7 +214,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
           // Título
           Text(
-            slide.title,
+            title,
             textAlign: TextAlign.center,
             style: const TextStyle(
               fontSize: 28,
@@ -216,7 +227,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
           // Subtítulo
           Text(
-            slide.subtitle,
+            subtitle,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 16,
@@ -227,6 +238,26 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         ],
       ),
     );
+  }
+
+  /// Obtiene el texto localizado basado en la key ARB.
+  String _getLocalizedText(String key, AppLocalizations l10n) {
+    switch (key) {
+      case 'onboardingSlide1Title':
+        return l10n.onboardingSlide1Title;
+      case 'onboardingSlide1Subtitle':
+        return l10n.onboardingSlide1Subtitle;
+      case 'onboardingSlide2Title':
+        return l10n.onboardingSlide2Title;
+      case 'onboardingSlide2Subtitle':
+        return l10n.onboardingSlide2Subtitle;
+      case 'onboardingSlide3Title':
+        return l10n.onboardingSlide3Title;
+      case 'onboardingSlide3Subtitle':
+        return l10n.onboardingSlide3Subtitle;
+      default:
+        return key; // Fallback a la key si no se encuentra
+    }
   }
 
   Widget _buildPageIndicator(bool isActive) {

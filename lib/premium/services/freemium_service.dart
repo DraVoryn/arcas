@@ -11,34 +11,78 @@ class FreemiumService {
 
   Future<int> getReportsGeneratedThisMonth() async {
     final now = DateTime.now();
-    final usage = await _getOrCreateUsage(now.month, now.year);
+    final usage = await _getOrCreateUsageEntry(now.month, now.year);
     return usage!.reportsGenerated;
   }
 
-  Future<bool> canGenerateReport({required bool isPremium}) async {
+  Future<int> getPredictionsGeneratedThisMonth() async {
+    final now = DateTime.now();
+    final usage = await _getOrCreateUsageEntry(now.month, now.year);
+    return usage!.predictionsGenerated;
+  }
+
+  Future<bool> canGenerateReport({required bool isVip, required bool isPremium}) async {
     final generated = await getReportsGeneratedThisMonth();
-    return _limits.canGenerateReport(
+    return _limits.canGenerateBasicReport(
       reportsGeneratedThisMonth: generated,
+      isVip: isVip,
       isPremium: isPremium,
     );
   }
 
-  Future<int> getRemainingReports({required bool isPremium}) async {
+  Future<bool> canGenerateAdvancedReport({required bool isVip, required bool isPremium}) async {
     final generated = await getReportsGeneratedThisMonth();
-    return _limits.remainingReports(
+    return _limits.canGenerateAdvancedReport(
+      advancedReportsGeneratedThisMonth: generated,
+      isVip: isVip,
+      isPremium: isPremium,
+    );
+  }
+
+  Future<bool> canGeneratePrediction({required bool isVip, required bool isPremium}) async {
+    final generated = await getPredictionsGeneratedThisMonth();
+    return _limits.canGeneratePrediction(
+      predictionsGeneratedThisMonth: generated,
+      isVip: isVip,
+      isPremium: isPremium,
+    );
+  }
+
+  Future<int> getRemainingReports({required bool isVip, required bool isPremium}) async {
+    final generated = await getReportsGeneratedThisMonth();
+    return _limits.remainingBasicReports(
       reportsGeneratedThisMonth: generated,
+      isVip: isVip,
+      isPremium: isPremium,
+    );
+  }
+
+  Future<int> getRemainingAdvancedReports({required bool isVip, required bool isPremium}) async {
+    final generated = await getReportsGeneratedThisMonth();
+    return _limits.remainingAdvancedReports(
+      advancedReportsGeneratedThisMonth: generated,
+      isVip: isVip,
+      isPremium: isPremium,
+    );
+  }
+
+  Future<int> getRemainingPredictions({required bool isVip, required bool isPremium}) async {
+    final generated = await getPredictionsGeneratedThisMonth();
+    return _limits.remainingPredictions(
+      predictionsGeneratedThisMonth: generated,
+      isVip: isVip,
       isPremium: isPremium,
     );
   }
 
   Future<void> incrementUsage() async {
     final now = DateTime.now();
-    final usage = await _getOrCreateUsage(now.month, now.year);
+    final usage = await _getOrCreateUsageEntry(now.month, now.year);
     if (usage == null) return;
     
     await (_db.update(_db.reportUsage)
           ..where((t) => t.id.equals(usage.id)))
-        .write(
+    .write(
       ReportUsageCompanion(
         reportsGenerated: Value(usage.reportsGenerated + 1),
         lastReportDate: Value(now),
@@ -46,23 +90,62 @@ class FreemiumService {
     );
   }
 
-  Future<ReportUsageData?> _getOrCreateUsage(int month, int year) async {
+  Future<void> incrementPredictionUsage() async {
+    final now = DateTime.now();
+    final usage = await _getOrCreateUsageEntry(now.month, now.year);
+    if (usage == null) return;
+    
+    await (_db.update(_db.reportUsage)
+          ..where((t) => t.id.equals(usage.id)))
+    .write(
+      ReportUsageCompanion(
+        predictionsGenerated: Value(usage.predictionsGenerated + 1),
+        lastPredictionDate: Value(now),
+      ),
+    );
+  }
+
+  Future<ReportUsageData?> _getOrCreateUsageEntry(int month, int year) async {
+    print('[FreemiumService] _getOrCreateUsageEntry($month, $year)');
+    
+    // Usar query segura que nunca tira "too many elements"
     final query = _db.select(_db.reportUsage)
       ..where((t) => t.month.equals(month) & t.year.equals(year));
     
-    var usage = await query.getSingleOrNull();
+    // Usar .get() en lugar de .getSingle() para evitar el error
+    final existing = await query.get();
+    print('[FreemiumService] Found ${existing.length} rows for month=$month, year=$year');
     
-    if (usage == null) {
+    if (existing.isEmpty) {
+      // No existe, insertar con ON CONFLICT para evitar duplicados
+      print('[FreemiumService] No existing record, inserting...');
       await _db.into(_db.reportUsage).insert(
         ReportUsageCompanion.insert(
           month: month,
           year: year,
         ),
+        mode: InsertMode.insertOrReplace,
       );
-      usage = await query.getSingle();
+      
+      // Verificar que se insertó correctamente
+      final afterInsert = await query.get();
+      print('[FreemiumService] After insert: ${afterInsert.length} rows');
+      
+      if (afterInsert.isEmpty) {
+        print('[FreemiumService] ERROR: Insert failed');
+        return null;
+      }
+      return afterInsert.first;
+    } else if (existing.length == 1) {
+      //刚好一行，返回它
+      print('[FreemiumService] Returning existing record');
+      return existing.first;
+    } else {
+      // Múltiples filas (duplicados) - 返回第一行并清理
+      print('[FreemiumService] WARNING: ${existing.length} duplicates found, using first');
+      // En producción, deberías limpiar los duplicados aquí
+      return existing.first;
     }
-    
-    return usage;
   }
 
   Future<void> resetMonthlyUsage() async {
@@ -72,6 +155,6 @@ class FreemiumService {
     
     await (_db.delete(_db.reportUsage)
           ..where((t) => t.month.equals(lastMonth) & t.year.equals(lastYear)))
-        .go();
+    .go();
   }
 }

@@ -1333,6 +1333,17 @@ class $ReportUsageTable extends ReportUsage
     requiredDuringInsert: false,
     defaultValue: const Constant(0),
   );
+  static const VerificationMeta _predictionsGeneratedMeta =
+      const VerificationMeta('predictionsGenerated');
+  @override
+  late final GeneratedColumn<int> predictionsGenerated = GeneratedColumn<int>(
+    'predictions_generated',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
   static const VerificationMeta _lastReportDateMeta = const VerificationMeta(
     'lastReportDate',
   );
@@ -1345,13 +1356,26 @@ class $ReportUsageTable extends ReportUsage
         type: DriftSqlType.dateTime,
         requiredDuringInsert: false,
       );
+  static const VerificationMeta _lastPredictionDateMeta =
+      const VerificationMeta('lastPredictionDate');
+  @override
+  late final GeneratedColumn<DateTime> lastPredictionDate =
+      GeneratedColumn<DateTime>(
+        'last_prediction_date',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
   @override
   List<GeneratedColumn> get $columns => [
     id,
     month,
     year,
     reportsGenerated,
+    predictionsGenerated,
     lastReportDate,
+    lastPredictionDate,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -1393,6 +1417,15 @@ class $ReportUsageTable extends ReportUsage
         ),
       );
     }
+    if (data.containsKey('predictions_generated')) {
+      context.handle(
+        _predictionsGeneratedMeta,
+        predictionsGenerated.isAcceptableOrUnknown(
+          data['predictions_generated']!,
+          _predictionsGeneratedMeta,
+        ),
+      );
+    }
     if (data.containsKey('last_report_date')) {
       context.handle(
         _lastReportDateMeta,
@@ -1402,11 +1435,24 @@ class $ReportUsageTable extends ReportUsage
         ),
       );
     }
+    if (data.containsKey('last_prediction_date')) {
+      context.handle(
+        _lastPredictionDateMeta,
+        lastPredictionDate.isAcceptableOrUnknown(
+          data['last_prediction_date']!,
+          _lastPredictionDateMeta,
+        ),
+      );
+    }
     return context;
   }
 
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {month, year},
+  ];
   @override
   ReportUsageData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -1427,9 +1473,17 @@ class $ReportUsageTable extends ReportUsage
         DriftSqlType.int,
         data['${effectivePrefix}reports_generated'],
       )!,
+      predictionsGenerated: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}predictions_generated'],
+      )!,
       lastReportDate: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}last_report_date'],
+      ),
+      lastPredictionDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_prediction_date'],
       ),
     );
   }
@@ -1445,13 +1499,17 @@ class ReportUsageData extends DataClass implements Insertable<ReportUsageData> {
   final int month;
   final int year;
   final int reportsGenerated;
+  final int predictionsGenerated;
   final DateTime? lastReportDate;
+  final DateTime? lastPredictionDate;
   const ReportUsageData({
     required this.id,
     required this.month,
     required this.year,
     required this.reportsGenerated,
+    required this.predictionsGenerated,
     this.lastReportDate,
+    this.lastPredictionDate,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1460,8 +1518,12 @@ class ReportUsageData extends DataClass implements Insertable<ReportUsageData> {
     map['month'] = Variable<int>(month);
     map['year'] = Variable<int>(year);
     map['reports_generated'] = Variable<int>(reportsGenerated);
+    map['predictions_generated'] = Variable<int>(predictionsGenerated);
     if (!nullToAbsent || lastReportDate != null) {
       map['last_report_date'] = Variable<DateTime>(lastReportDate);
+    }
+    if (!nullToAbsent || lastPredictionDate != null) {
+      map['last_prediction_date'] = Variable<DateTime>(lastPredictionDate);
     }
     return map;
   }
@@ -1472,9 +1534,13 @@ class ReportUsageData extends DataClass implements Insertable<ReportUsageData> {
       month: Value(month),
       year: Value(year),
       reportsGenerated: Value(reportsGenerated),
+      predictionsGenerated: Value(predictionsGenerated),
       lastReportDate: lastReportDate == null && nullToAbsent
           ? const Value.absent()
           : Value(lastReportDate),
+      lastPredictionDate: lastPredictionDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastPredictionDate),
     );
   }
 
@@ -1488,7 +1554,13 @@ class ReportUsageData extends DataClass implements Insertable<ReportUsageData> {
       month: serializer.fromJson<int>(json['month']),
       year: serializer.fromJson<int>(json['year']),
       reportsGenerated: serializer.fromJson<int>(json['reportsGenerated']),
+      predictionsGenerated: serializer.fromJson<int>(
+        json['predictionsGenerated'],
+      ),
       lastReportDate: serializer.fromJson<DateTime?>(json['lastReportDate']),
+      lastPredictionDate: serializer.fromJson<DateTime?>(
+        json['lastPredictionDate'],
+      ),
     );
   }
   @override
@@ -1499,7 +1571,9 @@ class ReportUsageData extends DataClass implements Insertable<ReportUsageData> {
       'month': serializer.toJson<int>(month),
       'year': serializer.toJson<int>(year),
       'reportsGenerated': serializer.toJson<int>(reportsGenerated),
+      'predictionsGenerated': serializer.toJson<int>(predictionsGenerated),
       'lastReportDate': serializer.toJson<DateTime?>(lastReportDate),
+      'lastPredictionDate': serializer.toJson<DateTime?>(lastPredictionDate),
     };
   }
 
@@ -1508,15 +1582,21 @@ class ReportUsageData extends DataClass implements Insertable<ReportUsageData> {
     int? month,
     int? year,
     int? reportsGenerated,
+    int? predictionsGenerated,
     Value<DateTime?> lastReportDate = const Value.absent(),
+    Value<DateTime?> lastPredictionDate = const Value.absent(),
   }) => ReportUsageData(
     id: id ?? this.id,
     month: month ?? this.month,
     year: year ?? this.year,
     reportsGenerated: reportsGenerated ?? this.reportsGenerated,
+    predictionsGenerated: predictionsGenerated ?? this.predictionsGenerated,
     lastReportDate: lastReportDate.present
         ? lastReportDate.value
         : this.lastReportDate,
+    lastPredictionDate: lastPredictionDate.present
+        ? lastPredictionDate.value
+        : this.lastPredictionDate,
   );
   ReportUsageData copyWithCompanion(ReportUsageCompanion data) {
     return ReportUsageData(
@@ -1526,9 +1606,15 @@ class ReportUsageData extends DataClass implements Insertable<ReportUsageData> {
       reportsGenerated: data.reportsGenerated.present
           ? data.reportsGenerated.value
           : this.reportsGenerated,
+      predictionsGenerated: data.predictionsGenerated.present
+          ? data.predictionsGenerated.value
+          : this.predictionsGenerated,
       lastReportDate: data.lastReportDate.present
           ? data.lastReportDate.value
           : this.lastReportDate,
+      lastPredictionDate: data.lastPredictionDate.present
+          ? data.lastPredictionDate.value
+          : this.lastPredictionDate,
     );
   }
 
@@ -1539,14 +1625,23 @@ class ReportUsageData extends DataClass implements Insertable<ReportUsageData> {
           ..write('month: $month, ')
           ..write('year: $year, ')
           ..write('reportsGenerated: $reportsGenerated, ')
-          ..write('lastReportDate: $lastReportDate')
+          ..write('predictionsGenerated: $predictionsGenerated, ')
+          ..write('lastReportDate: $lastReportDate, ')
+          ..write('lastPredictionDate: $lastPredictionDate')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, month, year, reportsGenerated, lastReportDate);
+  int get hashCode => Object.hash(
+    id,
+    month,
+    year,
+    reportsGenerated,
+    predictionsGenerated,
+    lastReportDate,
+    lastPredictionDate,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1555,7 +1650,9 @@ class ReportUsageData extends DataClass implements Insertable<ReportUsageData> {
           other.month == this.month &&
           other.year == this.year &&
           other.reportsGenerated == this.reportsGenerated &&
-          other.lastReportDate == this.lastReportDate);
+          other.predictionsGenerated == this.predictionsGenerated &&
+          other.lastReportDate == this.lastReportDate &&
+          other.lastPredictionDate == this.lastPredictionDate);
 }
 
 class ReportUsageCompanion extends UpdateCompanion<ReportUsageData> {
@@ -1563,20 +1660,26 @@ class ReportUsageCompanion extends UpdateCompanion<ReportUsageData> {
   final Value<int> month;
   final Value<int> year;
   final Value<int> reportsGenerated;
+  final Value<int> predictionsGenerated;
   final Value<DateTime?> lastReportDate;
+  final Value<DateTime?> lastPredictionDate;
   const ReportUsageCompanion({
     this.id = const Value.absent(),
     this.month = const Value.absent(),
     this.year = const Value.absent(),
     this.reportsGenerated = const Value.absent(),
+    this.predictionsGenerated = const Value.absent(),
     this.lastReportDate = const Value.absent(),
+    this.lastPredictionDate = const Value.absent(),
   });
   ReportUsageCompanion.insert({
     this.id = const Value.absent(),
     required int month,
     required int year,
     this.reportsGenerated = const Value.absent(),
+    this.predictionsGenerated = const Value.absent(),
     this.lastReportDate = const Value.absent(),
+    this.lastPredictionDate = const Value.absent(),
   }) : month = Value(month),
        year = Value(year);
   static Insertable<ReportUsageData> custom({
@@ -1584,14 +1687,20 @@ class ReportUsageCompanion extends UpdateCompanion<ReportUsageData> {
     Expression<int>? month,
     Expression<int>? year,
     Expression<int>? reportsGenerated,
+    Expression<int>? predictionsGenerated,
     Expression<DateTime>? lastReportDate,
+    Expression<DateTime>? lastPredictionDate,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (month != null) 'month': month,
       if (year != null) 'year': year,
       if (reportsGenerated != null) 'reports_generated': reportsGenerated,
+      if (predictionsGenerated != null)
+        'predictions_generated': predictionsGenerated,
       if (lastReportDate != null) 'last_report_date': lastReportDate,
+      if (lastPredictionDate != null)
+        'last_prediction_date': lastPredictionDate,
     });
   }
 
@@ -1600,14 +1709,18 @@ class ReportUsageCompanion extends UpdateCompanion<ReportUsageData> {
     Value<int>? month,
     Value<int>? year,
     Value<int>? reportsGenerated,
+    Value<int>? predictionsGenerated,
     Value<DateTime?>? lastReportDate,
+    Value<DateTime?>? lastPredictionDate,
   }) {
     return ReportUsageCompanion(
       id: id ?? this.id,
       month: month ?? this.month,
       year: year ?? this.year,
       reportsGenerated: reportsGenerated ?? this.reportsGenerated,
+      predictionsGenerated: predictionsGenerated ?? this.predictionsGenerated,
       lastReportDate: lastReportDate ?? this.lastReportDate,
+      lastPredictionDate: lastPredictionDate ?? this.lastPredictionDate,
     );
   }
 
@@ -1626,8 +1739,16 @@ class ReportUsageCompanion extends UpdateCompanion<ReportUsageData> {
     if (reportsGenerated.present) {
       map['reports_generated'] = Variable<int>(reportsGenerated.value);
     }
+    if (predictionsGenerated.present) {
+      map['predictions_generated'] = Variable<int>(predictionsGenerated.value);
+    }
     if (lastReportDate.present) {
       map['last_report_date'] = Variable<DateTime>(lastReportDate.value);
+    }
+    if (lastPredictionDate.present) {
+      map['last_prediction_date'] = Variable<DateTime>(
+        lastPredictionDate.value,
+      );
     }
     return map;
   }
@@ -1639,7 +1760,9 @@ class ReportUsageCompanion extends UpdateCompanion<ReportUsageData> {
           ..write('month: $month, ')
           ..write('year: $year, ')
           ..write('reportsGenerated: $reportsGenerated, ')
-          ..write('lastReportDate: $lastReportDate')
+          ..write('predictionsGenerated: $predictionsGenerated, ')
+          ..write('lastReportDate: $lastReportDate, ')
+          ..write('lastPredictionDate: $lastPredictionDate')
           ..write(')'))
         .toString();
   }
@@ -2907,7 +3030,9 @@ typedef $$ReportUsageTableCreateCompanionBuilder =
       required int month,
       required int year,
       Value<int> reportsGenerated,
+      Value<int> predictionsGenerated,
       Value<DateTime?> lastReportDate,
+      Value<DateTime?> lastPredictionDate,
     });
 typedef $$ReportUsageTableUpdateCompanionBuilder =
     ReportUsageCompanion Function({
@@ -2915,7 +3040,9 @@ typedef $$ReportUsageTableUpdateCompanionBuilder =
       Value<int> month,
       Value<int> year,
       Value<int> reportsGenerated,
+      Value<int> predictionsGenerated,
       Value<DateTime?> lastReportDate,
+      Value<DateTime?> lastPredictionDate,
     });
 
 class $$ReportUsageTableFilterComposer
@@ -2947,8 +3074,18 @@ class $$ReportUsageTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<int> get predictionsGenerated => $composableBuilder(
+    column: $table.predictionsGenerated,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<DateTime> get lastReportDate => $composableBuilder(
     column: $table.lastReportDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastPredictionDate => $composableBuilder(
+    column: $table.lastPredictionDate,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -2982,8 +3119,18 @@ class $$ReportUsageTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get predictionsGenerated => $composableBuilder(
+    column: $table.predictionsGenerated,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get lastReportDate => $composableBuilder(
     column: $table.lastReportDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastPredictionDate => $composableBuilder(
+    column: $table.lastPredictionDate,
     builder: (column) => ColumnOrderings(column),
   );
 }
@@ -3011,8 +3158,18 @@ class $$ReportUsageTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<int> get predictionsGenerated => $composableBuilder(
+    column: $table.predictionsGenerated,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<DateTime> get lastReportDate => $composableBuilder(
     column: $table.lastReportDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get lastPredictionDate => $composableBuilder(
+    column: $table.lastPredictionDate,
     builder: (column) => column,
   );
 }
@@ -3052,13 +3209,17 @@ class $$ReportUsageTableTableManager
                 Value<int> month = const Value.absent(),
                 Value<int> year = const Value.absent(),
                 Value<int> reportsGenerated = const Value.absent(),
+                Value<int> predictionsGenerated = const Value.absent(),
                 Value<DateTime?> lastReportDate = const Value.absent(),
+                Value<DateTime?> lastPredictionDate = const Value.absent(),
               }) => ReportUsageCompanion(
                 id: id,
                 month: month,
                 year: year,
                 reportsGenerated: reportsGenerated,
+                predictionsGenerated: predictionsGenerated,
                 lastReportDate: lastReportDate,
+                lastPredictionDate: lastPredictionDate,
               ),
           createCompanionCallback:
               ({
@@ -3066,13 +3227,17 @@ class $$ReportUsageTableTableManager
                 required int month,
                 required int year,
                 Value<int> reportsGenerated = const Value.absent(),
+                Value<int> predictionsGenerated = const Value.absent(),
                 Value<DateTime?> lastReportDate = const Value.absent(),
+                Value<DateTime?> lastPredictionDate = const Value.absent(),
               }) => ReportUsageCompanion.insert(
                 id: id,
                 month: month,
                 year: year,
                 reportsGenerated: reportsGenerated,
+                predictionsGenerated: predictionsGenerated,
                 lastReportDate: lastReportDate,
+                lastPredictionDate: lastPredictionDate,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))

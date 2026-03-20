@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:arcas/providers/auth_provider.dart';
 import 'package:arcas/l10n/app_localizations.dart';
+import 'package:arcas/auth/biometric_position.dart';
+import 'package:arcas/auth/auth_service.dart';
 
 /// Pantalla para configurar biometrics (Face ID / Touch ID).
 ///
@@ -25,6 +28,7 @@ class _BiometricSetupScreenState extends ConsumerState<BiometricSetupScreen>
   bool _isLoading = false;
   bool _hasError = false;
   String _errorMessage = '';
+  BiometricPosition _selectedPosition = BiometricPosition.screen;
 
   late AnimationController _pulseController;
   late Animation<double> _pulseAnimation;
@@ -61,19 +65,56 @@ class _BiometricSetupScreenState extends ConsumerState<BiometricSetupScreen>
       _hasError = false;
     });
 
-    final success =
-        await ref.read(authNotifierProvider.notifier).enableBiometric();
+    // Guardar la posición del sensor primero
+    final authService = ref.read(authServiceProvider);
+    await authService.setBiometricPosition(_selectedPosition);
 
-    if (success) {
-      // Ir a la app
-      if (mounted) {
-        context.go('/home');
+    try {
+      final success =
+          await ref.read(authNotifierProvider.notifier).enableBiometric();
+
+      if (success) {
+        // Ir a la app
+        if (mounted) {
+          context.go('/home');
+        }
+      } else {
+        // Biometric failed — provide specific guidance
+        setState(() {
+          _isLoading = false;
+          _hasError = true;
+          _errorMessage = l10n.biometricEnableError;
+        });
       }
-    } else {
+    } on PlatformException catch (e) {
+      // local_auth-specific errors
+      String message;
+      switch (e.code) {
+        case 'NotAvailable':
+          message = l10n.biometricErrorNotAvailable;
+          break;
+        case 'NotEnrolled':
+          message = l10n.biometricErrorNotEnrolled;
+          break;
+        case 'LockedOut':
+          message = l10n.biometricErrorLockedOut;
+          break;
+        case 'PermanentlyLockedOut':
+          message = l10n.biometricErrorPermanentlyLockedOut;
+          break;
+        default:
+          message = '${l10n.biometricEnableError} (${e.code})';
+      }
       setState(() {
         _isLoading = false;
         _hasError = true;
-        _errorMessage = l10n.biometricEnableError;
+        _errorMessage = message;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+        _hasError = true;
+        _errorMessage = '${l10n.biometricEnableError} ($e)';
       });
     }
   }
@@ -125,7 +166,7 @@ class _BiometricSetupScreenState extends ConsumerState<BiometricSetupScreen>
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final biometricsAsync = ref.watch(availableBiometricsProvider);
-    final biometricTypes = biometricsAsync.valueOrNull ?? [];
+    final biometricTypes = biometricsAsync.value ?? [];
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
@@ -201,6 +242,45 @@ class _BiometricSetupScreenState extends ConsumerState<BiometricSetupScreen>
                 Icons.touch_app_outlined,
                 l10n.biometricEasier,
                 l10n.biometricEasierDesc,
+              ),
+
+              const SizedBox(height: 24),
+
+              // Selector de posición del sensor
+              Text(
+                l10n.biometricSensorPosition,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF111827),
+                ),
+              ),
+              const SizedBox(height: 12),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _PositionOption(
+                    position: BiometricPosition.screen,
+                    isSelected: _selectedPosition == BiometricPosition.screen,
+                    onTap: () => setState(() => _selectedPosition = BiometricPosition.screen),
+                    label: l10n.biometricPositionScreen,
+                    icon: Icons.smartphone,
+                  ),
+                  _PositionOption(
+                    position: BiometricPosition.rear,
+                    isSelected: _selectedPosition == BiometricPosition.rear,
+                    onTap: () => setState(() => _selectedPosition = BiometricPosition.rear),
+                    label: l10n.biometricPositionRear,
+                    icon: Icons.sensors,
+                  ),
+                  _PositionOption(
+                    position: BiometricPosition.side,
+                    isSelected: _selectedPosition == BiometricPosition.side,
+                    onTap: () => setState(() => _selectedPosition = BiometricPosition.side),
+                    label: l10n.biometricPositionSide,
+                    icon: Icons.lock_open,
+                  ),
+                ],
               ),
 
               const Spacer(flex: 2),
@@ -335,6 +415,72 @@ class _BiometricSetupScreenState extends ConsumerState<BiometricSetupScreen>
           ],
         ),
       ],
+    );
+  }
+}
+
+/// Opción de posición del sensor biométrico.
+///
+/// Muestra un icono, label y descripción para cada opción.
+class _PositionOption extends StatelessWidget {
+  final BiometricPosition position;
+  final bool isSelected;
+  final VoidCallback onTap;
+  final String label;
+  final IconData icon;
+
+  const _PositionOption({
+    required this.position,
+    required this.isSelected,
+    required this.onTap,
+    required this.label,
+    required this.icon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        width: 100,
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? const Color(0xFF5856D6).withValues(alpha: 0.1)
+              : Colors.transparent,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: isSelected
+                ? const Color(0xFF5856D6)
+                : const Color(0xFFE5E7EB),
+            width: 2,
+          ),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              size: 28,
+              color: isSelected
+                  ? const Color(0xFF5856D6)
+                  : const Color(0xFF6B7280),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                color: isSelected
+                    ? const Color(0xFF5856D6)
+                    : const Color(0xFF6B7280),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
