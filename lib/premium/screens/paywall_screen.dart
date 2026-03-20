@@ -96,11 +96,33 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  plan.name,
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                Row(
+                  children: [
+                    Text(
+                      plan.name,
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    if (plan.id == 'vip') ...[
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.tertiary,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          'Recomendado',
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onTertiary,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
                 if (!isMonthly)
                   Container(

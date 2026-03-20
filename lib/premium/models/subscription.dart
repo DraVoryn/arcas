@@ -24,6 +24,7 @@ class Subscription {
       (expirationDate == null || expirationDate!.isAfter(DateTime.now()));
 
   bool get isPremium => isActive && (planId == 'monthly' || planId == 'yearly');
+  bool get isVip => isActive && planId == 'vip';
 
   Subscription copyWith({
     int? id,

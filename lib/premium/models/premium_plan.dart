@@ -35,6 +35,19 @@ class PremiumPlan {
 
   static const List<PremiumPlan> defaultPlans = [
     PremiumPlan(
+      id: 'vip',
+      name: 'VIP',
+      description: 'Reportes básicos ilimitados + predicciones simples',
+      price: 1.99,
+      billingPeriod: 'month',
+      features: [
+        'Reportes básicos ilimitados',
+        '5 reportes avanzados/mes',
+        'Predicciones simples (30 días)',
+        'Exportar a CSV',
+      ],
+    ),
+    PremiumPlan(
       id: 'monthly',
       name: 'Premium Monthly',
       description: 'Reportes avanzados, predicciones y funciones pro',

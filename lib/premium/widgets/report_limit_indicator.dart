@@ -12,17 +12,18 @@ class ReportLimitIndicator extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final premiumState = ref.watch(premiumNotifierProvider).value ?? const PremiumState();
 
-    if (premiumState.isPremium) {
+    if (premiumState.isPremium || premiumState.isVip) {
       return const SizedBox.shrink();
     }
 
     final limits = const FreemiumLimits();
-    final percentage = limits.usagePercentage(
+    final percentage = limits.basicUsagePercentage(
       reportsGeneratedThisMonth: premiumState.reportsGeneratedThisMonth,
+      isVip: premiumState.isVip,
       isPremium: premiumState.isPremium,
     );
 
-    final remaining = premiumState.remainingReports;
+    final remaining = premiumState.remainingBasicReports;
 
     return Container(
       padding: const EdgeInsets.all(12),

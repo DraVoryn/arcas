@@ -39,8 +39,10 @@ class ReportUsage extends Table {
   IntColumn get month => integer()();
   IntColumn get year => integer()();
   IntColumn get reportsGenerated => integer().withDefault(const Constant(0))();
+  IntColumn get predictionsGenerated => integer().withDefault(const Constant(0))();
   DateTimeColumn get lastReportDate => dateTime().nullable()();
-  
+  DateTimeColumn get lastPredictionDate => dateTime().nullable()();
+   
   @override
   List<Set<Column>> get uniqueKeys => [{month, year}];
 }
@@ -71,10 +73,11 @@ class AppDatabase extends _$AppDatabase {
       },
       onUpgrade: (Migrator m, int from, int to) async {
         // Future migrations go here
-        // Example for v2 -> v3:
-        // if (from < 3) {
-        //   await m.addColumn('transactions', transactions.newColumn);
-        // }
+        if (from < 3) {
+          // Add predictions tracking columns to ReportUsage table
+          await m.addColumn(reportUsage, reportUsage.predictionsGenerated);
+          await m.addColumn(reportUsage, reportUsage.lastPredictionDate);
+        }
       },
       beforeOpen: (details) async {
         // Enable foreign keys and optimize

@@ -40,6 +40,7 @@ class PurchaseService {
   
   static const String _productMonthly = 'premium_monthly';
   static const String _productYearly = 'premium_yearly';
+  static const String _productVip = 'com.arcas.vip.monthly';
 
   StreamSubscription<List<PurchaseDetails>>? _purchaseSubscription;
   Completer<bool>? _purchaseCompleter;
@@ -114,7 +115,7 @@ class PurchaseService {
     }
 
     try {
-      final productIds = <String>{_productMonthly, _productYearly};
+      final productIds = <String>{_productMonthly, _productYearly, _productVip};
       final response = await _inAppPurchase.queryProductDetails(productIds);
       return response.productDetails;
     } catch (e) {
@@ -123,7 +124,16 @@ class PurchaseService {
   }
 
   String _getProductId(String planId) {
-    return planId == 'monthly' ? _productMonthly : _productYearly;
+    switch (planId) {
+      case 'monthly':
+        return _productMonthly;
+      case 'yearly':
+        return _productYearly;
+      case 'vip':
+        return _productVip;
+      default:
+        return _productMonthly;
+    }
   }
 
   PremiumPlan? _getPlanFromProductId(String productId) {
@@ -136,6 +146,11 @@ class PurchaseService {
       return PremiumPlan.defaultPlans.firstWhere(
         (p) => p.id == 'yearly',
         orElse: () => PremiumPlan.defaultPlans.last,
+      );
+    } else if (productId == _productVip) {
+      return PremiumPlan.defaultPlans.firstWhere(
+        (p) => p.id == 'vip',
+        orElse: () => PremiumPlan.defaultPlans.first,
       );
     }
     return null;

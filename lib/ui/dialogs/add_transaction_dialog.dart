@@ -143,9 +143,9 @@ class _AddTransactionDialogState extends ConsumerState<AddTransactionDialog> {
           ],
         ),
         backgroundColor: const Color(0xFF2A9D8F),
-        behavior: SnackBarBehavior.floating,
+        behavior: SnackBarBehavior.fixed,  // Fixed: abajo del todo, no tapa el FAB
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        duration: const Duration(seconds: 2),
+        duration: const Duration(seconds: 1),  // 1 segundo: suficiente, no estorba
       ),
     );
   }

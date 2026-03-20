@@ -51,7 +51,7 @@ class _ReportesScreenState extends ConsumerState<ReportesScreen> {
                     const ReportLimitIndicator(),
                     const SizedBox(height: 16),
                   ],
-                  if (!premiumState.canGenerateReport()) ...[
+                  if (!premiumState.canGenerateBasicReport()) ...[
                     const UpgradePrompt(),
                   ] else ...[
                     _buildGenerateReportSection(context, reportState),

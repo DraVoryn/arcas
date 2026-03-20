@@ -29,48 +29,93 @@ final freemiumLimitsProvider = Provider<FreemiumLimits>((ref) {
 
 class PremiumState {
   final bool isPremium;
+  final bool isVip;
   final model.Subscription? subscription;
   final int reportsGeneratedThisMonth;
+  final int predictionsGeneratedThisMonth;
   final bool isLoading;
   final String? error;
 
   const PremiumState({
     this.isPremium = false,
+    this.isVip = false,
     this.subscription,
     this.reportsGeneratedThisMonth = 0,
+    this.predictionsGeneratedThisMonth = 0,
     this.isLoading = false,
     this.error,
   });
 
   PremiumState copyWith({
     bool? isPremium,
+    bool? isVip,
     model.Subscription? subscription,
     int? reportsGeneratedThisMonth,
+    int? predictionsGeneratedThisMonth,
     bool? isLoading,
     String? error,
   }) {
     return PremiumState(
       isPremium: isPremium ?? this.isPremium,
+      isVip: isVip ?? this.isVip,
       subscription: subscription ?? this.subscription,
       reportsGeneratedThisMonth: reportsGeneratedThisMonth ?? this.reportsGeneratedThisMonth,
+      predictionsGeneratedThisMonth: predictionsGeneratedThisMonth ?? this.predictionsGeneratedThisMonth,
       isLoading: isLoading ?? this.isLoading,
       error: error,
     );
   }
 
-  int get remainingReports {
-    if (isPremium) return -1;
+  int get remainingBasicReports {
     final limits = const FreemiumLimits();
-    return limits.remainingReports(
+    return limits.remainingBasicReports(
       reportsGeneratedThisMonth: reportsGeneratedThisMonth,
+      isVip: isVip,
       isPremium: isPremium,
     );
   }
 
-  bool canGenerateReport() {
+  bool canGenerateBasicReport() {
     final limits = const FreemiumLimits();
-    return limits.canGenerateReport(
+    return limits.canGenerateBasicReport(
       reportsGeneratedThisMonth: reportsGeneratedThisMonth,
+      isVip: isVip,
+      isPremium: isPremium,
+    );
+  }
+
+  int get remainingAdvancedReports {
+    final limits = const FreemiumLimits();
+    return limits.remainingAdvancedReports(
+      advancedReportsGeneratedThisMonth: reportsGeneratedThisMonth, // Note: same counter for now
+      isVip: isVip,
+      isPremium: isPremium,
+    );
+  }
+
+  bool canGenerateAdvancedReport() {
+    final limits = const FreemiumLimits();
+    return limits.canGenerateAdvancedReport(
+      advancedReportsGeneratedThisMonth: reportsGeneratedThisMonth,
+      isVip: isVip,
+      isPremium: isPremium,
+    );
+  }
+
+  int get remainingPredictions {
+    final limits = const FreemiumLimits();
+    return limits.remainingPredictions(
+      predictionsGeneratedThisMonth: predictionsGeneratedThisMonth,
+      isVip: isVip,
+      isPremium: isPremium,
+    );
+  }
+
+  bool canGeneratePrediction() {
+    final limits = const FreemiumLimits();
+    return limits.canGeneratePrediction(
+      predictionsGeneratedThisMonth: predictionsGeneratedThisMonth,
+      isVip: isVip,
       isPremium: isPremium,
     );
   }
@@ -88,11 +133,14 @@ class PremiumNotifier extends AsyncNotifier<PremiumState> {
       final freemiumService = ref.read(freemiumServiceProvider);
       final subscription = await purchaseService.getCurrentSubscription();
       final reportsGenerated = await freemiumService.getReportsGeneratedThisMonth();
+      final predictionsGenerated = await freemiumService.getPredictionsGeneratedThisMonth();
       
       return PremiumState(
         isPremium: subscription?.isPremium ?? false,
+        isVip: subscription?.isVip ?? false,
         subscription: subscription,
         reportsGeneratedThisMonth: reportsGenerated,
+        predictionsGeneratedThisMonth: predictionsGenerated,
         isLoading: false,
       );
     } catch (e) {
@@ -181,7 +229,7 @@ class ReportGenerationNotifier extends Notifier<ReportGenerationState> {
     final premiumStateAsync = ref.read(premiumNotifierProvider);
     final premiumState = premiumStateAsync.value ?? const PremiumState();
     
-    if (!premiumState.canGenerateReport()) {
+    if (!premiumState.canGenerateBasicReport()) {
       state = state.copyWith(error: 'Report limit reached');
       return null;
     }
