@@ -5,6 +5,8 @@ import 'package:crypto/crypto.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:local_auth/local_auth.dart';
 
+import 'biometric_position.dart';
+
 /// Servicio de autenticación local.
 ///
 /// RESPONSABILIDADES:
@@ -52,6 +54,7 @@ class AuthService {
   /// Clave para guardar el hash en secure storage.
   static const String _pinHashKey = 'arcas_pin_hash';
   static const String _biometricEnabledKey = 'arcas_biometric_enabled';
+  static const String _biometricPositionKey = 'arcas_biometric_position';
 
   // ==========================================================================
   // DEPENDENCIAS (inyectadas para poder mockear en tests)
@@ -69,8 +72,11 @@ class AuthService {
     return AuthService._(
       secureStorage: const FlutterSecureStorage(
         aOptions: AndroidOptions(
-          encryptedSharedPreferences: true,
-          // Android KeyStore es el más seguro disponible
+          // IMPORTANT: encryptedSharedPreferences requiere Android Keystore
+          // que necesita device encryption activo (patron/PIN/huella del telefono).
+          // Si no esta configurado, SharedPreferences falla silenciosamente.
+          // Para este dispositivo (Moto G54 5G), lo desactivamos.
+          encryptedSharedPreferences: false,
         ),
         iOptions: IOSOptions(
           accessibility: KeychainAccessibility.first_unlock_this_device,
@@ -175,25 +181,70 @@ class AuthService {
 
   /// Guarda el hash del PIN de forma segura.
   Future<void> savePinHash(String hash) async {
+    // ignore: avoid_print
+    print('[AuthService] savePinHash() -> saving ${hash.length} chars');
     await _secureStorage.write(key: _pinHashKey, value: hash);
+    // ignore: avoid_print
+    print('[AuthService] savePinHash() -> saved successfully');
   }
 
   /// Recupera el hash del PIN guardado.
   /// Retorna null si no hay PIN configurado.
   Future<String?> getPinHash() async {
-    return await _secureStorage.read(key: _pinHashKey);
+    try {
+      final result = await _secureStorage.read(key: _pinHashKey);
+      // ignore: avoid_print
+      print('[AuthService] getPinHash() -> ${result != null ? "found (${result.length} chars)" : "null"}');
+      return result;
+    } catch (e) {
+      // ignore: avoid_print
+      print('[AuthService] getPinHash() ERROR: $e');
+      return null;
+    }
   }
 
   /// Verifica si ya hay un PIN configurado.
   Future<bool> isPinSetup() async {
     final hash = await getPinHash();
-    return hash != null && hash.isNotEmpty;
+    final result = hash != null && hash.isNotEmpty;
+    // ignore: avoid_print
+    print('[AuthService] isPinSetup() -> $result (hash=${hash?.substring(0, 10)}...)');
+    return result;
   }
 
   /// Elimina el PIN (para reset de la app).
   Future<void> clearPin() async {
+    // ignore: avoid_print
+    print('[AuthService] clearPin() -> DELETING PIN HASH');
     await _secureStorage.delete(key: _pinHashKey);
     await _secureStorage.delete(key: _biometricEnabledKey);
+    await _secureStorage.delete(key: _biometricPositionKey);
+  }
+
+  // ==========================================================================
+  // MÉTODOS PÚBLICOS: BIOMETRIC POSITION
+  // ==========================================================================
+
+  /// Obtiene la posición del sensor biométrico.
+  /// Retorna BiometricPosition.screen por defecto si no está configurado.
+  Future<BiometricPosition> getBiometricPosition() async {
+    final value = await _secureStorage.read(key: _biometricPositionKey);
+    switch (value) {
+      case 'rear':
+        return BiometricPosition.rear;
+      case 'side':
+        return BiometricPosition.side;
+      default:
+        return BiometricPosition.screen;
+    }
+  }
+
+  /// Guarda la posición del sensor biométrico.
+  Future<void> setBiometricPosition(BiometricPosition position) async {
+    await _secureStorage.write(
+      key: _biometricPositionKey,
+      value: position.name,
+    );
   }
 
   // ==========================================================================
