@@ -212,13 +212,13 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
   String _getErrorMessage(PurchaseErrorType? error, AppLocalizations l10n) {
     switch (error) {
       case PurchaseErrorType.storeUnavailable:
-        return 'Store not available on this device';
+        return l10n.purchaseErrorStoreUnavailable;
       case PurchaseErrorType.networkError:
-        return 'Network error. Please check your connection';
+        return l10n.purchaseErrorNetwork;
       case PurchaseErrorType.userCancelled:
-        return 'Purchase was cancelled';
+        return l10n.purchaseErrorCancelled;
       case PurchaseErrorType.productNotFound:
-        return 'Product not found';
+        return l10n.purchaseErrorNotFound;
       case PurchaseErrorType.unknown:
       case null:
         return l10n.purchaseFailed;
