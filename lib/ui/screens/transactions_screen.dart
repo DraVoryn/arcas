@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:arcas/database/app_database.dart';
 import 'package:arcas/ui/dialogs/add_transaction_dialog.dart';
 import 'package:arcas/providers/database_provider.dart';
+import 'package:arcas/providers/currency_provider.dart';
 import 'package:arcas/l10n/app_localizations.dart';
 
 final transactionsStreamProvider = StreamProvider<List<Transaction>>((ref) {
@@ -17,6 +18,7 @@ class TransactionsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final transactionsAsync = ref.watch(transactionsStreamProvider);
+    final currency = ref.watch(currencyNotifierProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -91,7 +93,7 @@ class TransactionsScreen extends ConsumerWidget {
                   title: Text(tx.description),
                   subtitle: Text(tx.date.toString().substring(0, 10)),
                   trailing: Text(
-                    '\$${tx.amount.toStringAsFixed(2)}',
+                    formatCurrency(tx.amount, currency),
                     style: TextStyle(
                       color: tx.type == 'income' ? Colors.green : Colors.red,
                       fontWeight: FontWeight.bold,

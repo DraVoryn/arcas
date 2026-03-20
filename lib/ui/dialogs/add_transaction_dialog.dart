@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:drift/drift.dart' hide Column;
 import 'package:arcas/database/app_database.dart';
 import 'package:arcas/providers/database_provider.dart';
+import 'package:arcas/providers/currency_provider.dart';
 import 'package:arcas/l10n/app_localizations.dart';
 
 class AddTransactionDialog extends ConsumerStatefulWidget {
@@ -152,6 +153,7 @@ class _AddTransactionDialogState extends ConsumerState<AddTransactionDialog> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final currency = ref.watch(currencyNotifierProvider);
     final isExpense = _selectedType == 'expense';
     final accentColor = isExpense
         ? const Color(0xFFE63946)
@@ -295,6 +297,7 @@ class _AddTransactionDialogState extends ConsumerState<AddTransactionDialog> {
                     labelText: l10n.amount,
                     hintText: '0.00',
                     prefixIcon: const Icon(Icons.attach_money),
+                    prefixText: '${currency.symbol} ',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
