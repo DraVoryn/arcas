@@ -57,7 +57,7 @@ class _LockScreenState extends ConsumerState<LockScreen>
 
     // Auto-intentar biometric SOLO SI está habilitado
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final authState = ref.read(authNotifierProvider).valueOrNull;
+      final authState = ref.read(authNotifierProvider).value;
       if (authState?.biometricEnabled == true) {
         await _tryBiometric();
       }
@@ -85,7 +85,7 @@ class _LockScreenState extends ConsumerState<LockScreen>
   // ==========================================================================
 
   Future<void> _tryBiometric() async {
-    final authState = ref.read(authNotifierProvider).valueOrNull;
+    final authState = ref.read(authNotifierProvider).value;
     if (authState == null || !authState.biometricEnabled) return;
 
     final success = await ref
@@ -192,11 +192,11 @@ class _LockScreenState extends ConsumerState<LockScreen>
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    // Usar .valueOrNull para obtener el estado desde AsyncNotifier
-    final authState = ref.watch(authNotifierProvider).valueOrNull;
+    // Usar .value para obtener el estado desde AsyncNotifier
+    final authState = ref.watch(authNotifierProvider).value;
 
     // Valores por defecto mientras carga
-    final failedAttempts = authState?.failedAttempts ?? 0;
+    final int failedAttempts = authState?.failedAttempts ?? 0;
     final biometricEnabled = authState?.biometricEnabled ?? false;
     final canReset = authState?.canReset ?? false;
 

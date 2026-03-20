@@ -24,7 +24,7 @@ class _ReportesScreenState extends ConsumerState<ReportesScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final premiumState = ref.watch(premiumNotifierProvider);
+    final premiumState = ref.watch(premiumNotifierProvider).value ?? const PremiumState();
     final reportState = ref.watch(reportGenerationProvider);
     final latestReportAsync = ref.watch(latestReportProvider);
 

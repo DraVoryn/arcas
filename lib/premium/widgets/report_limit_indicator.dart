@@ -10,7 +10,7 @@ class ReportLimitIndicator extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final premiumState = ref.watch(premiumNotifierProvider);
+    final premiumState = ref.watch(premiumNotifierProvider).value ?? const PremiumState();
 
     if (premiumState.isPremium) {
       return const SizedBox.shrink();

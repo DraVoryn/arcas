@@ -48,11 +48,14 @@ const List<Currency> supportedCurrencies = [
   Currency(code: 'JPY', symbol: '¥', name: 'Japanese Yen', nameEs: 'Yen japones'),
 ];
 
-class CurrencyNotifier extends StateNotifier<Currency> {
+class CurrencyNotifier extends Notifier<Currency> {
   static const _currencyKey = 'currency_code';
-  final SharedPreferences _prefs;
 
-  CurrencyNotifier(this._prefs) : super(_loadCurrency(_prefs));
+  @override
+  Currency build() {
+    final prefs = ref.watch(sharedPreferencesProvider);
+    return _loadCurrency(prefs);
+  }
 
   static Currency _loadCurrency(SharedPreferences prefs) {
     final code = prefs.getString(_currencyKey);
@@ -65,15 +68,13 @@ class CurrencyNotifier extends StateNotifier<Currency> {
 
   Future<void> setCurrency(Currency currency) async {
     state = currency;
-    await _prefs.setString(_currencyKey, currency.code);
+    final prefs = ref.read(sharedPreferencesProvider);
+    await prefs.setString(_currencyKey, currency.code);
   }
 }
 
 final currencyNotifierProvider =
-    StateNotifierProvider<CurrencyNotifier, Currency>((ref) {
-  final prefs = ref.watch(sharedPreferencesProvider);
-  return CurrencyNotifier(prefs);
-});
+    NotifierProvider<CurrencyNotifier, Currency>(CurrencyNotifier.new);
 
 /// Formatea un monto con el simbolo de la moneda actual.
 String formatCurrency(double amount, Currency currency) {

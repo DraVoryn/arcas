@@ -6,11 +6,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 ///
 /// Permite cambiar el idioma manualmente en lugar de depender
 /// solo del locale del sistema.
-class LocaleNotifier extends StateNotifier<Locale?> {
+class LocaleNotifier extends Notifier<Locale?> {
   static const _localeKey = 'app_locale';
-  final SharedPreferences _prefs;
 
-  LocaleNotifier(this._prefs) : super(_loadLocale(_prefs));
+  @override
+  Locale? build() {
+    final prefs = ref.watch(localeSharedPreferencesProvider);
+    return _loadLocale(prefs);
+  }
 
   static Locale? _loadLocale(SharedPreferences prefs) {
     final localeCode = prefs.getString(_localeKey);
@@ -20,10 +23,11 @@ class LocaleNotifier extends StateNotifier<Locale?> {
 
   Future<void> setLocale(Locale? locale) async {
     state = locale;
+    final prefs = ref.read(localeSharedPreferencesProvider);
     if (locale == null) {
-      await _prefs.remove(_localeKey);
+      await prefs.remove(_localeKey);
     } else {
-      await _prefs.setString(_localeKey, locale.languageCode);
+      await prefs.setString(_localeKey, locale.languageCode);
     }
   }
 }
@@ -37,10 +41,7 @@ final localeSharedPreferencesProvider =
 
 /// Provider principal del locale.
 final localeNotifierProvider =
-    StateNotifierProvider<LocaleNotifier, Locale?>((ref) {
-  final prefs = ref.watch(localeSharedPreferencesProvider);
-  return LocaleNotifier(prefs);
-});
+    NotifierProvider<LocaleNotifier, Locale?>(LocaleNotifier.new);
 
 /// Provider de solo lectura para el locale actual.
 final currentLocaleProvider = Provider<Locale?>((ref) {

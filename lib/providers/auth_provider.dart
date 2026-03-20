@@ -113,7 +113,7 @@ final authNotifierProvider =
 /// Provider de solo lectura para verificar si está autenticado.
 final isAuthenticatedProvider = Provider<bool>((ref) {
   final authState = ref.watch(authNotifierProvider);
-  return authState.valueOrNull?.status == AuthStatus.unlocked;
+  return authState.value?.status == AuthStatus.unlocked;
 });
 
 /// Provider para obtener los tipos de biometric disponibles.

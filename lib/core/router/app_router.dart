@@ -61,7 +61,7 @@ GoRouter createRouter(WidgetRef ref) {
 
       // Si todavía está cargando, permitir acceso a cualquier ruta pública
       // El estado se actualizará cuando termine de cargar
-      final authState = authAsync.valueOrNull;
+      final authState = authAsync.value;
       if (authState == null) {
         final targetRoute = state.uri.path;
         // Permitir acceso a rutas públicas mientras carga

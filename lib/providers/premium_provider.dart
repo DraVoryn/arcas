@@ -76,28 +76,27 @@ class PremiumState {
   }
 }
 
-class PremiumNotifier extends StateNotifier<PremiumState> {
-  final PurchaseService _purchaseService;
-  final FreemiumService _freemiumService;
-
-  PremiumNotifier(this._purchaseService, this._freemiumService)
-      : super(const PremiumState(isLoading: true)) {
-    _loadState();
+class PremiumNotifier extends AsyncNotifier<PremiumState> {
+  @override
+  Future<PremiumState> build() async {
+    return _loadState();
   }
 
-  Future<void> _loadState() async {
+  Future<PremiumState> _loadState() async {
     try {
-      final subscription = await _purchaseService.getCurrentSubscription();
-      final reportsGenerated = await _freemiumService.getReportsGeneratedThisMonth();
+      final purchaseService = ref.read(purchaseServiceProvider);
+      final freemiumService = ref.read(freemiumServiceProvider);
+      final subscription = await purchaseService.getCurrentSubscription();
+      final reportsGenerated = await freemiumService.getReportsGeneratedThisMonth();
       
-      state = state.copyWith(
+      return PremiumState(
         isPremium: subscription?.isPremium ?? false,
         subscription: subscription,
         reportsGeneratedThisMonth: reportsGenerated,
         isLoading: false,
       );
     } catch (e) {
-      state = state.copyWith(
+      return PremiumState(
         isLoading: false,
         error: e.toString(),
       );
@@ -105,45 +104,44 @@ class PremiumNotifier extends StateNotifier<PremiumState> {
   }
 
   Future<void> refresh() async {
-    await _loadState();
+    state = const AsyncValue.loading();
+    state = AsyncValue.data(await _loadState());
   }
 
   Future<PurchaseResult> purchasePlan(PremiumPlan plan) async {
     try {
-      final result = await _purchaseService.purchasePlan(plan);
+      final purchaseService = ref.read(purchaseServiceProvider);
+      final result = await purchaseService.purchasePlan(plan);
       if (result.success) {
-        await _loadState();
+        await refresh();
       }
       if (result.error != null && result.errorMessage != null) {
-        state = state.copyWith(error: result.errorMessage);
+        state = state.whenData((s) => s.copyWith(error: result.errorMessage));
       }
       return result;
     } catch (e) {
-      state = state.copyWith(error: e.toString());
+      state = state.whenData((s) => s.copyWith(error: e.toString()));
       return PurchaseResult.error(PurchaseErrorType.unknown, e.toString());
     }
   }
 
   Future<bool> restorePurchases() async {
     try {
-      final success = await _purchaseService.restorePurchases();
+      final purchaseService = ref.read(purchaseServiceProvider);
+      final success = await purchaseService.restorePurchases();
       if (success) {
-        await _loadState();
+        await refresh();
       }
       return success;
     } catch (e) {
-      state = state.copyWith(error: e.toString());
+      state = state.whenData((s) => s.copyWith(error: e.toString()));
       return false;
     }
   }
 }
 
 final premiumNotifierProvider =
-    StateNotifierProvider<PremiumNotifier, PremiumState>((ref) {
-  final purchaseService = ref.watch(purchaseServiceProvider);
-  final freemiumService = ref.watch(freemiumServiceProvider);
-  return PremiumNotifier(purchaseService, freemiumService);
-});
+    AsyncNotifierProvider<PremiumNotifier, PremiumState>(PremiumNotifier.new);
 
 class ReportGenerationState {
   final bool isGenerating;
@@ -169,23 +167,20 @@ class ReportGenerationState {
   }
 }
 
-class ReportGenerationNotifier extends StateNotifier<ReportGenerationState> {
-  final ReportService _reportService;
-  final FreemiumService _freemiumService;
-  final PremiumNotifier _premiumNotifier;
-
-  ReportGenerationNotifier(
-    this._reportService,
-    this._freemiumService,
-    this._premiumNotifier,
-  ) : super(const ReportGenerationState());
+class ReportGenerationNotifier extends Notifier<ReportGenerationState> {
+  @override
+  ReportGenerationState build() {
+    return const ReportGenerationState();
+  }
 
   Future<model.Report?> generateReport({
     required model.ReportType type,
     required DateTime startDate,
     required DateTime endDate,
   }) async {
-    final premiumState = _premiumNotifier.state;
+    final premiumStateAsync = ref.read(premiumNotifierProvider);
+    final premiumState = premiumStateAsync.value ?? const PremiumState();
+    
     if (!premiumState.canGenerateReport()) {
       state = state.copyWith(error: 'Report limit reached');
       return null;
@@ -194,15 +189,18 @@ class ReportGenerationNotifier extends StateNotifier<ReportGenerationState> {
     state = state.copyWith(isGenerating: true, error: null);
 
     try {
-      final report = await _reportService.generateReport(
+      final reportService = ref.read(reportServiceProvider);
+      final freemiumService = ref.read(freemiumServiceProvider);
+      
+      final report = await reportService.generateReport(
         type: type,
         startDate: startDate,
         endDate: endDate,
       );
 
       if (!premiumState.isPremium) {
-        await _freemiumService.incrementUsage();
-        await _premiumNotifier.refresh();
+        await freemiumService.incrementUsage();
+        ref.read(premiumNotifierProvider.notifier).refresh();
       }
 
       state = state.copyWith(
@@ -222,12 +220,8 @@ class ReportGenerationNotifier extends StateNotifier<ReportGenerationState> {
 }
 
 final reportGenerationProvider =
-    StateNotifierProvider<ReportGenerationNotifier, ReportGenerationState>((ref) {
-  final reportService = ref.watch(reportServiceProvider);
-  final freemiumService = ref.watch(freemiumServiceProvider);
-  final premiumNotifier = ref.watch(premiumNotifierProvider.notifier);
-  return ReportGenerationNotifier(reportService, freemiumService, premiumNotifier);
-});
+    NotifierProvider<ReportGenerationNotifier, ReportGenerationState>(
+        ReportGenerationNotifier.new);
 
 final latestReportProvider = FutureProvider<model.Report?>((ref) async {
   final reportService = ref.watch(reportServiceProvider);

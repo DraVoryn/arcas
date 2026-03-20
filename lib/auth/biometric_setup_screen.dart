@@ -166,7 +166,7 @@ class _BiometricSetupScreenState extends ConsumerState<BiometricSetupScreen>
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final biometricsAsync = ref.watch(availableBiometricsProvider);
-    final biometricTypes = biometricsAsync.valueOrNull ?? [];
+    final biometricTypes = biometricsAsync.value ?? [];
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
