@@ -294,12 +294,11 @@ class AuthService {
     try {
       return await _localAuth.authenticate(
         localizedReason: reason,
-        options: const AuthenticationOptions(
-          stickyAuth: true,
-          // Si el usuario minimiza la app, esperar a que vuelva
-          biometricOnly: true,
-          // Solo biometrics, no fallback a PIN del sistema
-        ),
+        sensitiveTransaction: true,
+        // Mantener sesion si la app va a background
+        persistAcrossBackgrounding: true,
+        biometricOnly: true,
+        // Solo biometrics, no fallback a PIN del sistema
       );
     } catch (e) {
       // Falló por alguna razón (usuario canceló, no hay biometrics, etc.)
