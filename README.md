@@ -87,13 +87,13 @@ onboarding → pinSetup → biometricSetup → locked ↔ unlocked
 
 ### Schema v3
 
-5 tablas normalizadas:
+6 tablas normalizadas:
 
 ```sql
 transactions (id, description, amount, date, categoryId, type, createdAt)
 categories   (id, name, icon, color, createdAt)
 subscriptions(id, planId, startDate, expirationDate, status, storeTransactionId, createdAt)
-report_usage (id, month, year, reportsGenerated, lastReportDate)
+report_usage (id, month, year, reportsGenerated, predictionsGenerated, lastReportDate, lastPredictionDate)
 reports      (id, type, startDate, endDate, totalIncome, totalExpense, balance, categoryBreakdownJson, generatedAt)
 ```
 
@@ -109,26 +109,37 @@ MigrationStrategy(
 
 ---
 
-## 💰 Modelo Freemium
+## 💰 Modelo Freemium (3-Tiers)
 
 ### Free tier
 
-- 3 reportes por mes (cualquier tipo)
+- 3 reportes básicos por mes
+- Sin reportes avanzados
+- Sin predicciones
 - Reset automático mensual
-- Todas las features básicas
+
+### VIP ($1.99/mes) — Recomendado
+
+- **Reportes básicos ilimitados**
+- **5 reportes avanzados por mes**
+- **2 predicciones por mes**
+- Exportación a CSV
+- Soporte prioritario
 
 ### Premium ($2.99/mes o $23.88/año)
 
+- **TODO ilimitado**
 - Reportes avanzados ilimitados
-- Modelo de predicciones
+- Predicciones ilimitadas
 - Exportación a PDF
-- Soporte prioritario
+- Funciones pro adicionales
 
 ### Implementación
 
-- `freemium_limits.dart`: Límites por tier
-- `purchase_service.dart`: Integración IAP
-- `paywall_screen.dart`: Conversión con l10n
+- `freemium_limits.dart`: Límites por tier (Free, VIP, Premium)
+- `purchase_service.dart`: Integración IAP para 3 productos
+- `paywall_screen.dart`: UI con badge "Recomendado" para VIP
+- `premium_provider.dart`: Estado extendido con `isVip` y contadores
 
 ---
 
@@ -170,6 +181,13 @@ MigrationStrategy(
 
 ### 2026-03-20
 
+- **feat**: Sistema de 3-tiers (Free, VIP, Premium)
+- **feat**: VIP tier con $1.99/mes — reportes básicos ilimitados, 5 avanzados/mes, 2 predicciones/mes
+- **feat**: Migración BD v2→v3 con columnas predictionsGenerated y lastPredictionDate
+- **feat**: Sistema de compras actualizado para soportar VIP
+- **feat**: PremiumProvider extendido con `isVip` y contadores de predicciones
+- **feat**: UI Paywall con badge "Recomendado" para VIP
+- **refactor**: FreemiumService eliminando duplicación de código
 - **fix**: Delete account ahora borra DB completa (no solo PIN)
 - **fix**: PIN persistencia con SharedPreferences no encriptado
 - **fix**: Reportes query con `.first` para evitar "too many elements"
@@ -216,11 +234,19 @@ flutter build appbundle --release
 
 ## 🚀 Roadmap
 
+### Próxima release (v1.1.0)
+- [ ] Configurar productos VIP/Premium en Google Play Console
+- [ ] Implementar closed testing con 12+ testers
+- [ ] Crear política de privacidad detallada
+- [ ] Agregar screenshots para listing
 - [ ] Testear biometría en iOS
+
+### Futuras mejoras
 - [ ] Modelo freemium avanzado (2 reportes/semana + 1 avanzado/mes)
-- [ ] Reportes avanzados con predicciones
+- [ ] Reportes avanzados con predicciones mejoradas
 - [ ] Mayor cobertura de tests (>80%)
 - [ ] E2E tests con integration_test
+- [ ] Soporte multi-dispositivo (sync opcional)
 
 ---
 
@@ -230,6 +256,32 @@ MIT License — ver `LICENSE` para detalles.
 
 ---
 
-## 🤝 Contribuir
+## 🔧 Configuración para Producción
 
-Este proyecto prioriza privacidad y control local. Si querés contribuir, leé primero los principios de diseño en `CONTEXT.md` (no commiteado — es interno del equipo).
+### Requisitos para Google Play Store
+
+1. **Cuenta de desarrollador**: $25 USD (una vez)
+2. **Configurar signing release**: `android/key.properties`
+3. **Cambiar applicationId**: `com.tudominio.arcas` (ID único)
+4. **Agregar permisos**: `INTERNET` en AndroidManifest.xml
+5. **Configurar IAP en Play Console**:
+   - `premium_monthly` - $2.99/mes
+   - `premium_yearly` - $23.88/año
+   - `com.arcas.vip.monthly` - $1.99/mes
+6. **Crear listing**: Icono 512x512, screenshots, descripción
+7. **Política de privacidad**: Obligatoria para apps con datos financieros
+
+### Build para producción
+
+```bash
+# 1. Configurar firma (ya existe keystore: android/app/arcas-release.jks)
+# 2. Generar AAB
+flutter build appbundle --release
+
+# 3. Subir a Google Play Console
+#    → Testing → Closed testing → Crear release
+```
+
+---
+
+**Nota**: Esta app está diseñada para uso personal. Los datos financieros nunca salen del dispositivo. El modelo freemium es sostenible para un desarrollador solitario.

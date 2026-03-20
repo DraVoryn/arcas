@@ -52,6 +52,10 @@ android/build/
 # Keystore files (NEVER commit these)
 /android/app/*.jks
 /android/app/*.keystore
+/android/key.properties
+
+# Local properties (contains personal SDK paths)
+android/local.properties
 
 # iOS build
 ios/Pods/
