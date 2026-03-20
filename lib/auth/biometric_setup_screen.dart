@@ -66,7 +66,7 @@ class _BiometricSetupScreenState extends ConsumerState<BiometricSetupScreen>
     });
 
     // Guardar la posición del sensor primero
-    final authService = AuthService();
+    final authService = ref.read(authServiceProvider);
     await authService.setBiometricPosition(_selectedPosition);
 
     try {

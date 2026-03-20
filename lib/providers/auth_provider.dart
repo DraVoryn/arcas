@@ -4,6 +4,7 @@ import 'package:local_auth/local_auth.dart';
 import 'package:arcas/auth/auth_service.dart';
 import 'package:arcas/providers/theme_provider.dart'
     show sharedPreferencesProvider;
+import 'package:arcas/providers/database_provider.dart';
 
 // ==========================================================================
 // ENUMS y ESTADOS
@@ -99,7 +100,8 @@ const int _maxFailedAttempts = 5;
 
 /// Provider para el servicio de autenticación.
 final authServiceProvider = Provider<AuthService>((ref) {
-  return AuthService();
+  final prefs = ref.watch(sharedPreferencesProvider);
+  return AuthService(prefs: prefs);
 });
 
 /// Provider principal del estado de autenticación.
@@ -160,52 +162,97 @@ class AuthNotifier extends AsyncNotifier<AuthState> {
   ///            - SÍ → biometricSetup (para confirmar)
   ///            - NO → locked
   Future<AuthState> _initialize() async {
+    print('[AuthNotifier] _initialize() START');
+    
     // Si no hay authService o prefs todavía, retornar estado inicial
     if (_authService == null || _prefs == null) {
-      // ignore: avoid_print
       print('[AuthNotifier] _initialize() -> NULL service or prefs, returning initial');
       return AuthState.initial();
     }
 
+    // Verificar qué hay en SharedPreferences
+    final allKeys = _prefs!.getKeys();
+    print('[AuthNotifier] SharedPreferences keys: $allKeys');
+
+    // Esperar más tiempo para que todo se inicialice completamente
+    // (especialmente después de un restart completo de la app)
+    await Future.delayed(const Duration(milliseconds: 1000));
+    print('[AuthNotifier] After delay, checking prefs again...');
+    final keysAfterDelay = _prefs!.getKeys();
+    print('[AuthNotifier] SharedPreferences keys after delay: $keysAfterDelay');
+
     // Verificar disponibilidad de biometrics
     final biometricAvailable = await _authService!.isBiometricAvailable();
+    print('[AuthNotifier] biometricAvailable: $biometricAvailable');
 
     // Verificar si el onboarding ya fue completado
     final onboardingCompleted =
         _prefs!.getBool(_onboardingCompletedKey) ?? false;
+    print('[AuthNotifier] onboardingCompleted: $onboardingCompleted');
 
-    // Verificar si hay PIN configurado
-    final isPinSetup = await _authService!.isPinSetup();
+    // Verificar si hay PIN configurado (con retry para problemas de timing)
+    bool isPinSetup = await _readPinWithRetry();
+    print('[AuthNotifier] isPinSetup: $isPinSetup');
 
     // Verificar si biometrics está habilitado
     final biometricEnabled = await _authService!.isBiometricEnabled();
+    print('[AuthNotifier] biometricEnabled: $biometricEnabled');
 
     AuthStatus newStatus;
 
     if (!onboardingCompleted) {
       // Primera vez: mostrar onboarding
       newStatus = AuthStatus.onboarding;
+      print('[AuthNotifier] -> onboarding (no previous use)');
     } else if (!isPinSetup) {
       // Onboarding completado pero sin PIN: crear PIN
       newStatus = AuthStatus.pinSetup;
+      print('[AuthNotifier] -> pinSetup (onboarding done, no PIN)');
     } else {
       // PIN existe: verificar si biometric está pendiente de confirmar
       if (biometricAvailable && !biometricEnabled) {
         newStatus = AuthStatus.biometricSetup;
+        print('[AuthNotifier] -> biometricSetup (PIN exists, biometric pending)');
       } else {
         // Todo configurado: app bloqueada esperando auth
         newStatus = AuthStatus.locked;
+        print('[AuthNotifier] -> locked (PIN exists, ready to authenticate)');
       }
     }
 
-    // ignore: avoid_print
-    print('[AuthNotifier] _initialize() -> status=$newStatus, onboarding=$onboardingCompleted, isPinSetup=$isPinSetup');
+    print('[AuthNotifier] _initialize() -> status=$newStatus');
 
     return AuthState(
       status: newStatus,
       biometricAvailable: biometricAvailable,
       biometricEnabled: biometricEnabled,
     );
+  }
+
+  /// Lee el estado del PIN con reintentos para manejar timing issues
+  /// con secure storage después de un restart de la app.
+  Future<bool> _readPinWithRetry({int maxRetries = 5}) async {
+    for (int i = 0; i < maxRetries; i++) {
+      try {
+        final isPinSetup = await _authService!.isPinSetup();
+        if (isPinSetup) {
+          // ignore: avoid_print
+          print('[AuthNotifier] _readPinWithRetry() -> success on attempt ${i + 1}');
+          return true;
+        }
+        // ignore: avoid_print
+        print('[AuthNotifier] _readPinWithRetry() attempt ${i + 1}: no PIN found');
+      } catch (e) {
+        // ignore: avoid_print
+        print('[AuthNotifier] _readPinWithRetry() attempt ${i + 1} ERROR: $e');
+      }
+      
+      if (i < maxRetries - 1) {
+        // Exponential backoff: 200ms, 400ms, 600ms, 800ms
+        await Future.delayed(Duration(milliseconds: 200 * (i + 1)));
+      }
+    }
+    return false;
   }
 
   // ==========================================================================
@@ -236,12 +283,12 @@ class AuthNotifier extends AsyncNotifier<AuthState> {
     String confirmPin,
   ) async {
     // Validar largo
-    if (!_authService!.isValidPinLength(pin)) {
+    if (!AuthService.isValidPinLength(pin)) {
       return (success: false, error: 'El PIN debe tener entre 4 y 6 dígitos');
     }
 
     // Validar que no sea PIN débil
-    if (_authService!.isWeakPin(pin)) {
+    if (AuthService.isWeakPin(pin)) {
       return (success: false, error: 'Este PIN es muy común, elige otro');
     }
 
@@ -291,14 +338,8 @@ class AuthNotifier extends AsyncNotifier<AuthState> {
 
   /// Verifica el PIN ingresado por el usuario.
   Future<({bool success, String? error})> verifyPin(String pin) async {
-    // Obtener hash guardado
-    final storedHash = await _authService!.getPinHash();
-    if (storedHash == null) {
-      return (success: false, error: 'No hay PIN configurado');
-    }
-
-    // Verificar PIN
-    final isValid = _authService!.verifyPin(pin, storedHash);
+    // Verificar PIN (el servicio ya tiene el hash guardado internamente)
+    final isValid = await _authService!.verifyPin(pin);
 
     final currentState = state.value!;
 
@@ -377,14 +418,25 @@ class AuthNotifier extends AsyncNotifier<AuthState> {
   ///
   /// Solo para "Olvidé mi PIN" (5 intentos fallidos) o "Borrar cuenta".
   /// NO para logout normal.
+  /// 
+  /// Borra TODO: PIN, biometrics, preferencias Y base de datos.
   Future<void> deleteAccount() async {
-    // Limpiar secure storage (PIN + biometrics + position)
+    // 1. Limpiar secure storage (PIN + biometrics + position)
     await _authService!.clearPin();
 
-    // Resetear onboarding
+    // 2. Resetear onboarding
     await _prefs!.setBool(_onboardingCompletedKey, false);
 
-    // Volver al inicio
+    // 3. BORRAR BASE DE DATOS (transacciones, categorías, reportes)
+    try {
+      final db = ref.read(databaseProvider);
+      await db.clearAllData();
+    } catch (e) {
+      // Si falla el clear, continuar de todas formas para no quedar trabado
+      print('[AuthNotifier] deleteAccount: error clearing database: $e');
+    }
+
+    // 4. Volver al inicio del flujo de auth
     final currentState = state.value;
     state = AsyncValue.data(AuthState.initial().copyWith(
       biometricAvailable: currentState?.biometricAvailable ?? false,

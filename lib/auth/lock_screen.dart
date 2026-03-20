@@ -65,7 +65,7 @@ class _LockScreenState extends ConsumerState<LockScreen>
   }
 
   Future<void> _loadBiometricPosition() async {
-    final authService = AuthService();
+    final authService = ref.read(authServiceProvider);
     final position = await authService.getBiometricPosition();
     if (mounted) {
       setState(() {

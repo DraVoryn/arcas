@@ -294,7 +294,7 @@ class _AddTransactionDialogState extends ConsumerState<AddTransactionDialog> {
                 TextFormField(
                   controller: _amountController,
                   decoration: InputDecoration(
-                    labelText: l10n.amount,
+                    labelText: '${l10n.amount} (${currency.code})',
                     hintText: '0.00',
                     prefixIcon: const Icon(Icons.attach_money),
                     prefixText: '${currency.symbol} ',

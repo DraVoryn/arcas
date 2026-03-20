@@ -40,6 +40,9 @@ class ReportUsage extends Table {
   IntColumn get year => integer()();
   IntColumn get reportsGenerated => integer().withDefault(const Constant(0))();
   DateTimeColumn get lastReportDate => dateTime().nullable()();
+  
+  @override
+  List<Set<Column>> get uniqueKeys => [{month, year}];
 }
 
 class Reports extends Table {
@@ -148,8 +151,11 @@ class AppDatabase extends _$AppDatabase {
   }
 
   Future<Report?> getLatestReport() async {
-    return (select(reports)..orderBy([(t) => OrderingTerm.desc(t.generatedAt)]))
-        .getSingleOrNull();
+    // Usar .get() + first para evitar "too many elements" si hay duplicados
+    final results = await (select(reports)
+          ..orderBy([(t) => OrderingTerm.desc(t.generatedAt)]))
+        .get();
+    return results.isEmpty ? null : results.first;
   }
 }
 

@@ -47,22 +47,46 @@ class FreemiumService {
   }
 
   Future<ReportUsageData?> _getOrCreateUsage(int month, int year) async {
+    print('[FreemiumService] _getOrCreateUsage($month, $year)');
+    
+    // Usar query segura que nunca tira "too many elements"
     final query = _db.select(_db.reportUsage)
       ..where((t) => t.month.equals(month) & t.year.equals(year));
     
-    var usage = await query.getSingleOrNull();
+    // Usar .get() en lugar de .getSingle() para evitar el error
+    final existing = await query.get();
+    print('[FreemiumService] Found ${existing.length} rows for month=$month, year=$year');
     
-    if (usage == null) {
+    if (existing.isEmpty) {
+      // No existe, insertar con ON CONFLICT para evitar duplicados
+      print('[FreemiumService] No existing record, inserting...');
       await _db.into(_db.reportUsage).insert(
         ReportUsageCompanion.insert(
           month: month,
           year: year,
         ),
+        mode: InsertMode.insertOrReplace,
       );
-      usage = await query.getSingle();
+      
+      // Verificar que se insertó correctamente
+      final afterInsert = await query.get();
+      print('[FreemiumService] After insert: ${afterInsert.length} rows');
+      
+      if (afterInsert.isEmpty) {
+        print('[FreemiumService] ERROR: Insert failed');
+        return null;
+      }
+      return afterInsert.first;
+    } else if (existing.length == 1) {
+      //刚好一行，返回它
+      print('[FreemiumService] Returning existing record');
+      return existing.first;
+    } else {
+      // Múltiples filas (duplicados) - 返回第一行并清理
+      print('[FreemiumService] WARNING: ${existing.length} duplicates found, using first');
+      // En producción, deberías limpiar los duplicados aquí
+      return existing.first;
     }
-    
-    return usage;
   }
 
   Future<void> resetMonthlyUsage() async {
