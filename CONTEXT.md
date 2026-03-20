@@ -1,259 +1,262 @@
-# Contexto de la Aplicacion Arcas
+# ARCAS - Estado del Proyecto
 
-## Resumen del Proyecto
-Arcas es una aplicacion de finanzas personales desarrollada con Flutter. Permite a los usuarios gestionar sus transacciones, categorias, y generar reportes. Incluye funcionalidades premium (compras in-app) y esta localizada en espanol e ingles.
+> Última actualización: 2026-03-19
+> Versión Flutter: 3.41.4
+> Ubicación: `C:\Users\Rafael\proyectos\arcas`
 
-**Repo**: https://github.com/DraVoryn/arcas
-**Stack**: Flutter 3.41.4 + Drift + Riverpod + GoRouter + in_app_purchase
-**Contribuidor**: DraVoryn <rafhm22@gmail.com>
+---
 
-## Arquitectura y Stack Tecnologico
-- **Framework**: Flutter 3.41.4
-- **Lenguaje**: Dart 3.x
-- **State Management**: Riverpod (v2.6.1)
-- **Base de Datos**: Drift (SQLite) con `path_provider`
-- **Navegacion**: GoRouter con redirect logic
-- **Compras**: in_app_purchase ^3.2.0
-- **Seguridad**: flutter_secure_storage + crypto (SHA-256 HMAC)
-- **Biometria**: local_auth ^2.3.0
-- **Testing**: flutter_test con 48 tests
+## 📱 Qué es Arcas
 
-## Estructura del Proyecto
+App de finanzas personales local-first para Android/iOS. Sin backend, sin cloud. Todos los datos viven en el dispositivo del usuario. Protegido con PIN (4-6 dígitos) y biometría (huella/carita).
+
+---
+
+## 🏗️ STACK
+
+| Componente | Tecnología |
+|------------|------------|
+| Framework | Flutter 3.41.4 |
+| State Management | Riverpod 2.6.1 |
+| Database | Drift 2.28.2 (SQLite ORM) |
+| Routing | GoRouter 14.8.1 |
+| Auth | PIN (HMAC-SHA256 + salt) + Biometrics (local_auth) |
+| IAP | in_app_purchase 3.2.0 |
+| Secure Storage | flutter_secure_storage 9.2.4 |
+| Localization | ES (default) + EN |
+
+---
+
+## 📁 ESTRUCTURA
+
 ```
 lib/
-├── main.dart                    (Entry point con try-catch)
-├── core/
-│   ├── router/app_router.dart   (GoRouter con auth redirects)
-│   ├── theme/app_theme.dart     (Material 3 light/dark)
-│   └── utils/date_formatter.dart (Helper para fechas con locale)
-├── database/
-│   ├── app_database.dart       (Drift con 5 tablas)
-│   └── app_database.g.dart     (Generado)
-├── providers/
-│   ├── database_provider.dart   (Instancia unica global)
-│   ├── theme_provider.dart     (Dark mode toggle)
-│   ├── locale_provider.dart     (ES/EN/Sistema)
-│   ├── auth_provider.dart      (PIN, biometric, auth state)
-│   ├── home_provider.dart      (Balance, stats, transacciones)
-│   └── premium_provider.dart  (Suscripcion, freemium)
 ├── auth/
-│   ├── auth_service.dart       (Hashing, verificacion PIN)
-│   ├── lock_screen.dart       (Pantalla de bloqueo)
-│   ├── pin_setup_screen.dart   (Crear PIN)
-│   ├── biometric_setup_screen.dart
-│   ├── onboarding_screen.dart
-│   └── widgets/pin_numpad.dart
+│   ├── auth_service.dart           # PIN hash, biometric, secure storage
+│   ├── biometric_position.dart    # Enum: screen / rear / side
+│   ├── biometric_setup_screen.dart # Setup de huella con selector de posición
+│   ├── lock_screen.dart            # Pantalla de bloqueo
+│   ├── onboarding_screen.dart       # Onboarding (localizado ES/EN) + 3 slides
+│   ├── pin_setup_screen.dart       # Crear/confirmar PIN
+│   └── widgets/
+│       └── pin_numpad.dart        # Teclado numérico con botón biometric
+├── core/
+│   ├── router/
+│   │   └── app_router.dart        # GoRouter con redirect logic
+│   └── theme/
+│       └── app_theme.dart         # Material 3, light/dark
+├── database/
+│   ├── app_database.dart          # Drift: 5 tablas, MigrationStrategy v3
+│   └── app_database.g.dart        # Generado
+├── l10n/
+│   ├── app_en.arb                 # Claves en inglés
+│   ├── app_es.arb                 # Claves en español
+│   └── app_localizations.dart      # Generado
 ├── premium/
 │   ├── models/
-│   │   ├── premium_plan.dart
-│   │   ├── subscription.dart
-│   │   ├── report.dart
-│   │   ├── category_breakdown.dart
-│   │   └── freemium_limits.dart (3 reportes/mes free)
-│   ├── services/
-│   │   ├── freemium_service.dart
-│   │   ├── purchase_service.dart (In-app purchase con stream)
-│   │   └── report_service.dart
+│   │   ├── freemium_limits.dart   # 3 reportes/mes free
+│   │   ├── premium_plan.dart       # $2.99/mes, $23.88/año
+│   │   └── report.dart            # Modelo de reporte
 │   ├── screens/
-│   │   ├── paywall_screen.dart
+│   │   ├── paywall_screen.dart    # Pantalla de compra
 │   │   └── premium_settings_screen.dart
+│   ├── services/
+│   │   └── purchase_service.dart   # Integración IAP
 │   └── widgets/
 │       ├── premium_badge.dart
 │       ├── report_limit_indicator.dart
-│       ├── upgrade_prompt.dart
-│       └── report_card.dart
-├── ui/
-│   ├── screens/
-│   │   ├── home_screen.dart        (Balance, stats, transacciones)
-│   │   ├── transactions_screen.dart (CRUD completo)
-│   │   ├── reportes_screen.dart     (Reportes con freemium)
-│   │   └── settings_screen.dart   (Dark mode, idioma, logout)
-│   └── dialogs/
-│       └── add_transaction_dialog.dart
-└── l10n/
-    ├── app_localizations.dart      (Base class)
-    ├── app_localizations_en.dart   (~470 keys)
-    └── app_localizations_es.dart   (~470 keys)
+│       └── upgrade_prompt.dart
+├── providers/
+│   ├── auth_provider.dart         # AuthNotifier (lock/unlock/deleteAccount)
+│   ├── currency_provider.dart      # 10 monedas, formatCurrency()
+│   ├── database_provider.dart      # Singleton AppDatabase
+│   ├── home_provider.dart         # Balance, transacciones, stats
+│   ├── locale_provider.dart        # Preferencia de idioma
+│   ├── premium_provider.dart       # Estado premium
+│   └── theme_provider.dart        # Light/dark/system
+└── ui/
+    ├── dialogs/
+    │   └── add_transaction_dialog.dart
+    └── screens/
+        ├── home_screen.dart       # Balance, stats, transacciones recientes
+        ├── reportes_screen.dart    # Generador de reportes
+        ├── settings_screen.dart   # Logout, delete account, moneda, idioma
+        └── transactions_screen.dart # Lista de transacciones con swipe-to-delete
 ```
 
-## Funcionalidades Implementadas
+---
 
-### Autenticacion
-| Feature | Estado | Descripcion |
-|---------|--------|-------------|
-| PIN setup | ✅ | 4-6 digitos, validacion de debiles |
-| PIN hashing | ✅ | SHA-256 HMAC con salt (Random.secure) |
-| Lock screen | ✅ | 5 intentos max, shake animation |
-| Biometric | ✅ | Face/Fingerprint con auto-retry |
-| Onboarding | ✅ | 2 slides para nuevos usuarios |
-| Logout | ✅ | Reset completo con confirmacion |
+## 🗄️ BASE DE DATOS (Drift)
 
-### Home Screen
-| Feature | Estado | Descripcion |
-|---------|--------|-------------|
-| Balance | ✅ | Total en tiempo real (ingresos - gastos) |
-| Stats mensuales | ✅ | Ingresos y gastos del mes actual |
-| Transacciones recientes | ✅ | Ultimas 10 ordenadas por fecha |
-| Pull-to-refresh | ✅ | Invalidates todos los providers |
+### Schema v3 — MigrationStrategy implementada ✅
 
-### Transacciones
-| Feature | Estado | Descripcion |
-|---------|--------|-------------|
-| Agregar | ✅ | Dialog con validacion |
-| Editar | ✅ | Tap en item |
-| Eliminar | ✅ | Swipe-to-delete con confirmacion |
-| Lista real-time | ✅ | Streams de Drift |
-| Categorias | ✅ | Nullable en transacciones |
+```sql
+transactions (id, description, amount, date, categoryId, type, createdAt)
+categories (id, name, icon, color, createdAt)
+subscriptions (id, planId, startDate, expirationDate, status, storeTransactionId, createdAt)
+report_usage (id, month, year, reportsGenerated, lastReportDate)
+reports (id, type, startDate, endDate, totalIncome, totalExpense, balance, categoryBreakdownJson, generatedAt)
+```
 
-### Reportes
-| Feature | Estado | Descripcion |
-|---------|--------|-------------|
-| Semanal | ✅ | Ultimos 7 dias |
-| Mensual | ✅ | Mes actual |
-| Custom | ✅ | Date picker para rango |
-| Breakdown | ✅ | Por categoria con porcentajes |
-| Persistencia | ✅ | Tabla Reports en DB |
-
-### Premium/Freemium
-| Feature | Estado | Descripcion |
-|---------|--------|-------------|
-| Limite free | ✅ | 3 reportes/mes |
-| Upgrade prompt | ✅ | Aparece al alcanzar limite |
-| Paywall | ✅ | Planes monthly ($4.99) y yearly ($35.99) |
-| Purchase | ✅ | Stream listener con manejo de errores |
-| Restore | ✅ | Timeout 5 minutos |
-| Settings | ✅ | Estado de suscripcion visible |
-
-### Settings
-| Feature | Estado | Descripcion |
-|---------|--------|-------------|
-| Dark mode | ✅ | Toggle con persistencia |
-| Idioma | ✅ | ES/EN/Sistema con modal |
-| Premium link | ✅ | Navega a /premium-settings |
-| Logout | ✅ | Reset app + confirmacion |
-| Acerca de | ✅ | showAboutDialog con icono |
-
-## Base de Datos
-
-### Tablas
-| Tabla | Campos | Operations |
-|-------|--------|------------|
-| Transactions | id, description, amount, date, categoryId, type, createdAt | CRUD completo + streams |
-| Categories | id, name, icon, color, createdAt | CRUD completo |
-| Subscriptions | id, planId, startDate, expirationDate, status, storeTransactionId | Insert + get active |
-| Reports | id, type, startDate, endDate, totals, breakdownJson, generatedAt | Insert + queries |
-| ReportUsage | id, month, year, reportsGenerated, lastReportDate | Track monthly usage |
-
-### Providers de Datos
+### MigrationStrategy
 ```dart
-databaseProvider          // Instancia unica global
-transactionsStreamProvider  // Watch all transactions
-allCategoriesProvider      // Watch categories
-totalBalanceProvider       // Calculado desde transactions
-recentTransactionsProvider  // Top 10
-monthlyStatsProvider       // Stats del mes actual
+late final MigrationStrategy _migrations = MigrationStrategy(
+  onCreate: (m) async => m.createAll(),
+  onUpgrade: (m, from, to) async {
+    // Placeholder para futuras migraciones
+  },
+  beforeOpen: (db) async => customStatement('PRAGMA foreign_keys = ON'),
+);
 ```
 
-## Navegacion
+---
 
-### Rutas
+## 🔐 AUTENTICACIÓN
+
+### PIN
+- **4-6 dígitos**
+- Hash: HMAC-SHA256(pin, salt) — salt aleatorio de 32 bytes
+- Comparación en tiempo constante (contra timing attacks)
+- Almacenado en `flutter_secure_storage`
+
+### Biometric
+- `local_auth` para huella dactilar / Face ID
+- **Requiere `FlutterFragmentActivity`** en Android (NO `FlutterActivity`)
+- Requiere screen lock del teléfono activo (patrón/PIN/huella)
+- Soporta 3 posiciones de sensor: `screen`, `rear`, `side`
+
+### Métodos de AuthNotifier
+```dart
+lock()           // Logout: solo bloquea, NO borra nada
+deleteAccount()  // Reset completo: borra PIN + biometric + prefs
+resetApp()       // Alias de deleteAccount()
 ```
-/onboarding           -> OnboardingScreen (sin navbar)
-/pin-setup           -> PinSetupScreen (sin navbar)
-/biometric-setup    -> BiometricSetupScreen (sin navbar)
-/lock                -> LockScreen (sin navbar)
-/paywall             -> PaywallScreen (sin navbar)
-/premium-settings   -> PremiumSettingsScreen (sin navbar)
 
-Shell (con navbar):
-/home                -> HomeScreen
-/transactions        -> TransactionsScreen
-/reportes            -> ReportesScreen
-/settings            -> SettingsScreen
+### Flags en SecureStorage
+- `_pinHashKey`: hash del PIN
+- `_biometricEnabledKey`: bool
+- `_biometricPositionKey`: 'screen' | 'rear' | 'side'
+- **encryptedSharedPreferences: false** (por compatibilidad con Moto G54 5G)
+
+---
+
+## 💰 PREMIUM / FREEMIUM
+
+### Free
+- **3 reportes/mes** (cualquier tipo)
+- Reset mensual automático
+
+### Premium Monthly: **$2.99/mes**
+- Reportes avanzados ilimitados
+- Modelo de predicciones
+- Reporte pro con gráficos detallados
+- Exportar a PDF
+- Soporte prioritario
+
+### Premium Yearly: **$23.88/año**
+- Todo lo de Monthly
+- Acceso anticipado a nuevas funciones
+
+---
+
+## 💵 MONEDAS
+
+10 monedas soportadas:
+
+| Código | Símbolo | Nombre |
+|--------|---------|--------|
+| USD | $ | Dólar estadounidense |
+| EUR | € | Euro |
+| ARS | $ARS | Peso argentino |
+| MXN | $MX | Peso mexicano |
+| COP | $COP | Peso colombiano |
+| CLP | $CLP | Peso chileno |
+| GTQ | Q | Quetzal guatemalteco |
+| BRL | R$ | Real brasileño |
+| GBP | £ | Libra esterlina |
+| JPY | ¥ | Yen japonés |
+
+Se muestran con el símbolo de la moneda elegida en:
+- **Home** (balance, stats)
+- **Transactions** (lista)
+- **AddTransaction** (input de monto con prefijo)
+
+---
+
+## 🌐 LOCALIZACIÓN
+
+- **ES** (default): `app_es.arb`
+- **EN**: `app_en.arb`
+- Generado con `flutter gen-l10n`
+- Selector en Settings → Idioma
+
+---
+
+## ⚠️ BUGS CONOCIDOS
+
+| Bug | Gravedad | Status | Notas |
+|-----|----------|--------|-------|
+| PIN no persiste al cerrar app | 🔴 CRÍTICO | 🔧 Fix aplicado | Cambiado `encryptedSharedPreferences: false`. Necesita test en dispositivo |
+| Dark mode toggle → home | 🟡 INVESTIGAR | ❓ | No hay navegación en el código. Necesito aclaración del usuario |
+| Refresh en Home no funciona | 🟡 INVESTIGAR | ❓ | `ref.invalidate()` sobre StreamProviders debería funcionar |
+| Moneda no cambia en Premium | 🟢 MINOR | 📋 Pendiente | No impacta el flujo de compra |
+| Modelo freemium avanzado | 📋 FEATURE | 📋 Pendiente | Usuario quiere: 2 reportes/semana + 1 avanzado/mes para free |
+
+---
+
+## ✅ ARREGLOS IMPLEMENTADOS (2026-03-19)
+
+### Auth Improvements
+- [x] MigrationStrategy en app_database.dart
+- [x] Onboarding con l10n (3 slides)
+- [x] Biometric guard (verifica `isBiometricEnabled` antes de auto-retry)
+- [x] BiometricPosition enum + persistencia
+- [x] UI selector de posición (screen/rear/side)
+
+### Bug Fixes
+- [x] MainActivity → FlutterFragmentActivity (biometric funciona)
+- [x] Logout = lock (no más borra PIN)
+- [x] Delete account con WARNING fuerte
+- [x] Redirect de /paywall y /premium-settings corregido
+- [x] Currency selector scrollable (no más overflow)
+- [x] Símbolos de moneda corregidos ($MX, $COP, $CLP, $ARS)
+- [x] Paywall errores en ES/EN (no más hardcoded)
+- [x] Premium precio $2.99/mes, $23.88/año
+- [x] Botón de ajustes en Reportes eliminado
+
+### Nuevas Features
+- [x] Currency provider con 10 monedas
+- [x] Currency integrada en Home, Transactions, AddTransaction
+- [x] GTQ (Quetzal guatemalteco) agregada
+
+---
+
+## 🧪 TESTING
+
+```bash
+# Ejecutar todos los tests
+flutter test
+
+# Análisis estático
+flutter analyze
+
+# Build debug APK
+flutter build apk --debug
 ```
 
-### Auth Redirects
-| Estado | Ruta | Condicion |
-|--------|------|-----------|
-| newUser | /onboarding | Sin onboarding previo |
-| needsPin | /pin-setup | Sin PIN configurado |
-| needsBiometric | /biometric-setup | Biometric disponible pero no habilitado |
-| locked | /lock | Cualquier ruta protegida |
+---
 
-## Localizacion
-- **Espanol**: ~470 keys
-- **English**: ~470 keys
-- **Sistema**: Hereda del dispositivo
-- **Coverage**: 100% de todas las pantallas
+## 🚀 PRÓXIMOS PASOS
 
-## Error Handling
-| Area | Manejo |
-|------|--------|
-| DB init | Try-catch en main() con pantalla de error |
-| Purchase | PurchaseErrorType enum (storeUnavailable, networkError, userCancelled, etc) |
-| Network | Timeout + catch exceptions |
+1. **Testear PIN persistence** después del fix de `encryptedSharedPreferences: false`
+2. **Aclarar** comportamiento del dark mode toggle
+3. **Diseñar** modelo de reportes avanzados + predicciones para premium
+4. **Implementar** modelo freemium avanzado (2 normales/semana + 1 avanzado/mes)
+5. **Testear** biometric en el Moto G54 5G (ya funcionando con FlutterFragmentActivity)
+6. **Correr** `flutter test` para verificar que todo pasa
 
-## Build Status
-- `flutter analyze`: 0 issues found
-- `flutter test`: 48 tests passing
-- `flutter build appbundle --release`: Exitoso (~45MB)
+---
 
-## CI/CD
-- **PR Checks**: Activo (pr-checks.yml)
-  - flutter analyze
-  - flutter test
-  - flutter build apk (artifact)
-- **Release**: Template listo (release.yml)
-  - Necesita secrets para activar
+## 📝 COMMITS
 
-## Secrets para Deploy
-
-### Android
-| Secret | Descripcion |
-|--------|-------------|
-| ANDROID_SIGNING_KEYSTORE | Keystore .jks en base64 |
-| ANDROID_KEYSTORE_PASSWORD | Contrasena del keystore |
-| ANDROID_KEY_ALIAS | Alias de la key |
-| ANDROID_KEY_PASSWORD | Contrasena de la key |
-| PLAY_SERVICE_ACCOUNT_JSON | GCP Service Account |
-
-### iOS
-| Secret | Descripcion |
-|--------|-------------|
-| IOS_CERTIFICATE | Certificado .p12 en base64 |
-| IOS_CERTIFICATE_PASSWORD | Contrasena del certificado |
-| IOS_PROVISIONING_PROFILE | .mobileprovision en base64 |
-
-## Issues Conocidos
-1. **Sin DB migrations**: schemaVersion 2 sin onUpgrade handler
-2. **Onboarding hardcoded**: Slides no estan en l10n
-3. **Biometric retry**: Podria verificar enabled flag antes de auto-retry
-
-## Pendientes para Publicacion
-1. Configurar productos in-app en Google Play Console
-2. Crear Service Account de GCP
-3. Configurar bundle ID (com.arcas.app)
-4. Screenshots reales de la app
-5. Descripcion y categorizacion en stores
-
-## Pendientes Nice-to-Have
-- Export PDF (placeholder existe)
-- Advanced Analytics (placeholder existe)
-- Priority Support (placeholder existe)
-- Early Access Features (placeholder existe)
-- Widget de home screen
-
-## Ultima Actualizacion
-2026-03-19
-
-## Commits Recientes
-```
-4d6d95b Agrega formateo de fechas con locale de la app
-f0a0532 Agrega keystore al gitignore
-fc995bd Mejoras de manejo de errores
-2384baa Agrega opcion de logout en Settings
-bf8ca21 Agrega localizacion a pantallas de autenticacion y navegacion
-03556bc Agrega localizacion completa a pantallas premium
-54dcdfa Arregla seguridad de auth y localizacion en transacciones
-6c08518 Corrige localizaciones y actualiza Kotlin a 2.1.0
-```
+Ver `git log` para historial completo. Los commits usan formato conventional commits en español.
