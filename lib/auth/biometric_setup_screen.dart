@@ -6,7 +6,6 @@ import 'package:local_auth/local_auth.dart';
 import 'package:arcas/providers/auth_provider.dart';
 import 'package:arcas/l10n/app_localizations.dart';
 import 'package:arcas/auth/biometric_position.dart';
-import 'package:arcas/auth/auth_service.dart';
 
 /// Pantalla para configurar biometrics (Face ID / Touch ID).
 ///
