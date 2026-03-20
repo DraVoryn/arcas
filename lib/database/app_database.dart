@@ -61,7 +61,27 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(QueryExecutor executor) : super(executor);
 
   @override
-  int get schemaVersion => 2;
+  MigrationStrategy get migration {
+    return MigrationStrategy(
+      onCreate: (Migrator m) async {
+        await m.createAll();
+      },
+      onUpgrade: (Migrator m, int from, int to) async {
+        // Future migrations go here
+        // Example for v2 -> v3:
+        // if (from < 3) {
+        //   await m.addColumn('transactions', transactions.newColumn);
+        // }
+      },
+      beforeOpen: (details) async {
+        // Enable foreign keys and optimize
+        await customStatement('PRAGMA foreign_keys = ON');
+      },
+    );
+  }
+
+  @override
+  int get schemaVersion => 3;
 
   Future<List<Transaction>> getAllTransactions() => select(transactions).get();
 
